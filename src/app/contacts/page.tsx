@@ -8,7 +8,7 @@ import { Plus, Search, UserPlus, Mail, Building2, Tag, X } from 'lucide-react';
 import { ContactCategory } from '@/types';
 
 export default function ContactsPage() {
-  const { user, loading } = useAuth();
+  const { user, isLoading: isAuthLoading } = useAuth();
   const router = useRouter();
   const { data: contactPage, isLoading } = useContacts();
   const { mutate: createContact } = useCreateContact();
@@ -23,12 +23,12 @@ export default function ContactsPage() {
   const [category, setCategory] = useState<ContactCategory>('HR');
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!isAuthLoading && !user) {
       router.push('/login');
     }
-  }, [user, loading, router]);
+  }, [user, isAuthLoading, router]);
 
-  if (loading || !user) return null;
+  if (isAuthLoading || !user) return null;
 
   const contacts = contactPage?.content || [];
   const filteredContacts = contacts.filter(c => 

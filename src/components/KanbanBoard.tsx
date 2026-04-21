@@ -21,18 +21,18 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function KanbanBoard() {
-  const { user, loading } = useAuth();
+  const { user, isLoading: isAuthLoading } = useAuth();
   const router = useRouter();
 
   const { data: pageData, isLoading: isQueryLoading } = useApplications();
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!isAuthLoading && !user) {
       router.push('/login');
     }
-  }, [user, loading, router]);
+  }, [user, isAuthLoading, router]);
 
-  if (loading || !user) {
+  if (isAuthLoading || !user) {
     return (
       <div className="flex-1 flex items-center justify-center bg-background">
         <div className="w-10 h-10 border-4 border-accent border-t-transparent rounded-full animate-spin" />
