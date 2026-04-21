@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios';
-import { Application, ApplicationStatus, Note, ApiResponse, PageResponse } from '../types';
+import { Application, ApplicationStatus, Note, ApiResponse, PageResponse, Contact, User } from '../types';
 import toast from 'react-hot-toast';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
