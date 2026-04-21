@@ -51,7 +51,7 @@ export default function InterviewsHub() {
 
   return (
     <div className="flex-1 flex flex-col h-full bg-background">
-      <header className="h-[72px] border-b border-border/30 px-6 flex items-center justify-between shrink-0">
+      <header className="min-h-[72px] h-auto py-4 md:py-0 border-b border-border/30 px-6 flex flex-col sm:flex-row sm:items-center justify-between shrink-0 gap-4 sm:gap-0">
         <div className="flex items-center gap-3">
            <CalendarIcon className="w-6 h-6 text-accent" />
            <h1 className="text-xl font-bold text-foreground">Interview Hub</h1>

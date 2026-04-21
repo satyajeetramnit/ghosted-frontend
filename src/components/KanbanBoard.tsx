@@ -114,7 +114,7 @@ export default function KanbanBoard() {
   return (
     <div className="flex-1 flex flex-col h-full bg-background">
       {/* Top Bar */}
-      <header className="h-[72px] border-b border-border/30 px-6 flex flex-col md:flex-row md:items-center justify-between shrink-0 gap-4 md:gap-0">
+      <header className="min-h-[72px] h-auto py-4 md:py-0 border-b border-border/30 px-6 flex flex-col md:flex-row md:items-center justify-between shrink-0 gap-4 md:gap-0">
         <div className="text-sm font-medium text-foreground/60 flex flex-wrap items-center gap-4">
           <span>Applied: <span className="text-foreground">{applied}</span></span>
           <span className="w-1 h-1 rounded-full bg-border hidden md:block"></span>
