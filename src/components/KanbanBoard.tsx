@@ -16,9 +16,32 @@ const COLUMNS: { id: ApplicationStatus; title: string; emptyMessage: string }[] 
   { id: 'REJECTED', title: 'Rejected', emptyMessage: 'Not meant to be. On to the next.' },
 ];
 
+import { useAuth } from '../context/AuthContext';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+
 export default function KanbanBoard() {
-  const { data: pageData, isLoading } = useApplications();
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  const { data: pageData, isLoading: isQueryLoading } = useApplications();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login');
+    }
+  }, [user, loading, router]);
+
+  if (loading || !user) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-background">
+        <div className="w-10 h-10 border-4 border-accent border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   const applications = pageData?.content || [];
+
   const { mutate: updateStatus } = useUpdateApplicationStatus();
   const { setIsAddModalOpen } = useApplicationStore();
 
