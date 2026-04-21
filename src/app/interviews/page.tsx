@@ -14,8 +14,17 @@ export default function InterviewsHub() {
   const { data: interviews = [], isLoading } = useAllInterviews();
   const { setSelectedApplication } = useApplicationStore();
 
-  const handleViewContext = (application: any) => {
-    setSelectedApplication(application);
+  const handleViewContext = (item: any) => {
+    // Pass minimal application data so the drawer has an ID to fetch with
+    // and basic info to show while the full refresh happens.
+    setSelectedApplication({
+      id: item.applicationId,
+      companyName: item.companyName || 'Loading...',
+      jobTitle: item.jobTitle || '',
+      status: 'INTERVIEW', // Placeholder status
+      appliedDate: new Date().toISOString(), // Fallback date if not fetched
+      interviews: []
+    } as any);
     router.push('/');
   };
 
@@ -27,9 +36,18 @@ export default function InterviewsHub() {
 
   if (isAuthLoading || !user) return null;
 
-  // Split into upcoming and past
-  const upcomingInterviews = interviews.filter(i => isFuture(new Date(i.scheduledAt)) || isToday(new Date(i.scheduledAt)));
-  const pastInterviews = interviews.filter(i => !isFuture(new Date(i.scheduledAt)) && !isToday(new Date(i.scheduledAt)));
+  // Split into upcoming and past - with null safety for scheduledAt
+  const upcomingInterviews = interviews.filter(i => {
+    if (!i.scheduledAt) return false;
+    const date = new Date(i.scheduledAt);
+    return isFuture(date) || isToday(date);
+  });
+
+  const pastInterviews = interviews.filter(i => {
+    if (!i.scheduledAt) return true;
+    const date = new Date(i.scheduledAt);
+    return !isFuture(date) && !isToday(date);
+  });
 
   return (
     <div className="flex-1 flex flex-col h-full bg-background">
@@ -84,14 +102,14 @@ export default function InterviewsHub() {
                          </h3>
                          <div className="flex items-center gap-2 text-sm text-foreground/50">
                             <Building2 className="w-3.5 h-3.5" />
-                            {item.application.companyName}
+                            {item.companyName}
                          </div>
-                         <p className="text-xs text-foreground/40 truncate italic">{item.application.jobTitle}</p>
+                         <p className="text-xs text-foreground/40 truncate italic">{item.jobTitle}</p>
                       </div>
 
                       <div className="mt-auto flex items-center justify-between pt-4 border-t border-border/30">
                          <button 
-                           onClick={() => handleViewContext(item.application)}
+                           onClick={() => handleViewContext(item)}
                            className="text-xs font-bold text-foreground/60 hover:text-foreground flex items-center gap-1.5 transition-colors"
                          >
                            View Context
@@ -131,12 +149,12 @@ export default function InterviewsHub() {
                                <CheckCircle2 className="w-5 h-5 text-green-500/50" />
                             </div>
                             <div className="text-left">
-                               <p className="text-sm font-bold text-foreground">{item.type.replace('_', ' ')} Round @ {item.application.companyName}</p>
+                               <p className="text-sm font-bold text-foreground">{item.type.replace('_', ' ')} Round @ {item.companyName}</p>
                                <p className="text-xs text-foreground/40">{format(new Date(item.scheduledAt), 'MMMM d, yyyy')}</p>
                             </div>
                          </div>
                          <button 
-                           onClick={() => handleViewContext(item.application)}
+                           onClick={() => handleViewContext(item)}
                            className="p-2 hover:bg-background rounded-lg text-foreground/40 hover:text-foreground transition-colors"
                          >
                             <ExternalLink className="w-4 h-4" />
