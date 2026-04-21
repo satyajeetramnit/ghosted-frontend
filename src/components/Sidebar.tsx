@@ -1,6 +1,6 @@
 'use client';
 
-import { LayoutDashboard, Users, StickyNote, Ghost, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, StickyNote, Ghost, LogOut, Calendar } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -23,6 +23,7 @@ export default function Sidebar() {
       <nav className="flex-1 space-y-2">
         <NavItem href="/" icon={<LayoutDashboard />} label="Dashboard" active={pathname === "/"} />
         <NavItem href="/contacts" icon={<Users />} label="Contacts" active={pathname === "/contacts"} />
+        <NavItem href="/interviews" icon={<Calendar />} label="Interviews" active={pathname === "/interviews"} />
         <NavItem href="/notes" icon={<StickyNote />} label="Notes" active={pathname === "/notes"} />
       </nav>
       

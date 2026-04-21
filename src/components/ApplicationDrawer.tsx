@@ -1,18 +1,21 @@
 "use client";
 
 import { useApplicationStore } from '../store/useApplicationStore';
-import { useUpdateApplicationStatus, useAddNote } from '../hooks/useApplications';
-import { X, Building2, UserCircle2, Calendar, FileText, Loader2, Mail, Tag } from 'lucide-react';
+import { useUpdateApplicationStatus, useAddNote, useUpdateOA, useAddInterview } from '../hooks/useApplications';
+import { X, Building2, UserCircle2, Calendar, FileText, Loader2, Mail, Tag, ClipboardList, Mic2, Plus, Clock, ExternalLink, CheckCircle2, Phone } from 'lucide-react';
 import { format } from 'date-fns';
-import { ApplicationStatus } from '../types';
+import { ApplicationStatus, InterviewType } from '../types';
 import { useState } from 'react';
 
 export default function ApplicationDrawer() {
   const { selectedApplication, setSelectedApplication } = useApplicationStore();
   const { mutate: updateStatus } = useUpdateApplicationStatus();
   const { mutate: addNote, isPending: isAddingNote } = useAddNote();
+  const { mutate: updateOA } = useUpdateOA();
+  const { mutate: addInterview } = useAddInterview();
 
   const [noteContent, setNoteContent] = useState('');
+  const [showAddInterview, setShowAddInterview] = useState(false);
 
   if (!selectedApplication) return null;
 
@@ -41,11 +44,11 @@ export default function ApplicationDrawer() {
       <div className="fixed top-0 right-0 h-full w-full sm:max-w-md bg-card border-l border-border shadow-2xl z-50 transform transition-transform animate-in slide-in-from-right duration-200 ease-out flex flex-col">
         <div className="flex items-center justify-between p-6 border-b border-border/30 shrink-0">
           <div>
-            <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+            <h2 className="text-xl font-bold text-foreground flex items-center gap-2 text-left">
               <Building2 className="w-5 h-5 text-accent" />
               {selectedApplication.companyName}
             </h2>
-            <p className="text-foreground/60 text-sm mt-1">{selectedApplication.jobTitle}</p>
+            <p className="text-foreground/60 text-sm mt-1 text-left">{selectedApplication.jobTitle}</p>
           </div>
           
           <button onClick={() => setSelectedApplication(null)} className="p-2 hover:bg-background rounded-lg text-foreground/50 hover:text-foreground transition-colors cursor-pointer">
@@ -71,6 +74,83 @@ export default function ApplicationDrawer() {
 
           <hr className="border-border/30" />
 
+          {/* Recruitment Funnel Section */}
+          <div className="space-y-6">
+            <h3 className="font-semibold text-foreground flex items-center gap-2">
+               <Tag className="w-4 h-4 text-accent" />
+               Recruitment Funnel
+            </h3>
+
+            {/* OA Section */}
+            <div className="bg-accent/5 rounded-2xl p-4 border border-accent/10 space-y-3">
+               <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-sm font-bold text-foreground">
+                    <ClipboardList className="w-4 h-4 text-accent" />
+                    Online Assessment
+                  </div>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-accent/20 text-accent uppercase">
+                    {selectedApplication.oa?.status || 'PENDING'}
+                  </span>
+               </div>
+               {selectedApplication.oa ? (
+                 <div className="text-xs text-foreground/60 space-y-1 pl-6">
+                    <p>Platform: <span className="text-foreground">{selectedApplication.oa.platform}</span></p>
+                    <p>Deadline: <span className="text-foreground">{selectedApplication.oa.deadline ? format(new Date(selectedApplication.oa.deadline), 'MMM d, p') : 'No deadline'}</span></p>
+                 </div>
+               ) : (
+                 <button className="w-full py-2 border border-dashed border-accent/20 rounded-xl text-xs text-accent/60 hover:bg-accent/5 transition-colors">
+                   + Setup OA Round
+                 </button>
+               )}
+            </div>
+
+            {/* Interviews Section */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between px-1">
+                <div className="flex items-center gap-2 text-sm font-bold text-foreground">
+                  <Mic2 className="w-4 h-4 text-accent" />
+                  Interview Rounds
+                </div>
+                <button 
+                  onClick={() => setShowAddInterview(true)}
+                  className="p-1 hover:bg-background rounded-md text-accent transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                {selectedApplication.interviews?.length > 0 ? (
+                  selectedApplication.interviews.map((round) => (
+                    <div key={round.id} className="bg-background border border-border/50 rounded-xl p-3 flex items-center justify-between group hover:border-accent/30 transition-all">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-card border border-border/30 flex items-center justify-center text-accent">
+                          <Clock className="w-4 h-4" />
+                        </div>
+                        <div className="text-left">
+                          <p className="text-xs font-bold text-foreground capitalize">{round.type.toLowerCase()} Round</p>
+                          <p className="text-[10px] text-foreground/50">{format(new Date(round.scheduledAt), 'MMM d, h:mm a')}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                         <span className="text-[9px] font-bold text-foreground/40">{round.status}</span>
+                         {round.meetingLink && (
+                           <a href={round.meetingLink} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-accent/10 rounded-md text-accent">
+                             <ExternalLink className="w-3 h-3" />
+                           </a>
+                         )}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-[11px] text-foreground/30 italic text-center py-2">No interview rounds scheduled yet.</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <hr className="border-border/30" />
+
           {/* Contact Section */}
           <div className="space-y-4">
             <h3 className="font-semibold text-foreground flex items-center gap-2">
@@ -88,12 +168,20 @@ export default function ApplicationDrawer() {
                       {contact.category}
                     </span>
                  </div>
-                 {contact.email && (
-                   <div className="flex items-center gap-2 text-sm text-foreground/60">
-                      <Mail className="w-3.5 h-3.5" />
-                      {contact.email}
-                   </div>
-                 )}
+                 <div className="flex flex-wrap gap-3">
+                    {contact.email && (
+                      <div className="flex items-center gap-2 text-xs text-foreground/60">
+                         <Mail className="w-3.5 h-3.5" />
+                         {contact.email}
+                      </div>
+                    )}
+                    {contact.phone && (
+                      <div className="flex items-center gap-2 text-xs text-foreground/60">
+                         <Phone className="w-3.5 h-3.5" />
+                         {contact.phone}
+                      </div>
+                    )}
+                 </div>
               </div>
             ) : (
               <p className="text-sm text-foreground/40 italic">No contact linked to this application.</p>

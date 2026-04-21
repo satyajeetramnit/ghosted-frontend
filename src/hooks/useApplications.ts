@@ -66,3 +66,46 @@ export const useAddNote = () => {
   });
 };
 
+export const useAddInterview = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ applicationId, data }: { applicationId: string; data: any }) => 
+      applicationService.addInterview(applicationId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['applications'] });
+      toast.success('Interview round added!');
+    },
+  });
+};
+
+export const useUpdateInterview = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ applicationId, interviewId, data }: { applicationId: string; interviewId: string; data: any }) => 
+      applicationService.updateInterview(applicationId, interviewId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['applications'] });
+      toast.success('Interview updated!');
+    },
+  });
+};
+
+export const useUpdateOA = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ applicationId, data }: { applicationId: string; data: any }) => 
+      applicationService.updateOA(applicationId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['applications'] });
+      toast.success('Assessment updated!');
+    },
+  });
+};
+
+export const useAllInterviews = () => {
+  return useQuery({
+    queryKey: ['all-interviews'],
+    queryFn: () => applicationService.fetchAllInterviews(),
+  });
+};
+

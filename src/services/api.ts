@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios';
-import { Application, ApplicationStatus, Note, ApiResponse, PageResponse, Contact, User } from '../types';
+import { Application, ApplicationStatus, Note, ApiResponse, PageResponse, Contact, User, ContactCategory, Interview, InterviewType } from '../types';
 import toast from 'react-hot-toast';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
@@ -54,8 +54,12 @@ export const contactService = {
     const response = await api.get<ApiResponse<PageResponse<Contact>>>(`/contacts?page=${page}&size=${size}`);
     return response.data.data;
   },
-  createContact: async (data: any): Promise<Contact> => {
+  createContact: async (data: { name: string; email?: string; phone?: string; linkedInUrl?: string; companyName?: string; category: ContactCategory }): Promise<Contact> => {
     const response = await api.post<ApiResponse<Contact>>('/contacts', data);
+    return response.data.data;
+  },
+  updateContact: async (id: string, data: Partial<Contact>): Promise<Contact> => {
+    const response = await api.put<ApiResponse<Contact>>(`/contacts/${id}`, data);
     return response.data.data;
   }
 };
@@ -113,6 +117,31 @@ export const applicationService = {
 
   addNote: async (id: string, content: string): Promise<Note> => {
     const response = await api.post<ApiResponse<Note>>(`/applications/${id}/notes`, { content });
+    return response.data.data;
+  },
+
+  // Interview Management
+  addInterview: async (applicationId: string, data: any): Promise<any> => {
+    const response = await api.post<ApiResponse<any>>(`/applications/${applicationId}/interviews`, data);
+    return response.data.data;
+  },
+  updateInterview: async (applicationId: string, interviewId: string, data: any): Promise<any> => {
+    const response = await api.put<ApiResponse<any>>(`/applications/${applicationId}/interviews/${interviewId}`, data);
+    return response.data.data;
+  },
+  deleteInterview: async (applicationId: string, interviewId: string): Promise<void> => {
+    await api.delete(`/applications/${applicationId}/interviews/${interviewId}`);
+  },
+
+  // OA Management
+  updateOA: async (applicationId: string, data: any): Promise<any> => {
+    const response = await api.put<ApiResponse<any>>(`/applications/${applicationId}/oa`, data);
+    return response.data.data;
+  },
+
+  // Central Hub
+  fetchAllInterviews: async (): Promise<(Interview & { application: Application })[]> => {
+    const response = await api.get<ApiResponse<(Interview & { application: Application })[]>>('/applications/interviews');
     return response.data.data;
   }
 };

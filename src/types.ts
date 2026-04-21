@@ -1,5 +1,8 @@
 export type ApplicationStatus = 'APPLIED' | 'SCREENING' | 'INTERVIEW' | 'OFFER' | 'REJECTED';
 export type ContactCategory = 'HR' | 'POI';
+export type InterviewType = 'TECHNICAL' | 'HR' | 'BEHAVIORAL' | 'SYSTEM_DESIGN' | 'MIXED';
+export type InterviewStatus = 'SCHEDULED' | 'COMPLETED' | 'CANCELLED' | 'PENDING_FEEDBACK';
+export type OAStatus = 'PENDING' | 'SUBMITTED' | 'EXPIRED' | 'PASSED' | 'FAILED';
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -27,8 +30,30 @@ export interface Contact {
   id: string;
   name: string;
   email?: string;
+  phone?: string;
+  linkedInUrl?: string;
   companyName?: string;
   category: ContactCategory;
+}
+
+export interface Interview {
+  id: string;
+  type: InterviewType;
+  scheduledAt: string;
+  status: InterviewStatus;
+  notes?: string;
+  meetingLink?: string;
+  applicationId?: string;
+  companyName?: string;
+  jobTitle?: string;
+}
+
+export interface OnlineAssessment {
+  id: string;
+  platform?: string; // HackerRank, CodeSignal, etc.
+  deadline?: string;
+  status: OAStatus;
+  notes?: string;
 }
 
 export interface Application {
@@ -38,11 +63,13 @@ export interface Application {
   jobUrl?: string;
   status: ApplicationStatus;
   contact?: Contact;
+  interviews: Interview[];
+  oa?: OnlineAssessment;
   // Enriched fields from backend for instant detail view
   contactId?: string;
   contactName?: string;
   contactEmail?: string;
-  contactCategory?: ContactCategory;
+  contactCategory?: string;
   appliedDate: string;
   followUpDate?: string;
 }
