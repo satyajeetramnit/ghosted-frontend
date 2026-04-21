@@ -87,7 +87,7 @@ export default function KanbanBoard() {
     updateStatus({ id: draggableId, status: newStatus });
   };
 
-  if (isLoading) {
+  if (isQueryLoading) {
     return (
       <div className="flex-1 flex flex-col h-full bg-background p-6">
         <div className="h-16 flex items-center justify-between mb-6">
