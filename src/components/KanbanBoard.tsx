@@ -23,8 +23,10 @@ import { useEffect } from 'react';
 export default function KanbanBoard() {
   const { user, isLoading: isAuthLoading } = useAuth();
   const router = useRouter();
-
   const { data: pageData, isLoading: isQueryLoading } = useApplications();
+  const { mutate: updateStatus } = useUpdateApplicationStatus();
+  const { setIsAddModalOpen } = useApplicationStore();
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     if (!isAuthLoading && !user) {
@@ -32,23 +34,9 @@ export default function KanbanBoard() {
     }
   }, [user, isAuthLoading, router]);
 
-  if (isAuthLoading || !user) {
-    return (
-      <div className="flex-1 flex items-center justify-center bg-background">
-        <div className="w-10 h-10 border-4 border-accent border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
   const applications = pageData?.content || [];
 
-  const { mutate: updateStatus } = useUpdateApplicationStatus();
-  const { setIsAddModalOpen } = useApplicationStore();
-
-  const [searchTerm, setSearchTerm] = useState('');
-
-  // 1. Filter applications locally based on search
-  // 2. Normalize and group data in one pass per render
+  // Group data in one pass per render
   const groupedApplications = useMemo(() => {
     const grouped: Record<ApplicationStatus, Application[]> = {
       APPLIED: [],
@@ -86,6 +74,14 @@ export default function KanbanBoard() {
     const newStatus = destination.droppableId as ApplicationStatus;
     updateStatus({ id: draggableId, status: newStatus });
   };
+
+  if (isAuthLoading || !user) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-background">
+        <div className="w-10 h-10 border-4 border-accent border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (isQueryLoading) {
     return (
