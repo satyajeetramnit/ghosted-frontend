@@ -1,7 +1,7 @@
 "use client";
 
 import { useApplicationStore } from '../store/useApplicationStore';
-import { useUpdateApplicationStatus, useAddNote, useUpdateOA, useAddInterview } from '../hooks/useApplications';
+import { useUpdateApplicationStatus, useAddNote, useUpdateOA, useAddInterview, useUpdateInterview } from '../hooks/useApplications';
 import { X, Building2, UserCircle2, Calendar, FileText, Loader2, Mail, Tag, ClipboardList, Mic2, Plus, Clock, ExternalLink, CheckCircle2, Phone } from 'lucide-react';
 import { format } from 'date-fns';
 import { ApplicationStatus, InterviewType } from '../types';
@@ -11,11 +11,17 @@ export default function ApplicationDrawer() {
   const { selectedApplication, setSelectedApplication } = useApplicationStore();
   const { mutate: updateStatus } = useUpdateApplicationStatus();
   const { mutate: addNote, isPending: isAddingNote } = useAddNote();
-  const { mutate: updateOA } = useUpdateOA();
-  const { mutate: addInterview } = useAddInterview();
+  const { mutate: updateOA, isPending: isUpdatingOA } = useUpdateOA();
+  const { mutate: updateInterview, isPending: isUpdatingInterview } = useUpdateInterview();
 
   const [noteContent, setNoteContent] = useState('');
   const [showAddInterview, setShowAddInterview] = useState(false);
+  
+  // Funnel Editing State
+  const [editingOA, setEditingOA] = useState(false);
+  const [oaNotes, setOANotes] = useState(selectedApplication?.oa?.notes || '');
+  const [editingInterviewId, setEditingInterviewId] = useState<string | null>(null);
+  const [roundNotes, setRoundNotes] = useState('');
 
   if (!selectedApplication) return null;
 
@@ -96,6 +102,46 @@ export default function ApplicationDrawer() {
                  <div className="text-xs text-foreground/60 space-y-1 pl-6">
                     <p>Platform: <span className="text-foreground">{selectedApplication.oa.platform}</span></p>
                     <p>Deadline: <span className="text-foreground">{selectedApplication.oa.deadline ? format(new Date(selectedApplication.oa.deadline), 'MMM d, p') : 'No deadline'}</span></p>
+                    
+                    <div className="mt-4 space-y-2">
+                       <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-foreground/40 uppercase tracking-tighter">Experience & Questions</span>
+                          {!editingOA && (
+                             <button 
+                               onClick={() => { setOANotes(selectedApplication.oa?.notes || ''); setEditingOA(true); }}
+                               className="text-accent hover:underline font-bold text-[10px]"
+                             >
+                                Edit
+                             </button>
+                          )}
+                       </div>
+                       
+                       {editingOA ? (
+                         <div className="space-y-2">
+                           <textarea
+                             value={oaNotes}
+                             onChange={(e) => setOANotes(e.target.value)}
+                             placeholder="What questions were asked? Any technical challenges?"
+                             className="w-full bg-background border border-border rounded-lg p-2 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-accent min-h-[80px]"
+                           />
+                           <div className="flex justify-end gap-2">
+                             <button onClick={() => setEditingOA(false)} className="px-2 py-1 text-[10px] font-bold text-foreground/50 hover:text-foreground">Cancel</button>
+                             <button 
+                               onClick={() => updateOA({ applicationId: selectedApplication.id, data: { ...selectedApplication.oa, notes: oaNotes } }, { onSuccess: () => setEditingOA(false) })}
+                               className="px-2 py-1 bg-accent text-white rounded text-[10px] font-bold flex items-center gap-1"
+                               disabled={isUpdatingOA}
+                             >
+                               {isUpdatingOA && <Loader2 className="w-2.5 h-2.5 animate-spin" />}
+                               Save
+                             </button>
+                           </div>
+                         </div>
+                       ) : (
+                         <p className="text-[11px] text-foreground/80 line-clamp-3 bg-background/30 p-2 rounded-lg border border-border/10">
+                           {selectedApplication.oa.notes || "No details added yet. Click edit to record questions or experience."}
+                         </p>
+                       )}
+                    </div>
                  </div>
                ) : (
                  <button className="w-full py-2 border border-dashed border-accent/20 rounded-xl text-xs text-accent/60 hover:bg-accent/5 transition-colors">
@@ -122,24 +168,70 @@ export default function ApplicationDrawer() {
               <div className="space-y-2">
                 {selectedApplication.interviews?.length > 0 ? (
                   selectedApplication.interviews.map((round) => (
-                    <div key={round.id} className="bg-background border border-border/50 rounded-xl p-3 flex items-center justify-between group hover:border-accent/30 transition-all">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-card border border-border/30 flex items-center justify-center text-accent">
-                          <Clock className="w-4 h-4" />
-                        </div>
-                        <div className="text-left">
-                          <p className="text-xs font-bold text-foreground capitalize">{round.type.toLowerCase()} Round</p>
-                          <p className="text-[10px] text-foreground/50">{format(new Date(round.scheduledAt), 'MMM d, h:mm a')}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                         <span className="text-[9px] font-bold text-foreground/40">{round.status}</span>
-                         {round.meetingLink && (
-                           <a href={round.meetingLink} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-accent/10 rounded-md text-accent">
-                             <ExternalLink className="w-3 h-3" />
-                           </a>
-                         )}
-                      </div>
+                    <div key={round.id} className="space-y-2">
+                       <div className="bg-background border border-border/50 rounded-xl p-3 flex items-center justify-between group hover:border-accent/30 transition-all">
+                         <div className="flex items-center gap-3">
+                           <div className="w-8 h-8 rounded-lg bg-card border border-border/30 flex items-center justify-center text-accent">
+                             <Clock className="w-4 h-4" />
+                           </div>
+                           <div className="text-left">
+                             <p className="text-xs font-bold text-foreground capitalize">{round.type.toLowerCase()} Round</p>
+                             <p className="text-[10px] text-foreground/50">{format(new Date(round.scheduledAt), 'MMM d, h:mm a')}</p>
+                           </div>
+                         </div>
+                         <div className="flex items-center gap-2">
+                            {!editingInterviewId && (
+                               <button 
+                                 onClick={() => { setEditingInterviewId(round.id); setRoundNotes(round.notes || ''); }}
+                                 className="text-[9px] font-bold text-accent opacity-0 group-hover:opacity-100 transition-opacity"
+                               >
+                                 Notes
+                               </button>
+                            )}
+                            <span className="text-[9px] font-bold text-foreground/40">{round.status}</span>
+                            {round.meetingLink && (
+                              <a href={round.meetingLink} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-accent/10 rounded-md text-accent">
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
+                            )}
+                         </div>
+                       </div>
+                       
+                       {(editingInterviewId === round.id || round.notes) && (
+                         <div className="pl-11 pr-2 pb-2">
+                            {editingInterviewId === round.id ? (
+                              <div className="space-y-2">
+                                <textarea
+                                  value={roundNotes}
+                                  onChange={(e) => setRoundNotes(e.target.value)}
+                                  placeholder="How did it go? What questions were asked?"
+                                  className="w-full bg-background border border-border rounded-lg p-2 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-accent min-h-[80px]"
+                                />
+                                <div className="flex justify-end gap-2">
+                                  <button onClick={() => setEditingInterviewId(null)} className="px-2 py-1 text-[10px] font-bold text-foreground/50 hover:text-foreground">Cancel</button>
+                                  <button 
+                                    onClick={() => updateInterview({ applicationId: selectedApplication.id, interviewId: round.id, data: { ...round, notes: roundNotes } }, { onSuccess: () => setEditingInterviewId(null) })}
+                                    className="px-2 py-1 bg-accent text-white rounded text-[10px] font-bold flex items-center gap-1"
+                                    disabled={isUpdatingInterview}
+                                  >
+                                    {isUpdatingInterview && <Loader2 className="w-2.5 h-2.5 animate-spin" />}
+                                    Save
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="bg-accent/5 p-3 rounded-lg border border-accent/10 relative group">
+                                 <p className="text-[10px] text-foreground/70 whitespace-pre-wrap">{round.notes}</p>
+                                 <button 
+                                   onClick={() => { setEditingInterviewId(round.id); setRoundNotes(round.notes || ''); }}
+                                   className="absolute top-2 right-2 text-accent text-[9px] font-bold opacity-0 group-hover:opacity-100"
+                                 >
+                                   Edit
+                                 </button>
+                              </div>
+                            )}
+                         </div>
+                       )}
                     </div>
                   ))
                 ) : (
