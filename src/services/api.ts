@@ -50,12 +50,12 @@ export const authService = {
 };
 
 export const contactService = {
-  fetchContacts: async (page = 0, size = 100) => {
-    const response = await api.get(`/contacts?page=${page}&size=${size}`);
+  fetchContacts: async (page = 0, size = 100): Promise<PageResponse<Contact>> => {
+    const response = await api.get<ApiResponse<PageResponse<Contact>>>(`/contacts?page=${page}&size=${size}`);
     return response.data.data;
   },
-  createContact: async (data: any) => {
-    const response = await api.post('/contacts', data);
+  createContact: async (data: any): Promise<Contact> => {
+    const response = await api.post<ApiResponse<Contact>>('/contacts', data);
     return response.data.data;
   }
 };

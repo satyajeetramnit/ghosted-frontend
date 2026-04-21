@@ -5,7 +5,7 @@ import { useContacts, useCreateContact } from '@/hooks/useContacts';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Plus, Search, UserPlus, Mail, Building2, Tag, X } from 'lucide-react';
-import { ContactCategory } from '@/types';
+import { Contact, ContactCategory } from '@/types';
 
 export default function ContactsPage() {
   const { user, isLoading: isAuthLoading } = useAuth();
@@ -30,8 +30,8 @@ export default function ContactsPage() {
 
   if (isAuthLoading || !user) return null;
 
-  const contacts = contactPage?.content || [];
-  const filteredContacts = contacts.filter(c => 
+  const contacts: Contact[] = contactPage?.content || [];
+  const filteredContacts = contacts.filter((c: Contact) => 
     c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     c.companyName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
