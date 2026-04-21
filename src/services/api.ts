@@ -49,22 +49,34 @@ export const authService = {
   }
 };
 
+// ─── Contact helpers ──────────────────────────────────────────────────────────
+
+// Backend returns { companies: [{id, name}] } — flatten to companyName for UI
+const mapContact = (contact: any): Contact => ({
+  ...contact,
+  companyName: contact.companies?.[0]?.name || undefined,
+});
+
 export const contactService = {
   fetchContacts: async (page = 0, size = 100): Promise<PageResponse<Contact>> => {
     const response = await api.get<ApiResponse<PageResponse<Contact>>>(`/contacts?page=${page}&size=${size}`);
-    return response.data.data;
+    const data = response.data.data;
+    data.content = data.content.map(mapContact);
+    return data;
   },
   createContact: async (data: { name: string; email?: string; phone?: string; linkedInUrl?: string; companyName?: string; category: ContactCategory }): Promise<Contact> => {
-    const response = await api.post<ApiResponse<Contact>>('/contacts', data);
-    return response.data.data;
+    const response = await api.post<ApiResponse<any>>('/contacts', data);
+    return mapContact(response.data.data);
   },
   updateContact: async (id: string, data: Partial<Contact>): Promise<Contact> => {
-    const response = await api.put<ApiResponse<Contact>>(`/contacts/${id}`, data);
-    return response.data.data;
+    const response = await api.put<ApiResponse<any>>(`/contacts/${id}`, data);
+    return mapContact(response.data.data);
   }
 };
 
-// Helper to map flat backend fields into the nested contact object for the UI
+// ─── Application helpers ──────────────────────────────────────────────────────
+
+// Backend returns flat contact fields — lift them into a nested contact object for UI
 const mapApplication = (app: any): Application => ({
   ...app,
   contact: app.contactName ? {
@@ -84,6 +96,11 @@ export const applicationService = {
     const data = response.data.data;
     data.content = data.content.map(mapApplication);
     return data;
+  },
+
+  getById: async (id: string): Promise<Application> => {
+    const response = await api.get<ApiResponse<any>>(`/applications/${id}`);
+    return mapApplication(response.data.data);
   },
 
   createApplication: async (data: { 
@@ -114,9 +131,14 @@ export const applicationService = {
     return mapApplication(response.data.data);
   },
 
-
+  // Notes
   addNote: async (id: string, content: string): Promise<Note> => {
     const response = await api.post<ApiResponse<Note>>(`/applications/${id}/notes`, { content });
+    return response.data.data;
+  },
+
+  fetchNotes: async (applicationId: string): Promise<Note[]> => {
+    const response = await api.get<ApiResponse<Note[]>>(`/applications/${applicationId}/notes`);
     return response.data.data;
   },
 
@@ -145,4 +167,3 @@ export const applicationService = {
     return response.data.data;
   }
 };
-

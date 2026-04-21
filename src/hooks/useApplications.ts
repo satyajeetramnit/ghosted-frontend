@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { applicationService } from '../services/api';
-import { Application, ApplicationStatus, PageResponse } from '../types';
+import { Application, ApplicationStatus, Note, PageResponse } from '../types';
 import toast from 'react-hot-toast';
 import { useApplicationStore } from '../store/useApplicationStore';
 
@@ -8,6 +8,14 @@ export const useApplications = (page = 0, size = 100) => {
   return useQuery({
     queryKey: ['applications', page, size],
     queryFn: () => applicationService.fetchApplications(page, size),
+  });
+};
+
+export const useApplicationById = (id: string | undefined) => {
+  return useQuery({
+    queryKey: ['application', id],
+    queryFn: () => applicationService.getById(id!),
+    enabled: !!id,
   });
 };
 
@@ -58,14 +66,29 @@ export const useCreateApplication = (page = 0, size = 100) => {
   });
 };
 
+// ─── Notes ────────────────────────────────────────────────────────────────────
+
+export const useNotes = (applicationId: string | undefined) => {
+  return useQuery<Note[]>({
+    queryKey: ['notes', applicationId],
+    queryFn: () => applicationService.fetchNotes(applicationId!),
+    enabled: !!applicationId,
+  });
+};
+
 export const useAddNote = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, content }: { id: string; content: string }) => applicationService.addNote(id, content),
-    onSuccess: () => {
-      toast.success('Note added successfully!');
+    onSuccess: (_, variables) => {
+      // Invalidate the notes list so it re-fetches and shows the new note
+      queryClient.invalidateQueries({ queryKey: ['notes', variables.id] });
+      toast.success('Note saved!');
     },
   });
 };
+
+// ─── Interviews ───────────────────────────────────────────────────────────────
 
 export const useAddInterview = () => {
   const queryClient = useQueryClient();
@@ -86,12 +109,29 @@ export const useUpdateInterview = () => {
   return useMutation({
     mutationFn: ({ applicationId, interviewId, data }: { applicationId: string; interviewId: string; data: any }) => 
       applicationService.updateInterview(applicationId, interviewId, data),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['applications'] });
+      queryClient.invalidateQueries({ queryKey: ['application', variables.applicationId] });
       toast.success('Interview updated!');
     },
   });
 };
+
+export const useDeleteInterview = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ applicationId, interviewId }: { applicationId: string; interviewId: string }) =>
+      applicationService.deleteInterview(applicationId, interviewId),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['applications'] });
+      queryClient.invalidateQueries({ queryKey: ['application', variables.applicationId] });
+      queryClient.invalidateQueries({ queryKey: ['all-interviews'] });
+      toast.success('Interview round removed.');
+    },
+  });
+};
+
+// ─── OA ───────────────────────────────────────────────────────────────────────
 
 export const useUpdateOA = () => {
   const queryClient = useQueryClient();
@@ -106,10 +146,11 @@ export const useUpdateOA = () => {
   });
 };
 
+// ─── Interview Hub ────────────────────────────────────────────────────────────
+
 export const useAllInterviews = () => {
   return useQuery({
     queryKey: ['all-interviews'],
     queryFn: () => applicationService.fetchAllInterviews(),
   });
 };
-
