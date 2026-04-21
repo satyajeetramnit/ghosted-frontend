@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from '@/context/AuthContext';
-import { useApplications, useAllInterviews } from '@/hooks/useApplications';
+import { useAllInterviews } from '@/hooks/useApplications';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { Calendar as CalendarIcon, Clock, Building2, ExternalLink, MapPin, Search, Filter, CheckCircle2 } from 'lucide-react';
@@ -13,6 +13,11 @@ export default function InterviewsHub() {
   const router = useRouter();
   const { data: interviews = [], isLoading } = useAllInterviews();
   const { setSelectedApplication } = useApplicationStore();
+
+  const handleViewContext = (application: any) => {
+    setSelectedApplication(application);
+    router.push('/');
+  };
 
   useEffect(() => {
     if (!isAuthLoading && !user) {
@@ -86,7 +91,7 @@ export default function InterviewsHub() {
 
                       <div className="mt-auto flex items-center justify-between pt-4 border-t border-border/30">
                          <button 
-                           onClick={() => setSelectedApplication(item.application)}
+                           onClick={() => handleViewContext(item.application)}
                            className="text-xs font-bold text-foreground/60 hover:text-foreground flex items-center gap-1.5 transition-colors"
                          >
                            View Context
@@ -131,7 +136,7 @@ export default function InterviewsHub() {
                             </div>
                          </div>
                          <button 
-                           onClick={() => setSelectedApplication(item.application)}
+                           onClick={() => handleViewContext(item.application)}
                            className="p-2 hover:bg-background rounded-lg text-foreground/40 hover:text-foreground transition-colors"
                          >
                             <ExternalLink className="w-4 h-4" />
