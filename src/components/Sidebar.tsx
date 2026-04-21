@@ -24,7 +24,6 @@ export default function Sidebar() {
         <NavItem href="/" icon={<LayoutDashboard />} label="Dashboard" active={pathname === "/"} />
         <NavItem href="/contacts" icon={<Users />} label="Contacts" active={pathname === "/contacts"} />
         <NavItem href="/interviews" icon={<Calendar />} label="Interviews" active={pathname === "/interviews"} />
-        <NavItem href="/notes" icon={<StickyNote />} label="Notes" active={pathname === "/notes"} />
       </nav>
       
       <div className="mt-auto pt-6 border-t border-border/30 space-y-4">

@@ -22,9 +22,11 @@ export default function AddInterviewRoundModal({ applicationId, onClose }: AddIn
     e.preventDefault();
     if (!scheduledAt) return;
     
+    const formattedDate = scheduledAt.length === 16 ? `${scheduledAt}:00` : scheduledAt;
+    
     addInterview({ 
       applicationId, 
-      data: { type, scheduledAt, meetingLink: meetingLink || undefined, status } 
+      data: { type, scheduledAt: formattedDate, meetingLink: meetingLink || undefined, status } 
     }, {
       onSuccess: () => onClose()
     });
