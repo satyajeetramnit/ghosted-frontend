@@ -15,7 +15,8 @@
   --status-screening: #3b82f6; /* Blue */
   --status-interview: #eab308; /* Yellow */
   --status-offer: #22c55e; /* Green */
-  --status-rejected: #ef4444; /* Red muted */
+  --status-rejected: #ef4444; /* Red */
+  --status-withdrawn: #475569; /* Slate - muted, neutral */
 }
 
 @theme inline {

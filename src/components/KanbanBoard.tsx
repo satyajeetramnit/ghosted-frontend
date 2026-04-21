@@ -14,6 +14,7 @@ const COLUMNS: { id: ApplicationStatus; title: string; emptyMessage: string }[] 
   { id: 'INTERVIEW', title: 'Interview', emptyMessage: 'Line up those interviews here.' },
   { id: 'OFFER', title: 'Offer', emptyMessage: 'Offers will land here 👀' },
   { id: 'REJECTED', title: 'Rejected', emptyMessage: 'Not meant to be. On to the next.' },
+  { id: 'WITHDRAWN', title: 'Withdrawn', emptyMessage: 'Applications you stepped back from.' },
 ];
 
 import { useAuth } from '../context/AuthContext';
@@ -44,6 +45,7 @@ export default function KanbanBoard() {
       INTERVIEW: [],
       OFFER: [],
       REJECTED: [],
+      WITHDRAWN: [],
     };
 
     applications.forEach((app) => {
