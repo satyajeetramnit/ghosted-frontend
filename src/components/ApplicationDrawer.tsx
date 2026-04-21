@@ -1,14 +1,28 @@
 "use client";
 
+import { useQuery } from '@tanstack/react-query';
+import { applicationService } from '../services/api';
+import { ApplicationStatus } from '../types';
+import toast from 'react-hot-toast';
 import { useApplicationStore } from '../store/useApplicationStore';
 import { useUpdateApplicationStatus, useAddNote, useUpdateOA, useAddInterview, useUpdateInterview } from '../hooks/useApplications';
 import { X, Building2, UserCircle2, Calendar, FileText, Loader2, Mail, Tag, ClipboardList, Mic2, Plus, Clock, ExternalLink, CheckCircle2, Phone } from 'lucide-react';
 import { format } from 'date-fns';
-import { ApplicationStatus, InterviewType } from '../types';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import SetupOAModal from './SetupOAModal';
+import AddInterviewRoundModal from './AddInterviewRoundModal';
 
 export default function ApplicationDrawer() {
-  const { selectedApplication, setSelectedApplication } = useApplicationStore();
+  const { selectedApplication: storeApp, setSelectedApplication } = useApplicationStore();
+  const selectedId = storeApp?.id;
+
+  // Dedicated query for the selected application to ensure absolute freshness
+  const { data: selectedApplication, isLoading: isRefetching } = useQuery({
+    queryKey: ['application', selectedId],
+    queryFn: () => selectedId ? applicationService.fetchApplications(0, 100).then(res => res.content.find(a => a.id === selectedId) || null) : null,
+    enabled: !!selectedId,
+  });
+
   const { mutate: updateStatus } = useUpdateApplicationStatus();
   const { mutate: addNote, isPending: isAddingNote } = useAddNote();
   const { mutate: updateOA, isPending: isUpdatingOA } = useUpdateOA();
@@ -16,12 +30,21 @@ export default function ApplicationDrawer() {
 
   const [noteContent, setNoteContent] = useState('');
   const [showAddInterview, setShowAddInterview] = useState(false);
+  const [showSetupOA, setShowSetupOA] = useState(false);
   
   // Funnel Editing State
   const [editingOA, setEditingOA] = useState(false);
   const [oaNotes, setOANotes] = useState(selectedApplication?.oa?.notes || '');
   const [editingInterviewId, setEditingInterviewId] = useState<string | null>(null);
   const [roundNotes, setRoundNotes] = useState('');
+
+  // Sync state if application changes
+  useEffect(() => {
+    setEditingOA(false);
+    setEditingInterviewId(null);
+    setShowSetupOA(false);
+    setShowAddInterview(false);
+  }, [selectedApplication?.id]);
 
   if (!selectedApplication) return null;
 
@@ -57,7 +80,10 @@ export default function ApplicationDrawer() {
             <p className="text-foreground/60 text-sm mt-1 text-left">{selectedApplication.jobTitle}</p>
           </div>
           
-          <button onClick={() => setSelectedApplication(null)} className="p-2 hover:bg-background rounded-lg text-foreground/50 hover:text-foreground transition-colors cursor-pointer">
+          <button 
+            onClick={(e) => { e.stopPropagation(); setSelectedApplication(null); }} 
+            className="p-2 hover:bg-background rounded-lg text-foreground/50 hover:text-foreground transition-colors cursor-pointer"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -88,7 +114,7 @@ export default function ApplicationDrawer() {
             </h3>
 
             {/* OA Section */}
-            <div className="bg-accent/5 rounded-2xl p-4 border border-accent/10 space-y-3">
+            <div className="bg-accent/5 rounded-2xl p-4 border border-accent/10 space-y-3 relative">
                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-sm font-bold text-foreground">
                     <ClipboardList className="w-4 h-4 text-accent" />
@@ -109,7 +135,7 @@ export default function ApplicationDrawer() {
                           {!editingOA && (
                              <button 
                                onClick={() => { setOANotes(selectedApplication.oa?.notes || ''); setEditingOA(true); }}
-                               className="text-accent hover:underline font-bold text-[10px]"
+                               className="text-accent hover:underline font-bold text-[10px] cursor-pointer"
                              >
                                 Edit
                              </button>
@@ -144,9 +170,18 @@ export default function ApplicationDrawer() {
                     </div>
                  </div>
                ) : (
-                 <button className="w-full py-2 border border-dashed border-accent/20 rounded-xl text-xs text-accent/60 hover:bg-accent/5 transition-colors">
+                 <button 
+                   onClick={() => setShowSetupOA(true)}
+                   className="w-full py-2 border border-dashed border-accent/20 rounded-xl text-xs text-accent/60 hover:bg-accent/5 transition-colors cursor-pointer"
+                 >
                    + Setup OA Round
                  </button>
+               )}
+               {showSetupOA && (
+                 <SetupOAModal 
+                   applicationId={selectedApplication.id} 
+                   onClose={() => setShowSetupOA(false)} 
+                 />
                )}
             </div>
 
@@ -159,11 +194,18 @@ export default function ApplicationDrawer() {
                 </div>
                 <button 
                   onClick={() => setShowAddInterview(true)}
-                  className="p-1 hover:bg-background rounded-md text-accent transition-colors"
+                  className="p-1 hover:bg-background rounded-md text-accent transition-colors cursor-pointer"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
+
+              {showAddInterview && (
+                <AddInterviewRoundModal 
+                  applicationId={selectedApplication.id} 
+                  onClose={() => setShowAddInterview(false)} 
+                />
+              )}
 
               <div className="space-y-2">
                 {selectedApplication.interviews?.length > 0 ? (

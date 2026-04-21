@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { applicationService } from '../services/api';
 import { Application, ApplicationStatus, PageResponse } from '../types';
 import toast from 'react-hot-toast';
+import { useApplicationStore } from '../store/useApplicationStore';
 
 export const useApplications = (page = 0, size = 100) => {
   return useQuery({
@@ -71,8 +72,10 @@ export const useAddInterview = () => {
   return useMutation({
     mutationFn: ({ applicationId, data }: { applicationId: string; data: any }) => 
       applicationService.addInterview(applicationId, data),
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['applications'] });
+      queryClient.invalidateQueries({ queryKey: ['application', variables.applicationId] });
+      queryClient.invalidateQueries({ queryKey: ['all-interviews'] });
       toast.success('Interview round added!');
     },
   });
@@ -95,8 +98,9 @@ export const useUpdateOA = () => {
   return useMutation({
     mutationFn: ({ applicationId, data }: { applicationId: string; data: any }) => 
       applicationService.updateOA(applicationId, data),
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['applications'] });
+      queryClient.invalidateQueries({ queryKey: ['application', variables.applicationId] });
       toast.success('Assessment updated!');
     },
   });

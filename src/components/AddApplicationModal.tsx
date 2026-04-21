@@ -26,10 +26,13 @@ export default function AddApplicationModal() {
   const [contactSearch, setContactSearch] = useState('');
 
   const contacts = useMemo(() => contactPage?.content || [], [contactPage]);
-  const filteredContacts = useMemo(() => 
-    contacts.filter(c => c.name.toLowerCase().includes(contactSearch.toLowerCase())),
-    [contacts, contactSearch]
-  );
+  const filteredContacts = useMemo(() => {
+    if (!contactSearch) return [];
+    return contacts.filter(c => 
+      c.name.toLowerCase().includes(contactSearch.toLowerCase()) ||
+      (c.companyName?.toLowerCase().includes(contactSearch.toLowerCase()))
+    );
+  }, [contacts, contactSearch]);
 
   if (!isAddModalOpen) return null;
 
@@ -55,8 +58,8 @@ export default function AddApplicationModal() {
 
     createApplication(payload, {
       onSuccess: () => {
-        setIsAddModalOpen(false);
         resetForm();
+        setIsAddModalOpen(false);
       }
     });
   };
