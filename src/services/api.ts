@@ -71,6 +71,9 @@ export const contactService = {
   updateContact: async (id: string, data: Partial<Contact>): Promise<Contact> => {
     const response = await api.put<ApiResponse<any>>(`/contacts/${id}`, data);
     return mapContact(response.data.data);
+  },
+  deleteContact: async (id: string): Promise<void> => {
+    await api.delete(`/contacts/${id}`);
   }
 };
 

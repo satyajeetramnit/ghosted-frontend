@@ -22,3 +22,29 @@ export const useCreateContact = (page = 0, size = 100) => {
     },
   });
 };
+
+export const useUpdateContact = (page = 0, size = 100) => {
+  const queryClient = useQueryClient();
+  const queryKey = ['contacts', page, size];
+
+  return useMutation<Contact, Error, { id: string; data: Partial<Contact> }>({
+    mutationFn: ({ id, data }) => contactService.updateContact(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey });
+      toast.success('Contact updated successfully!');
+    },
+  });
+};
+
+export const useDeleteContact = (page = 0, size = 100) => {
+  const queryClient = useQueryClient();
+  const queryKey = ['contacts', page, size];
+
+  return useMutation<void, Error, string>({
+    mutationFn: contactService.deleteContact,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey });
+      toast.success('Contact deleted successfully!');
+    },
+  });
+};

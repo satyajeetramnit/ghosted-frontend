@@ -1,10 +1,10 @@
 "use client";
 
 import { useAuth } from '@/context/AuthContext';
-import { useContacts, useCreateContact } from '@/hooks/useContacts';
+import { useContacts, useCreateContact, useUpdateContact, useDeleteContact } from '@/hooks/useContacts';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Plus, Search, UserPlus, Mail, Building2, Tag, X, Phone, Link, ExternalLink } from 'lucide-react';
+import { Plus, Search, UserPlus, Mail, Building2, Tag, X, Phone, Link, ExternalLink, Edit2, Trash2 } from 'lucide-react';
 import { Contact, ContactCategory } from '@/types';
 
 export default function ContactsPage() {
@@ -12,8 +12,11 @@ export default function ContactsPage() {
   const router = useRouter();
   const { data: contactPage, isLoading } = useContacts();
   const { mutate: createContact } = useCreateContact();
+  const { mutate: updateContact } = useUpdateContact();
+  const { mutate: deleteContact } = useDeleteContact();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingContact, setEditingContact] = useState<Contact | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
   // Form state
@@ -38,26 +41,54 @@ export default function ContactsPage() {
     c.companyName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const openAddModal = () => {
+    setEditingContact(null);
+    setName('');
+    setEmail('');
+    setPhone('');
+    setLinkedInUrl('');
+    setCompany('');
+    setCategory('HR');
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (contact: Contact) => {
+    setEditingContact(contact);
+    setName(contact.name);
+    setEmail(contact.email || '');
+    setPhone(contact.phone || '');
+    setLinkedInUrl(contact.linkedInUrl || '');
+    setCompany(contact.companyName || '');
+    setCategory(contact.category || 'HR');
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = (id: string) => {
+    if (confirm('Are you sure you want to delete this contact?')) {
+      deleteContact(id);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    createContact({ 
+    const payload = { 
       name, 
       email: email || undefined, 
       phone: phone || undefined,
       linkedInUrl: linkedInUrl || undefined,
       companyName: company || undefined, 
       category 
-    }, {
-      onSuccess: () => {
-        setIsModalOpen(false);
-        setName('');
-        setEmail('');
-        setPhone('');
-        setLinkedInUrl('');
-        setCompany('');
-        setCategory('HR');
-      }
-    });
+    };
+
+    if (editingContact) {
+      updateContact({ id: editingContact.id, data: payload }, {
+        onSuccess: () => setIsModalOpen(false)
+      });
+    } else {
+      createContact(payload, {
+        onSuccess: () => setIsModalOpen(false)
+      });
+    }
   };
 
   return (
@@ -78,7 +109,7 @@ export default function ContactsPage() {
           </div>
           
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={openAddModal}
             className="flex items-center gap-2 bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           >
             <Plus className="w-4 h-4" />
@@ -166,9 +197,20 @@ export default function ContactsPage() {
                 </div>
 
                 {/* Actions */}
-                <div className="col-span-2 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button className="p-2 text-foreground/40 hover:text-foreground">
-                    <ExternalLink className="w-4 h-4" />
+                <div className="col-span-2 flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button 
+                    onClick={() => openEditModal(contact)}
+                    className="p-2 text-foreground/40 hover:text-accent transition-colors rounded-lg hover:bg-background"
+                    title="Edit Contact"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  <button 
+                    onClick={() => handleDelete(contact.id)}
+                    className="p-2 text-foreground/40 hover:text-red-400 transition-colors rounded-lg hover:bg-background"
+                    title="Delete Contact"
+                  >
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -183,7 +225,7 @@ export default function ContactsPage() {
           <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
           <div className="bg-card w-full max-w-md rounded-2xl border border-border shadow-2xl overflow-hidden relative animate-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between p-6 border-b border-border/30">
-              <h2 className="text-xl font-bold text-foreground">New Contact</h2>
+              <h2 className="text-xl font-bold text-foreground">{editingContact ? 'Edit Contact' : 'New Contact'}</h2>
               <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-background rounded-lg text-foreground/50 hover:text-foreground transition-colors">
                 <X className="w-5 h-5" />
               </button>
@@ -227,7 +269,7 @@ export default function ContactsPage() {
 
               <div className="pt-4 flex justify-end gap-3">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-5 py-2.5 rounded-xl font-medium text-foreground hover:bg-background transition-colors">Cancel</button>
-                <button type="submit" className="bg-accent hover:bg-accent/90 text-white px-5 py-2.5 rounded-xl font-medium transition-colors">Create Contact</button>
+                <button type="submit" className="bg-accent hover:bg-accent/90 text-white px-5 py-2.5 rounded-xl font-medium transition-colors">{editingContact ? 'Save Changes' : 'Create Contact'}</button>
               </div>
             </form>
           </div>
