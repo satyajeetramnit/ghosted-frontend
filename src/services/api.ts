@@ -54,7 +54,7 @@ export const authService = {
 // Backend returns { companies: [{id, name}] } — flatten to companyName for UI
 const mapContact = (contact: any): Contact => ({
   ...contact,
-  companyName: contact.companies?.[0]?.name || undefined,
+  companyName: contact.companies?.[0]?.name || contact.companyName || undefined,
 });
 
 export const contactService = {

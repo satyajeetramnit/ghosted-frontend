@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const port = 8081;
+const port = 8080;
 
 app.use(cors());
 app.use(express.json());
@@ -30,6 +30,21 @@ let contacts = [
     linkedInUrl: "https://linkedin.com/in/john",
     companyName: "Google",
     category: "HR"
+  },
+  {
+    id: "c2",
+    name: "Jane Doe",
+    email: "joh@gmail.vom",
+    phone: "0987654321",
+    linkedInUrl: "https://linkedin.com/in/jane",
+    category: "HR"
+  },
+  {
+    id: "c3",
+    name: "John Doe",
+    phone: "0987654321",
+    companyName: "Microsoft",
+    category: "HR"
   }
 ];
 
@@ -49,6 +64,28 @@ app.post('/api/contacts', (req, res) => {
   const newContact = { id: "c" + (contacts.length + 1), ...req.body };
   contacts.push(newContact);
   res.json({ success: true, data: newContact });
+});
+
+app.put('/api/contacts/:id', (req, res) => {
+  const { id } = req.params;
+  const index = contacts.findIndex(c => c.id === id);
+  if (index !== -1) {
+    contacts[index] = { ...contacts[index], ...req.body };
+    res.json({ success: true, data: contacts[index] });
+  } else {
+    res.status(404).json({ success: false, message: 'Contact not found' });
+  }
+});
+
+app.delete('/api/contacts/:id', (req, res) => {
+  const { id } = req.params;
+  const index = contacts.findIndex(c => c.id === id);
+  if (index !== -1) {
+    contacts.splice(index, 1);
+    res.json({ success: true, message: 'Contact deleted' });
+  } else {
+    res.status(404).json({ success: false, message: 'Contact not found' });
+  }
 });
 
 const getPopulatedApp = (app) => {
