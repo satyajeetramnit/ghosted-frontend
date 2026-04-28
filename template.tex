@@ -1,0 +1,128 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Modern One-Page Resume
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[a4paper,10pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{fontawesome5}
+\usepackage{enumitem}
+
+\geometry{a4paper, top=0.5in, bottom=0.5in, left=0.6in, right=0.6in}
+\setlist[itemize]{noitemsep, topsep=0.2ex, leftmargin=1.5em}
+
+\hypersetup{
+    colorlinks=true,
+    urlcolor=blue,
+    linkcolor=blue,
+    pdfborder={0 0 0},
+}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+
+\titleformat{\section}
+  {\bfseries\scshape\large}
+  {}
+  {0em}
+  {}[\titlerule]
+\titlespacing*{\section}{0pt}{1.5ex}{1.2ex}
+
+\begin{document}
+
+\begin{center}
+    \textbf{\Huge{Satyajeet Ramnit}}
+    \vspace{0.12in}
+    
+    \small Bengaluru, India 
+    \quad \textbar \quad
+    \href{tel:+918210386150}{+918210386150} 
+    \quad \textbar \quad
+    \href{mailto:satyajeetramnit@gmail.com}{ satyajeetramnit@gmail.com} 
+    \quad \textbar \quad
+    \href{https://linkedin.com/in/satyajeetramnit/}{Linkedin} 
+    \quad \textbar \quad
+    \href{https://github.com/satyajeetramnit}{Github}
+\end{center}
+
+\vspace{0.1in}
+
+%----------------------------------------------------------------------------------------
+\section*{PROFESSIONAL SUMMARY}
+%generate a 3-4 line professional summary accroding to JD and default summary will be given by user they configure that in profile section
+
+\vspace{0.1in}
+%----------------------------------------------------------------------------------------
+\section*{TECHNICAL SKILLS}
+\begin{itemize}
+    \item[\textbullet] \textbf{Languages}: \hspace{0.51in} Java (8-21), Python, SQL
+    \item[\textbullet] \textbf{Backend}: \hspace{0.64in} Spring Boot, Dropwizard, REST APIs, Microservices
+    \item[\textbullet] \textbf{Data \& Messaging}: PostgreSQL, VerticaDB, Redis, Kafka, RabbitMQ
+    \item[\textbullet] \textbf{Cloud \& DevOps}: \hspace{0.05in} Kubernetes, Docker, AWS, Jenkins, CI/CD
+    \item[\textbullet] \textbf{Concepts}: \hspace{0.6in} Microservices, Distributed Systems, Event-Driven Architecture, System Design
+    % techical skills will be generated according to JD 
+\end{itemize}
+
+\vspace{0.1in}
+%----------------------------------------------------------------------------------------
+\section*{PROFESSIONAL EXPERIENCE}
+
+\textbf{OpenText} \hfill \textbf{Bangalore, India} \\
+\textbf{SDE - II} \hfill (Nov. 2025 – Mar. 2026)
+\begin{itemize}
+    \item Owned and executed a platform-wide upgrade to Java 21 across core microservices, enabling modern JVM features, upgrading build systems (Gradle 8+), improving performance, and modernizing APIs.
+    \item Architected a FIPS 140-3 compliant cryptographic layer using BouncyCastle; replaced legacy OpenSSL with a Pure Java model, reducing container CVE exposure by 60\% and enforcing strict TLS 1.3 protocols.
+    \item Engineered a tenant-aware control plane for SaaS (AWS EKS, GCP) and on-prem deployments, automating secure isolation, dynamic configuration, and auto-provisioning for enterprise tenants.
+    % add or remove or alter points according to JD 
+\end{itemize}
+
+\vspace{0.05in}
+\textbf{GE Healthcare} \hfill \textbf{Bengaluru, India} \\
+\textbf{SDE - I} \hfill (Sep. 2023 – Nov. 2025)
+\begin{itemize}
+    \item Modernized orchestration by migrating from Ansible to Kubernetes, reducing deployment downtime by 40\% while improving system elasticity and capacity.
+    \item Architected robust CI/CD pipelines using Jenkins and Docker, achieving a 46\% reduction in build-to-deploy times.
+    \item Engineered a self-healing health check service in Java; implemented anomaly detection in data flow that automatically restarts failed deployments, cutting issue resolution time by 30\%.
+    \item Optimized concurrent Java applications, scaling transaction throughput by over 40 TPS and implementing asynchronous query strategies to minimize database retrieval latency.
+    % add or remove or alter points according to JD 
+\end{itemize}
+
+\vspace{0.05in}
+\textbf{SDE - Intern} \hfill (Oct. 2022 – Jun. 2023)
+\begin{itemize}
+    \item Engineered an automated CI/CD deployment pipeline (Docker, Gradle, Jenkins), slashing debugging resolution time by 132x (from 33 hours to 15 minutes).
+    \item Built an internal analytics tool for rapid issue identification, enabling statistical insights independent of prior platform knowledge.
+\end{itemize}
+
+\vspace{0.1in}
+%----------------------------------------------------------------------------------------
+\section*{PROJECTS}
+\textbf{\href{https://github.com/satyajeetramnit/sail-rcil}{SAIL RCIL: Persistent AI Memory Layer}}
+\begin{itemize} 
+    \item Developed a Python/FastAPI backend that eliminates redundant repository indexing by providing a persistent architectural memory for AI coding assistants.
+    \item Engineered a context orchestrator using Neo4j (Graph), Qdrant (Vector), and Redis to deliver token-optimized, architecture-aware payloads with sub-200ms latency.
+    \item Designed an event-driven evolution pipeline using tree-sitter for real-time drift detection and CI-enforced policy compliance.
+    % add or remove or alter points according to JD 
+
+\end{itemize}
+
+\vspace{0.05in}
+\textbf{\href{https://codedynamics.vercel.app/}{Code Dynamics: Scalable DSA Learning Platform}}
+\begin{itemize}
+    \item Architected a high-traffic platform using \textbf{Next.js and TypeScript}, serving 30k+ multi-language DSA solutions.
+    \item Integrated \textbf{Strapi CMS and Cloudinary} via SSG (Static Site Generation) to ensure blazing-fast performance and SEO.
+    % add or remove or alter points according to JD 
+
+\end{itemize}
+
+\vspace{0.1in}
+%----------------------------------------------------------------------------------------
+\section*{EDUCATION}
+\textbf{Kalinga Institute of Industrial Technology}, India \hfill \textit{(2019 – 2023)} \\
+\textit{B.Tech in Information Technology \hfill CGPA: 8.98}
+
+
+\end{document}

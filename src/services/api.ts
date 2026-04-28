@@ -77,17 +77,41 @@ export const contactService = {
   }
 };
 
+// ─── Date helpers ────────────────────────────────────────────────────────────
+
+/**
+ * Append 'Z' to LocalDateTime strings from the backend (e.g. "2026-04-28T09:00:00")
+ * so JS treats them as UTC instead of local time.
+ */
+export function normalizeBackendDate(s: string | undefined | null): string {
+  if (!s) return s as string;
+  // Already has timezone info
+  if (s.endsWith('Z') || s.includes('+') || /[-+]\d{2}:\d{2}$/.test(s)) return s;
+  // datetime string without timezone
+  if (s.includes('T')) return s + 'Z';
+  return s;
+}
+
+/**
+ * Parse a "YYYY-MM-DD" date string as local midnight.
+ * Using new Date("YYYY-MM-DD") parses as UTC midnight, causing off-by-one-day
+ * errors in non-UTC timezones. This avoids that.
+ */
+export function parseLocalDate(s: string): Date {
+  const [y, m, d] = s.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
 // ─── Application helpers ──────────────────────────────────────────────────────
 
-// Backend returns flat contact fields — lift them into a nested contact object for UI
 const mapApplication = (app: any): Application => ({
   ...app,
-  contact: app.contactName ? {
-    id: app.contactId || '',
-    name: app.contactName,
-    email: app.contactEmail,
-    category: (app.contactCategory as any) || 'HR'
-  } : undefined
+  contacts: Array.isArray(app.contacts)
+    ? app.contacts
+    : app.contactName
+      ? [{ id: app.contactId || '', name: app.contactName, email: app.contactEmail, category: (app.contactCategory as any) || 'HR' }]
+      : [],
+  appliedDate: app.appliedDate || new Date().toISOString().slice(0, 10),
 });
 
 export const applicationService = {
@@ -110,14 +134,16 @@ export const applicationService = {
     companyName: string; 
     jobTitle: string; 
     contactName?: string; 
-    contactId?: string;
-    status: ApplicationStatus 
+    contactIds?: string[];
+    appliedDate?: string;
+    status: ApplicationStatus;
   }): Promise<Application> => {
-    const payload = {
+    const payload: any = {
       companyName: data.companyName,
       jobTitle: data.jobTitle,
       contactName: data.contactName,
-      contactId: data.contactId,
+      contactIds: data.contactIds,
+      appliedDate: data.appliedDate,
     };
     const response = await api.post<ApiResponse<any>>('/applications', payload);
     let app = response.data.data;
@@ -127,6 +153,16 @@ export const applicationService = {
     }
     
     return mapApplication(app);
+  },
+
+  updateAppliedDate: async (id: string, appliedDate: string): Promise<Application> => {
+    const response = await api.put<ApiResponse<any>>(`/applications/${id}/applied-date`, { appliedDate });
+    return mapApplication(response.data.data);
+  },
+
+  updateContacts: async (id: string, contactIds: string[]): Promise<Application> => {
+    const response = await api.put<ApiResponse<any>>(`/applications/${id}/contacts`, { contactIds });
+    return mapApplication(response.data.data);
   },
 
   updateStatus: async (id: string, status: ApplicationStatus): Promise<Application> => {
@@ -168,5 +204,9 @@ export const applicationService = {
   fetchAllInterviews: async (): Promise<(Interview & { application: Application })[]> => {
     const response = await api.get<ApiResponse<(Interview & { application: Application })[]>>('/applications/interviews');
     return response.data.data;
-  }
+  },
+
+  deleteApplication: async (id: string): Promise<void> => {
+    await api.delete(`/applications/${id}`);
+  },
 };

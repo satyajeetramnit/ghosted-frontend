@@ -3,7 +3,8 @@ import { Draggable } from '@hello-pangea/dnd';
 import { Application } from '../types';
 import { useApplicationStore } from '../store/useApplicationStore';
 import { Building2, UserCircle2, Clock, Ghost } from 'lucide-react';
-import { formatDistanceToNow, differenceInDays } from 'date-fns';
+import { formatDistanceToNow, differenceInCalendarDays } from 'date-fns';
+import { parseLocalDate } from '../services/api';
 
 interface CardProps {
   application: Application;
@@ -13,7 +14,9 @@ interface CardProps {
 function CardComponent({ application, index }: CardProps) {
   const { setSelectedApplication } = useApplicationStore();
 
-  const daysSinceApplied = differenceInDays(new Date(), new Date(application.appliedDate));
+  // Parse as local midnight so formatDistanceToNow is not skewed by UTC offset
+  const appliedLocal = parseLocalDate(application.appliedDate);
+  const daysSinceApplied = differenceInCalendarDays(new Date(), appliedLocal);
   const isGhosted = daysSinceApplied > 7;
 
   return (
@@ -55,12 +58,12 @@ function CardComponent({ application, index }: CardProps) {
           <div className="flex items-center justify-between text-xs text-foreground/50 mt-4 pt-3 border-t border-border/30">
             <div className="flex items-center gap-1.5">
               <UserCircle2 className="w-3.5 h-3.5" />
-              <span className="truncate max-w-[80px]">{application.contactName || 'No contact'}</span>
+              <span className="truncate max-w-[80px]">{application.contacts[0]?.name ?? 'No contact'}</span>
             </div>
             
             <div className="flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5" />
-              <span>{formatDistanceToNow(new Date(application.appliedDate), { addSuffix: true }).replace('about ', '')}</span>
+              <span>{formatDistanceToNow(appliedLocal, { addSuffix: true }).replace('about ', '')}</span>
             </div>
           </div>
         </div>

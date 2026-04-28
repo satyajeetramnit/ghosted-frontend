@@ -1,13 +1,14 @@
 "use client";
 
-import { applicationService } from '../services/api';
 import { ApplicationStatus, Note } from '../types';
-import toast from 'react-hot-toast';
 import { useApplicationStore } from '../store/useApplicationStore';
-import { useUpdateApplicationStatus, useAddNote, useUpdateOA, useAddInterview, useUpdateInterview, useDeleteInterview, useApplicationById, useNotes } from '../hooks/useApplications';
-import { X, Building2, UserCircle2, Calendar, FileText, Loader2, Mail, Tag, ClipboardList, Mic2, Plus, Clock, ExternalLink, CheckCircle2, Phone, Trash2, Link as LinkIcon, Bell } from 'lucide-react';
+import { useResumeStore } from '../store/useResumeStore';
+import { useUpdateApplicationStatus, useAddNote, useUpdateOA, useUpdateInterview, useDeleteInterview, useApplicationById, useNotes, useUpdateAppliedDate, useUpdateContacts, useDeleteApplication } from '../hooks/useApplications';
+import { useContacts } from '../hooks/useContacts';
+import { X, Building2, UserCircle2, Calendar, FileText, Loader2, Mail, Tag, ClipboardList, Mic2, Plus, Clock, ExternalLink, Phone, Trash2, Link as LinkIcon, Bell, Globe, Pencil, Search, BookOpen, ChevronDown } from 'lucide-react';
 import { format, formatDistanceToNow } from 'date-fns';
-import { useState, useEffect } from 'react';
+import { parseLocalDate } from '../services/api';
+import { useState, useEffect, useMemo } from 'react';
 import SetupOAModal from './SetupOAModal';
 import AddInterviewRoundModal from './AddInterviewRoundModal';
 
@@ -18,22 +19,48 @@ export default function ApplicationDrawer() {
   // Dedicated query for the selected application — always fresh data
   const { data: selectedApplication, isLoading: isRefetching } = useApplicationById(selectedId);
   const { data: notes = [], isLoading: isLoadingNotes } = useNotes(selectedId);
+  const { data: contactPage } = useContacts();
 
   const { mutate: updateStatus } = useUpdateApplicationStatus();
   const { mutate: addNote, isPending: isAddingNote } = useAddNote();
   const { mutate: updateOA, isPending: isUpdatingOA } = useUpdateOA();
   const { mutate: updateInterview, isPending: isUpdatingInterview } = useUpdateInterview();
   const { mutate: deleteInterview, isPending: isDeletingInterview } = useDeleteInterview();
+  const { mutate: updateAppliedDate, isPending: isSavingDate } = useUpdateAppliedDate();
+  const { mutate: updateContacts, isPending: isSavingContacts } = useUpdateContacts();
+  const { mutate: deleteApplication, isPending: isDeletingApplication } = useDeleteApplication();
+
+  const { savedResumes, updateResume } = useResumeStore();
+  const [showResumeDropdown, setShowResumeDropdown] = useState(false);
 
   const [noteContent, setNoteContent] = useState('');
   const [showAddInterview, setShowAddInterview] = useState(false);
   const [showSetupOA, setShowSetupOA] = useState(false);
-  
+
   // Funnel Editing State
   const [editingOA, setEditingOA] = useState(false);
   const [oaNotes, setOANotes] = useState('');
   const [editingInterviewId, setEditingInterviewId] = useState<string | null>(null);
   const [roundNotes, setRoundNotes] = useState('');
+
+  // Applied date editing
+  const [editingDate, setEditingDate] = useState(false);
+  const [dateValue, setDateValue] = useState('');
+
+  // Contacts editing
+  const [editingContacts, setEditingContacts] = useState(false);
+  const [pendingContactIds, setPendingContactIds] = useState<string[]>([]);
+  const [contactSearch, setContactSearch] = useState('');
+
+  const allContacts = useMemo(() => contactPage?.content || [], [contactPage]);
+  const pendingContacts = useMemo(() => allContacts.filter(c => pendingContactIds.includes(c.id)), [allContacts, pendingContactIds]);
+  const searchResults = useMemo(() => {
+    const q = contactSearch.toLowerCase();
+    if (!q) return [];
+    return allContacts.filter(c => !pendingContactIds.includes(c.id) && (
+      c.name.toLowerCase().includes(q) || c.companyName?.toLowerCase().includes(q)
+    )).slice(0, 6);
+  }, [allContacts, contactSearch, pendingContactIds]);
 
   // Sync state if application changes
   useEffect(() => {
@@ -43,6 +70,9 @@ export default function ApplicationDrawer() {
     setShowAddInterview(false);
     setNoteContent('');
     setOANotes('');
+    setEditingDate(false);
+    setEditingContacts(false);
+    setShowResumeDropdown(false);
   }, [selectedApplication?.id]);
 
   if (!storeApp) return null;
@@ -83,7 +113,33 @@ export default function ApplicationDrawer() {
     deleteInterview({ applicationId: app.id, interviewId });
   };
 
-  const contact = app.contact;
+  const handleSaveDate = () => {
+    if (!dateValue) return;
+    updateAppliedDate({ id: app.id, appliedDate: dateValue }, {
+      onSuccess: () => setEditingDate(false),
+    });
+  };
+
+  const handleSaveContacts = () => {
+    updateContacts({ id: app.id, contactIds: pendingContactIds }, {
+      onSuccess: () => setEditingContacts(false),
+    });
+  };
+
+  function startEditContacts() {
+    setPendingContactIds(app.contacts.map(c => c.id));
+    setContactSearch('');
+    setEditingContacts(true);
+  }
+
+  function handleDelete() {
+    if (!confirm(`Delete "${app.companyName} — ${app.jobTitle}"? This cannot be undone.`)) return;
+    deleteApplication(app.id, { onSuccess: () => setSelectedApplication(null) });
+  }
+
+  const linkedResume = savedResumes.find(r => r.applicationId === app.id);
+
+  const contacts = app.contacts ?? [];
 
   return (
     <>
@@ -112,12 +168,22 @@ export default function ApplicationDrawer() {
             )}
           </div>
           
-          <button 
-            onClick={(e) => { e.stopPropagation(); setSelectedApplication(null); }} 
-            className="p-2 hover:bg-background rounded-lg text-foreground/50 hover:text-foreground transition-colors cursor-pointer shrink-0"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-1 shrink-0">
+            <button
+              onClick={handleDelete}
+              disabled={isDeletingApplication}
+              title="Delete application"
+              className="p-2 hover:bg-red-500/10 rounded-lg text-foreground/30 hover:text-red-400 transition-colors"
+            >
+              {isDeletingApplication ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+            </button>
+            <button 
+              onClick={(e) => { e.stopPropagation(); setSelectedApplication(null); }} 
+              className="p-2 hover:bg-background rounded-lg text-foreground/50 hover:text-foreground transition-colors cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 space-y-8">
@@ -331,57 +397,224 @@ export default function ApplicationDrawer() {
           <div className="space-y-4">
             <h3 className="font-semibold text-foreground flex items-center gap-2">
                <UserCircle2 className="w-4 h-4 text-accent" />
-               Contact &amp; Dates
+               Contacts &amp; Dates
             </h3>
-            
-            {contact ? (
-              <div className="bg-background/50 rounded-2xl p-4 border border-border/50 space-y-3">
-                 <div className="flex items-center justify-between">
-                    <div className="font-bold text-foreground">{contact.name}</div>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                      contact.category === 'HR' ? 'bg-blue-400/10 text-blue-400 border-blue-400/20' : 'bg-purple-400/10 text-purple-400 border-purple-400/20'
-                    }`}>
-                      {contact.category}
-                    </span>
-                 </div>
-                 <div className="flex flex-wrap gap-3">
-                    {contact.email && (
-                      <div className="flex items-center gap-2 text-xs text-foreground/60">
-                         <Mail className="w-3.5 h-3.5" />
-                         {contact.email}
-                      </div>
-                    )}
-                    {contact.phone && (
-                      <div className="flex items-center gap-2 text-xs text-foreground/60">
-                         <Phone className="w-3.5 h-3.5" />
-                         {contact.phone}
-                      </div>
-                    )}
-                 </div>
-              </div>
-            ) : (
-              <p className="text-sm text-foreground/40 italic">No contact linked to this application.</p>
-            )}
 
-            <div className="grid grid-cols-2 gap-3">
-              <div className="flex items-center gap-3 text-sm bg-background/30 rounded-xl p-3 border border-border/20">
-                <Calendar className="w-4 h-4 text-foreground/40 shrink-0" />
-                <div>
-                  <div className="text-foreground/40 text-[10px] font-bold uppercase">Applied</div>
-                  <div className="text-foreground text-xs font-medium">{format(new Date(app.appliedDate), 'MMM d, yyyy')}</div>
-                </div>
+            {/* ── Contacts ── */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-foreground/40 uppercase tracking-wider">Contact Persons</span>
+                {!editingContacts && (
+                  <button onClick={startEditContacts} className="flex items-center gap-1 text-[10px] text-accent hover:underline font-bold">
+                    <Pencil className="w-3 h-3" /> Edit
+                  </button>
+                )}
               </div>
 
-              {app.followUpDate && (
-                <div className="flex items-center gap-3 text-sm bg-accent/5 rounded-xl p-3 border border-accent/10">
-                  <Bell className="w-4 h-4 text-accent shrink-0" />
-                  <div>
-                    <div className="text-accent/60 text-[10px] font-bold uppercase">Follow Up</div>
-                    <div className="text-foreground text-xs font-medium">{format(new Date(app.followUpDate), 'MMM d, yyyy')}</div>
+              {!editingContacts ? (
+                contacts.length > 0 ? (
+                  <div className="space-y-2">
+                    {contacts.map(c => (
+                      <div key={c.id} className="bg-background/50 rounded-xl p-3 border border-border/50 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="font-semibold text-foreground text-sm">{c.name}</div>
+                            {c.role && <div className="text-[10px] text-foreground/50">{c.role}</div>}
+                          </div>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                            c.category === 'HR'
+                              ? 'bg-blue-400/10 text-blue-400 border-blue-400/20'
+                              : c.category === 'POI'
+                              ? 'bg-purple-400/10 text-purple-400 border-purple-400/20'
+                              : 'bg-foreground/5 text-foreground/40 border-border/30'
+                          }`}>
+                            {c.category}
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap gap-x-4 gap-y-1.5">
+                          {c.email && (
+                            <a href={`mailto:${c.email}`} className="flex items-center gap-1.5 text-xs text-foreground/60 hover:text-accent transition-colors">
+                              <Mail className="w-3.5 h-3.5 shrink-0" />
+                              {c.email}
+                            </a>
+                          )}
+                          {c.phone && (
+                            <a href={`tel:${c.phone}`} className="flex items-center gap-1.5 text-xs text-foreground/60 hover:text-accent transition-colors">
+                              <Phone className="w-3.5 h-3.5 shrink-0" />
+                              {c.phone}
+                            </a>
+                          )}
+                          {c.linkedInUrl && (
+                            <a href={c.linkedInUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-xs text-foreground/60 hover:text-accent transition-colors">
+                              <Globe className="w-3.5 h-3.5 shrink-0" />
+                              LinkedIn
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <button onClick={startEditContacts} className="w-full py-3 border border-dashed border-border/40 rounded-xl text-xs text-foreground/30 hover:border-accent/30 hover:text-accent/60 transition-colors">
+                    + Add contact persons
+                  </button>
+                )
+              ) : (
+                /* Editing mode */
+                <div className="space-y-3 bg-background/40 rounded-xl p-3 border border-border/40">
+                  {/* Linked chips */}
+                  {pendingContacts.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {pendingContacts.map(c => (
+                        <div key={c.id} className="flex items-center gap-1.5 bg-accent/10 border border-accent/20 rounded-full px-2.5 py-1">
+                          <span className="text-xs font-medium text-accent">{c.name}</span>
+                          <button type="button" onClick={() => setPendingContactIds(ids => ids.filter(id => id !== c.id))} className="text-accent/50 hover:text-red-400">
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {/* Search */}
+                  <div className="relative">
+                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-foreground/40" />
+                    <input
+                      type="text"
+                      placeholder="Search contacts..."
+                      value={contactSearch}
+                      onChange={e => setContactSearch(e.target.value)}
+                      className="w-full bg-background border border-border rounded-lg pl-8 pr-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-accent/50"
+                    />
+                    {searchResults.length > 0 && (
+                      <div className="absolute top-full mt-1 w-full bg-card border border-border rounded-xl shadow-lg z-10 p-1 space-y-0.5 max-h-40 overflow-y-auto">
+                        {searchResults.map(c => (
+                          <button key={c.id} type="button"
+                            onClick={() => { setPendingContactIds(ids => [...ids, c.id]); setContactSearch(''); }}
+                            className="w-full text-left px-3 py-1.5 rounded-lg hover:bg-background text-xs text-foreground/70 hover:text-foreground transition-colors"
+                          >
+                            <span className="font-medium">{c.name}</span>
+                            {c.companyName && <span className="text-foreground/40"> · {c.companyName}</span>}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex justify-end gap-2 pt-1">
+                    <button type="button" onClick={() => setEditingContacts(false)} className="px-2 py-1 text-[10px] font-bold text-foreground/50 hover:text-foreground">Cancel</button>
+                    <button type="button" onClick={handleSaveContacts} disabled={isSavingContacts}
+                      className="px-3 py-1 bg-accent text-white rounded text-[10px] font-bold flex items-center gap-1 disabled:opacity-60"
+                    >
+                      {isSavingContacts && <Loader2 className="w-2.5 h-2.5 animate-spin" />}
+                      Save
+                    </button>
                   </div>
                 </div>
               )}
             </div>
+
+            {/* ── Applied Date ── */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-foreground/40 uppercase tracking-wider">Applied Date</span>
+                {!editingDate && (
+                  <button onClick={() => { setDateValue(app.appliedDate); setEditingDate(true); }} className="flex items-center gap-1 text-[10px] text-accent hover:underline font-bold">
+                    <Pencil className="w-3 h-3" /> Edit
+                  </button>
+                )}
+              </div>
+
+              {editingDate ? (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="date"
+                    value={dateValue}
+                    onChange={e => setDateValue(e.target.value)}
+                    className="flex-1 bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-accent/50"
+                  />
+                  <button onClick={() => setEditingDate(false)} className="text-[10px] font-bold text-foreground/50 hover:text-foreground px-2">Cancel</button>
+                  <button onClick={handleSaveDate} disabled={isSavingDate}
+                    className="px-3 py-1.5 bg-accent text-white rounded-lg text-[10px] font-bold flex items-center gap-1 disabled:opacity-60"
+                  >
+                    {isSavingDate && <Loader2 className="w-2.5 h-2.5 animate-spin" />}
+                    Save
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3 text-sm bg-background/30 rounded-xl p-3 border border-border/20">
+                  <Calendar className="w-4 h-4 text-foreground/40 shrink-0" />
+                  <div>
+                    <div className="text-foreground text-xs font-medium">{format(parseLocalDate(app.appliedDate), 'MMM d, yyyy')}</div>
+                    <div className="text-foreground/40 text-[10px]">{formatDistanceToNow(parseLocalDate(app.appliedDate), { addSuffix: true })}</div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {app.followUpDate && (
+              <div className="flex items-center gap-3 text-sm bg-accent/5 rounded-xl p-3 border border-accent/10">
+                <Bell className="w-4 h-4 text-accent shrink-0" />
+                <div>
+                  <div className="text-accent/60 text-[10px] font-bold uppercase">Follow Up</div>
+                  <div className="text-foreground text-xs font-medium">{format(parseLocalDate(app.followUpDate), 'MMM d, yyyy')}</div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <hr className="border-border/30" />
+
+          {/* Linked Resume */}
+          <div className="space-y-3">
+            <h3 className="font-semibold text-foreground flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-accent" />
+              Linked Resume
+            </h3>
+
+            {linkedResume ? (
+              <div className="bg-background/50 rounded-xl p-3 border border-border/50 flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-foreground truncate">{linkedResume.companyName} — {linkedResume.jobTitle}</p>
+                  <p className="text-[10px] text-foreground/40 mt-0.5">
+                    Updated {new Date(linkedResume.updatedAt).toLocaleDateString()}
+                  </p>
+                </div>
+                <button
+                  onClick={() => updateResume(linkedResume.id, { applicationId: undefined })}
+                  className="shrink-0 text-[10px] font-bold text-red-400/70 hover:text-red-400 px-2 py-1 hover:bg-red-500/10 rounded transition-colors"
+                >
+                  Unlink
+                </button>
+              </div>
+            ) : (
+              <div className="relative">
+                <button
+                  onClick={() => setShowResumeDropdown(v => !v)}
+                  className="w-full flex items-center justify-between px-3 py-2.5 bg-background border border-border rounded-xl text-sm text-foreground/50 hover:border-accent/40 hover:text-foreground transition-colors"
+                >
+                  <span className="flex items-center gap-2"><LinkIcon className="w-3.5 h-3.5" /> Link an existing resume</span>
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showResumeDropdown ? 'rotate-180' : ''}`} />
+                </button>
+                {showResumeDropdown && (
+                  <div className="absolute top-full mt-1 w-full bg-card border border-border rounded-xl shadow-xl z-10 p-1 max-h-48 overflow-y-auto">
+                    {savedResumes.length === 0 ? (
+                      <p className="text-xs text-foreground/30 text-center py-3">No saved resumes yet.</p>
+                    ) : (
+                      savedResumes.map(r => (
+                        <button
+                          key={r.id}
+                          type="button"
+                          onClick={() => { updateResume(r.id, { applicationId: app.id }); setShowResumeDropdown(false); }}
+                          className="w-full text-left px-3 py-2 rounded-lg hover:bg-background text-xs text-foreground/70 hover:text-foreground transition-colors"
+                        >
+                          <span className="font-medium">{r.companyName}</span>
+                          <span className="text-foreground/40"> — {r.jobTitle}</span>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <hr className="border-border/30" />

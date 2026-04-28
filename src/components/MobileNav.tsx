@@ -1,6 +1,6 @@
 'use client';
 
-import { LayoutDashboard, Users, Calendar, Ghost, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, Calendar, Ghost, LogOut, FileText } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -23,6 +23,7 @@ export default function MobileNav() {
          </div>
       </div>
       <NavItem href="/interviews" icon={<Calendar className="w-5 h-5" />} label="Interviews" active={pathname === "/interviews"} />
+      <NavItem href="/resume-builder" icon={<FileText className="w-5 h-5" />} label="Resume" active={pathname === "/resume-builder"} />
       <button 
         onClick={logout}
         className="flex flex-col items-center justify-center w-16 gap-1 text-foreground/50 hover:text-red-400 transition-colors"

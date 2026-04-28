@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { applicationService } from '../services/api';
 import { Application, ApplicationStatus, Note, PageResponse } from '../types';
 import toast from 'react-hot-toast';
-import { useApplicationStore } from '../store/useApplicationStore';
 
 export const useApplications = (page = 0, size = 100) => {
   return useQuery({
@@ -152,5 +151,49 @@ export const useAllInterviews = () => {
   return useQuery({
     queryKey: ['all-interviews'],
     queryFn: () => applicationService.fetchAllInterviews(),
+  });
+};
+
+// ─── Delete Application ────────────────────────────────────────────────────────────
+
+export const useDeleteApplication = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => applicationService.deleteApplication(id),
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: ['applications'] });
+      queryClient.removeQueries({ queryKey: ['application', id] });
+      toast.success('Application deleted.');
+    },
+  });
+};
+
+// ─── Applied Date ─────────────────────────────────────────────────────────────
+
+export const useUpdateAppliedDate = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, appliedDate }: { id: string; appliedDate: string }) =>
+      applicationService.updateAppliedDate(id, appliedDate),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['applications'] });
+      queryClient.invalidateQueries({ queryKey: ['application', variables.id] });
+      toast.success('Applied date updated!');
+    },
+  });
+};
+
+// ─── Contacts ─────────────────────────────────────────────────────────────────
+
+export const useUpdateContacts = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, contactIds }: { id: string; contactIds: string[] }) =>
+      applicationService.updateContacts(id, contactIds),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['applications'] });
+      queryClient.invalidateQueries({ queryKey: ['application', variables.id] });
+      toast.success('Contacts updated!');
+    },
   });
 };

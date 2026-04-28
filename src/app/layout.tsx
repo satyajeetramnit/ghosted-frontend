@@ -31,7 +31,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="h-full flex text-foreground bg-background overflow-hidden relative">
+      <body className="h-full flex text-foreground bg-background overflow-hidden relative" suppressHydrationWarning>
         <Providers>
           <Sidebar />
           <MobileNav />

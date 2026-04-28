@@ -1,6 +1,6 @@
 'use client';
 
-import { LayoutDashboard, Users, StickyNote, Ghost, LogOut, Calendar } from "lucide-react";
+import { LayoutDashboard, Users, StickyNote, Ghost, LogOut, Calendar, FileText } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -24,18 +24,22 @@ export default function Sidebar() {
         <NavItem href="/" icon={<LayoutDashboard />} label="Dashboard" active={pathname === "/"} />
         <NavItem href="/contacts" icon={<Users />} label="Contacts" active={pathname === "/contacts"} />
         <NavItem href="/interviews" icon={<Calendar />} label="Interviews" active={pathname === "/interviews"} />
+        <NavItem href="/resume-builder" icon={<FileText />} label="Resume Builder" active={pathname === "/resume-builder"} />
       </nav>
       
       <div className="mt-auto pt-6 border-t border-border/30 space-y-4">
-        <div className="flex items-center gap-3 text-sm text-foreground/70">
-          <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent font-medium">
+        <Link
+          href="/profile"
+          className="flex items-center gap-3 text-sm text-foreground/70 hover:text-foreground transition-colors group rounded-lg px-1 py-1"
+        >
+          <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent font-medium group-hover:bg-accent/30 transition-colors">
             {initials}
           </div>
           <div className="flex-1 min-w-0">
             <div className="font-medium text-foreground truncate">{user.firstName} {user.lastName}</div>
-            <div className="text-xs truncate text-foreground/50">{user.email}</div>
+            <div className="text-xs truncate text-foreground/50 group-hover:text-accent/60 transition-colors">Edit profile</div>
           </div>
-        </div>
+        </Link>
         
         <button 
           onClick={logout}

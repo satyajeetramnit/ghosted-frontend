@@ -1,5 +1,5 @@
 export type ApplicationStatus = 'APPLIED' | 'SCREENING' | 'INTERVIEW' | 'OFFER' | 'REJECTED' | 'WITHDRAWN';
-export type ContactCategory = 'HR' | 'POI';
+export type ContactCategory = 'HR' | 'POI' | 'OTHER';
 export type InterviewType = 'TECHNICAL' | 'HR' | 'BEHAVIORAL' | 'SYSTEM_DESIGN' | 'MIXED';
 export type InterviewStatus = 'SCHEDULED' | 'COMPLETED' | 'CANCELLED' | 'PENDING_FEEDBACK';
 export type OAStatus = 'PENDING' | 'SUBMITTED' | 'EXPIRED' | 'PASSED' | 'FAILED';
@@ -33,6 +33,7 @@ export interface Contact {
   phone?: string;
   linkedInUrl?: string;
   companyName?: string;
+  role?: string;
   category: ContactCategory;
 }
 
@@ -62,14 +63,9 @@ export interface Application {
   jobTitle: string;
   jobUrl?: string;
   status: ApplicationStatus;
-  contact?: Contact;
+  contacts: Contact[];
   interviews: Interview[];
   oa?: OnlineAssessment;
-  // Enriched fields from backend for instant detail view
-  contactId?: string;
-  contactName?: string;
-  contactEmail?: string;
-  contactCategory?: string;
   appliedDate: string;
   followUpDate?: string;
 }
