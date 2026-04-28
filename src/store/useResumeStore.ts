@@ -5,7 +5,7 @@ interface ResumeStoreState {
   savedResumes: SavedResume[];
   activeResumeId: string | null;
   addResume: (resume: Omit<SavedResume, 'id' | 'createdAt' | 'updatedAt'>) => string;
-  updateResume: (id: string, updates: Partial<Pick<SavedResume, 'resumeData' | 'latexCode' | 'companyName' | 'jobTitle'>>) => void;
+  updateResume: (id: string, updates: Partial<Pick<SavedResume, 'resumeData' | 'latexCode' | 'companyName' | 'jobTitle' | 'applicationId'>>) => void;
   deleteResume: (id: string) => void;
   setActiveResume: (id: string | null) => void;
   getResumeByApplication: (applicationId: string) => SavedResume | undefined;
