@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { Droppable } from '@hello-pangea/dnd';
 import { Application, ApplicationStatus } from '../types';
 import Card from './Card';
@@ -60,3 +61,5 @@ export default function Column({ id, title, applications, emptyMessage }: Column
     </div>
   );
 }
+
+export default React.memo(Column);
