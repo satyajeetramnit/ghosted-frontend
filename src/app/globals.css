@@ -1,22 +1,56 @@
 @import "tailwindcss";
 
-:root {
-  --background: #0B0F14;
-  --foreground: #e2e8f0;
-  
-  --card: #121821;
-  --card-foreground: #e2e8f0;
-  
-  --border: #1e293b;
-  --accent: #8b5cf6;
-  
-  /* Status Colors */
-  --status-applied: #64748b; /* Gray */
-  --status-screening: #3b82f6; /* Blue */
-  --status-interview: #eab308; /* Yellow */
-  --status-offer: #22c55e; /* Green */
-  --status-rejected: #ef4444; /* Red */
-  --status-withdrawn: #475569; /* Slate - muted, neutral */
+@layer base {
+  :root {
+    /* Sarvam Inspired Grayscale Palette - Light (Defaults) */
+    --background: #ffffff;
+    --foreground: #141414;
+    
+    --card: #fafafa;
+    --card-foreground: #333333;
+    
+    --border: #e5e7eb;
+    --border-muted: #f0f0f0;
+    
+    --accent: #000000;
+    --accent-foreground: #ffffff;
+    
+    --muted: #666666;
+    --muted-foreground: #999999;
+    
+    --surface: #f7f5f3;
+    
+    /* Innovation: Vibrant Gradients */
+    --grad-1: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    --grad-glow: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+
+    /* Status Colors */
+    --status-applied: #64748b;
+    --status-screening: #3b82f6;
+    --status-interview: #f59e0b;
+    --status-offer: #10b981;
+    --status-rejected: #ef4444;
+    --status-withdrawn: #94a3b8;
+  }
+
+  .dark {
+    --background: #0a0a0a;
+    --foreground: #fcfcfc;
+    
+    --card: #141414;
+    --card-foreground: #e6e6e6;
+    
+    --border: #262626;
+    --border-muted: #1a1a1a;
+    
+    --accent: #ffffff;
+    --accent-foreground: #000000;
+    
+    --muted: #a1a1aa;
+    --muted-foreground: #71717a;
+    
+    --surface: #121212;
+  }
 }
 
 @theme inline {
@@ -25,17 +59,68 @@
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-border: var(--border);
+  --color-border-muted: var(--border-muted);
   --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-surface: var(--surface);
+  
   --color-status-applied: var(--status-applied);
   --color-status-screening: var(--status-screening);
   --color-status-interview: var(--status-interview);
   --color-status-offer: var(--status-offer);
   --color-status-rejected: var(--status-rejected);
+  
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
 }
 
-body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
 }
 
+/* Custom Utilities for Innovation */
+.glass {
+  background: rgba(var(--background), 0.7);
+  backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid var(--border);
+}
+
+.gradient-text {
+  background: var(--grad-1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glow-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.glow-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: var(--grad-glow);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Transitions */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}

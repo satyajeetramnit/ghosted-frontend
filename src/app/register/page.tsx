@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import Link from 'next/link';
+import { Ghost, ArrowRight, Loader2, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -25,85 +27,109 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-950 p-4">
-      <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Create Account</h1>
-          <p className="text-zinc-400">Join Ghosted and track your job applications efficiently.</p>
+    <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
+      {/* Background Innovations */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-indigo-500/5 blur-[120px] rounded-full" />
+        <div className="absolute bottom-1/4 left-1/4 w-[500px] h-[500px] bg-purple-500/5 blur-[120px] rounded-full" />
+        <div className="absolute inset-0 opacity-[0.02] mix-blend-overlay" 
+             style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3%3Cfilter id='noiseFilter'%3%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3%3C/filter%3%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3%3C/svg%3")` }} 
+        />
+      </div>
+
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-[480px] relative z-10 p-8"
+      >
+        <div className="flex flex-col items-center mb-10">
+          <div className="w-16 h-16 rounded-[2rem] bg-foreground text-background flex items-center justify-center mb-8 shadow-2xl relative overflow-hidden group">
+            <Ghost className="w-8 h-8 relative z-10" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
+          <h1 className="text-4xl font-bold tracking-tight text-foreground mb-3 font-outfit">Join the Elite.</h1>
+          <p className="text-muted-foreground text-sm font-medium text-center max-w-[300px] leading-relaxed">
+            Begin your journey towards professional mastery with Ghosted Intelligence.
+          </p>
         </div>
         
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-1">First Name</label>
+            <div className="space-y-2">
+              <label className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest ml-1">First Name</label>
               <input
                 type="text"
                 required
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
-                placeholder="John"
+                className="w-full bg-surface border border-border-muted rounded-2xl px-5 py-3.5 text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all placeholder:text-muted-foreground/30 font-medium"
+                placeholder="Avery"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-1">Last Name</label>
+            <div className="space-y-2">
+              <label className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest ml-1">Last Name</label>
               <input
                 type="text"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
-                placeholder="Doe"
+                className="w-full bg-surface border border-border-muted rounded-2xl px-5 py-3.5 text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all placeholder:text-muted-foreground/30 font-medium"
+                placeholder="Stone"
               />
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1">Email Address</label>
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest ml-1">Work Email</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
-              placeholder="you@example.com"
+              className="w-full bg-surface border border-border-muted rounded-2xl px-5 py-3.5 text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all placeholder:text-muted-foreground/30 font-medium"
+              placeholder="name@company.com"
             />
           </div>
           
-          <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1">Password</label>
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest ml-1">Access Credential</label>
             <input
               type="password"
               required
               minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+              className="w-full bg-surface border border-border-muted rounded-2xl px-5 py-3.5 text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all placeholder:text-muted-foreground/30 font-medium"
               placeholder="••••••••"
             />
-            <p className="mt-1 text-xs text-zinc-500">Must be at least 6 characters long.</p>
+            <p className="text-[10px] text-muted-foreground/40 ml-1 font-medium italic">Minimum 6 characters for optimal security.</p>
           </div>
           
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg transition-colors flex justify-center items-center mt-2"
+            className="w-full bg-foreground text-background font-bold py-4 rounded-[1.5rem] transition-all flex justify-center items-center gap-3 hover:scale-[1.02] active:scale-[0.98] shadow-lg disabled:opacity-50 mt-4"
           >
             {isSubmitting ? (
-              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-            ) : "Create Account"}
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <>
+                <Sparkles className="w-4 h-4" />
+                <span>Establish Workspace</span>
+                <ArrowRight className="w-4 h-4" />
+              </>
+            )}
           </button>
         </form>
         
-        <p className="mt-6 text-center text-sm text-zinc-400">
-          Already have an account?{' '}
-          <Link href="/login" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
-            Log in here
+        <div className="mt-8 pt-8 border-t border-border-muted flex flex-col items-center gap-4">
+          <p className="text-sm text-muted-foreground font-medium">
+            Already have credentials?
+          </p>
+          <Link href="/login" className="text-sm font-bold text-foreground hover:underline underline-offset-4 decoration-2 decoration-foreground/20 transition-all">
+            Access Intelligence Terminal
           </Link>
-        </p>
-      </div>
+        </div>
+      </motion.div>
     </div>
   );
 }

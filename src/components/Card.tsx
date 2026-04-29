@@ -2,9 +2,10 @@ import React from 'react';
 import { Draggable } from '@hello-pangea/dnd';
 import { Application } from '../types';
 import { useApplicationStore } from '../store/useApplicationStore';
-import { Building2, UserCircle2, Clock, Ghost } from 'lucide-react';
+import { Building2, Briefcase, Calendar, Ghost, MapPin, ExternalLink } from 'lucide-react';
 import { formatDistanceToNow, differenceInCalendarDays } from 'date-fns';
 import { parseLocalDate } from '../services/api';
+import { motion } from 'framer-motion';
 
 interface CardProps {
   application: Application;
@@ -14,7 +15,6 @@ interface CardProps {
 function CardComponent({ application, index }: CardProps) {
   const { setSelectedApplication } = useApplicationStore();
 
-  // Parse as local midnight so formatDistanceToNow is not skewed by UTC offset
   const appliedLocal = parseLocalDate(application.appliedDate);
   const daysSinceApplied = differenceInCalendarDays(new Date(), appliedLocal);
   const isGhosted = daysSinceApplied > 7;
@@ -22,57 +22,89 @@ function CardComponent({ application, index }: CardProps) {
   return (
     <Draggable draggableId={application.id} index={index}>
       {(provided, snapshot) => (
-        <div
+        <motion.div
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           onClick={() => setSelectedApplication(application)}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.05 }}
           className={`
-            bg-card p-4 rounded-xl border border-border/50 text-left relative
-            transition-all duration-200 cursor-grab active:cursor-grabbing
-            hover:border-accent/50 hover:shadow-lg hover:shadow-accent/5
-            ${snapshot.isDragging ? 'shadow-xl shadow-accent/10 border-accent rotate-2 scale-105 z-50' : ''}
+            group relative bg-card p-6 rounded-[1.5rem] border transition-all duration-300 cursor-grab active:cursor-grabbing overflow-hidden
+            ${snapshot.isDragging ? 'shadow-2xl shadow-foreground/5 border-foreground z-50 scale-[1.02]' : 'border-border-muted hover:border-border hover:bg-surface/50'}
           `}
           style={provided.draggableProps.style}
         >
+          {/* Decorative Gradient Glow (Innovative) */}
+          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-foreground/5 to-transparent blur-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          
+          {/* Ghosted Indicator */}
           {isGhosted && (
-            <div className="absolute -top-2 -right-2 bg-background border border-border/50 text-foreground/50 p-1.5 rounded-full shadow-sm group">
-              <Ghost className="w-3.5 h-3.5" />
-              <span className="absolute hidden group-hover:block w-max bg-foreground text-background text-[10px] font-medium px-2 py-1 rounded right-0 top-7 z-10">
-                Might be ghosting you
-              </span>
+            <div className="absolute top-4 right-4 flex items-center gap-1.5 px-2 py-1 bg-surface border border-border-muted rounded-full group/ghost">
+              <Ghost className="w-3 h-3 text-muted-foreground/60 group-hover/ghost:text-foreground transition-colors" />
+              <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/40 group-hover/ghost:text-foreground transition-colors">Ghosted?</span>
             </div>
           )}
 
-          <div className="flex justify-between items-start mb-3">
-            <h3 className="font-semibold text-foreground flex items-center gap-2">
-              <Building2 className="w-4 h-4 text-foreground/50" />
-              {application.companyName}
-            </h3>
+          {/* Card Content */}
+          <div className="flex flex-col gap-4 relative z-10">
+            <div className="flex items-start justify-between">
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground/50 uppercase tracking-[0.1em]">
+                  <Building2 className="w-3 h-3" />
+                  <span>{application.companyName}</span>
+                </div>
+                <h3 className="text-base font-bold text-foreground leading-tight group-hover:text-foreground transition-colors font-outfit">
+                  {application.jobTitle}
+                </h3>
+              </div>
+            </div>
+
+            {/* Tags/Meta */}
+            <div className="flex flex-wrap gap-2">
+              <div className="flex items-center gap-1.5 px-3 py-1 bg-surface border border-border-muted rounded-full text-[10px] font-bold text-muted-foreground/70">
+                <MapPin className="w-3 h-3" />
+                <span>Remote</span>
+              </div>
+              <div className="flex items-center gap-1.5 px-3 py-1 bg-surface border border-border-muted rounded-full text-[10px] font-bold text-muted-foreground/70">
+                <Briefcase className="w-3 h-3" />
+                <span>Full-time</span>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-between pt-4 border-t border-border-muted/50 mt-2">
+              <div className="flex items-center gap-2">
+                 <div className="w-6 h-6 rounded-full bg-surface border border-border-muted flex items-center justify-center overflow-hidden">
+                    <span className="text-[10px] font-bold text-foreground/50">
+                      {application.contacts[0]?.name?.charAt(0) ?? '?'}
+                    </span>
+                 </div>
+                 <span className="text-[11px] font-medium text-muted-foreground/60 group-hover:text-foreground transition-colors truncate max-w-[100px]">
+                    {application.contacts[0]?.name ?? 'Unassigned'}
+                 </span>
+              </div>
+              
+              <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground/40 group-hover:text-muted-foreground transition-colors uppercase tracking-wider">
+                <Calendar className="w-3 h-3" />
+                <span>{formatDistanceToNow(appliedLocal, { addSuffix: true }).replace('about ', '')}</span>
+              </div>
+            </div>
           </div>
           
-          <div className="text-sm text-foreground/80 font-medium mb-4">
-            {application.jobTitle}
+          {/* Quick Action Overlay (Innovative) */}
+          <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all">
+            <button className="p-2 bg-foreground text-background rounded-xl shadow-lg hover:scale-110 active:scale-95 transition-transform">
+              <ExternalLink className="w-3.5 h-3.5" />
+            </button>
           </div>
-
-          <div className="flex items-center justify-between text-xs text-foreground/50 mt-4 pt-3 border-t border-border/30">
-            <div className="flex items-center gap-1.5">
-              <UserCircle2 className="w-3.5 h-3.5" />
-              <span className="truncate max-w-[80px]">{application.contacts[0]?.name ?? 'No contact'}</span>
-            </div>
-            
-            <div className="flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5" />
-              <span>{formatDistanceToNow(appliedLocal, { addSuffix: true }).replace('about ', '')}</span>
-            </div>
-          </div>
-        </div>
+        </motion.div>
       )}
     </Draggable>
   );
 }
 
-// React.memo prevents the card from re-rendering unless its application data or index changes.
 export default React.memo(CardComponent, (prevProps, nextProps) => {
   return (
     prevProps.application.id === nextProps.application.id &&

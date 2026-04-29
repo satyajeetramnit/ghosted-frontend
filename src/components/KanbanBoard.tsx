@@ -1,25 +1,23 @@
 "use client";
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 import { useApplications, useUpdateApplicationStatus } from '../hooks/useApplications';
 import Column from './Column';
 import { Application, ApplicationStatus } from '../types';
-import { Ghost, Plus, Search } from 'lucide-react';
+import { Ghost, Plus, Search, Filter, ArrowUpRight, BarChart3, Clock } from 'lucide-react';
 import { useApplicationStore } from '../store/useApplicationStore';
-
-const COLUMNS: { id: ApplicationStatus; title: string; emptyMessage: string }[] = [
-  { id: 'APPLIED', title: 'Applied', emptyMessage: 'No applications yet. Let’s start strong.' },
-  { id: 'SCREENING', title: 'Screening', emptyMessage: 'Waiting for HR to call back.' },
-  { id: 'INTERVIEW', title: 'Interview', emptyMessage: 'Line up those interviews here.' },
-  { id: 'OFFER', title: 'Offer', emptyMessage: 'Offers will land here 👀' },
-  { id: 'REJECTED', title: 'Rejected', emptyMessage: 'Not meant to be. On to the next.' },
-  { id: 'WITHDRAWN', title: 'Withdrawn', emptyMessage: 'Applications you stepped back from.' },
-];
-
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const COLUMNS: { id: ApplicationStatus; title: string; emptyMessage: string }[] = [
+  { id: 'APPLIED', title: 'Applied', emptyMessage: 'No applications yet. Start your journey.' },
+  { id: 'SCREENING', title: 'Screening', emptyMessage: 'The first filter.' },
+  { id: 'INTERVIEW', title: 'Interview', emptyMessage: 'Time to shine.' },
+  { id: 'OFFER', title: 'Offer', emptyMessage: 'The goal line.' },
+  { id: 'REJECTED', title: 'Rejected', emptyMessage: 'Lessons learned.' },
+];
 
 export default function KanbanBoard() {
   const { user, isLoading: isAuthLoading } = useAuth();
@@ -37,7 +35,6 @@ export default function KanbanBoard() {
 
   const applications = pageData?.content || [];
 
-  // Group data in one pass per render
   const groupedApplications = useMemo(() => {
     const grouped: Record<ApplicationStatus, Application[]> = {
       APPLIED: [],
@@ -63,15 +60,8 @@ export default function KanbanBoard() {
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
-
     if (!destination) return;
-
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
-      return;
-    }
+    if (destination.droppableId === source.droppableId && destination.index === source.index) return;
 
     const newStatus = destination.droppableId as ApplicationStatus;
     updateStatus({ id: draggableId, status: newStatus });
@@ -80,25 +70,25 @@ export default function KanbanBoard() {
   if (isAuthLoading || !user) {
     return (
       <div className="flex-1 flex items-center justify-center bg-background">
-        <div className="w-10 h-10 border-4 border-accent border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-foreground/20 border-t-foreground rounded-full animate-spin" />
       </div>
     );
   }
 
   if (isQueryLoading) {
     return (
-      <div className="flex-1 flex flex-col h-full bg-background p-6">
-        <div className="h-16 flex items-center justify-between mb-6">
-          <div className="w-1/3 h-8 bg-card/60 animate-pulse rounded-lg" />
-          <div className="w-32 h-10 bg-card/60 animate-pulse rounded-lg" />
+      <div className="flex-1 flex flex-col h-full bg-background p-8">
+        <div className="h-20 flex items-center justify-between mb-8">
+          <div className="w-64 h-10 bg-surface animate-pulse rounded-2xl" />
+          <div className="w-40 h-10 bg-surface animate-pulse rounded-2xl" />
         </div>
-        <div className="flex gap-6 overflow-hidden">
-          {[1, 2, 3, 4, 5].map(i => (
-             <div key={i} className="flex-col shrink-0 w-[280px] md:w-[320px] bg-card/10 rounded-2xl p-3 border border-border/20">
-               <div className="w-3/4 h-5 bg-card/40 animate-pulse rounded mb-4" />
-               <div className="space-y-3">
-                 <div className="w-full h-32 bg-card/30 animate-pulse rounded-xl" />
-                 <div className="w-full h-32 bg-card/30 animate-pulse rounded-xl" />
+        <div className="flex gap-8 overflow-hidden">
+          {[1, 2, 3, 4].map(i => (
+             <div key={i} className="flex-col shrink-0 w-[300px] bg-surface/30 rounded-[2rem] p-5 border border-border-muted/50">
+               <div className="w-1/2 h-6 bg-surface animate-pulse rounded-full mb-6" />
+               <div className="space-y-4">
+                 <div className="w-full h-32 bg-surface animate-pulse rounded-2xl" />
+                 <div className="w-full h-32 bg-surface animate-pulse rounded-2xl" />
                </div>
              </div>
           ))}
@@ -107,75 +97,99 @@ export default function KanbanBoard() {
     );
   }
 
-  const applied = applications.filter(a => a.status === 'APPLIED').length;
-  const interviews = applications.filter(a => a.status === 'INTERVIEW').length;
-  const offers = applications.filter(a => a.status === 'OFFER').length;
+  const stats = [
+    { label: 'Active', count: applications.filter(a => ['APPLIED', 'SCREENING', 'INTERVIEW'].includes(a.status)).length, icon: <BarChart3 className="w-4 h-4" /> },
+    { label: 'Interviews', count: applications.filter(a => a.status === 'INTERVIEW').length, icon: <Clock className="w-4 h-4" /> },
+    { label: 'Offers', count: applications.filter(a => a.status === 'OFFER').length, icon: <ArrowUpRight className="w-4 h-4" /> },
+  ];
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-background">
-      {/* Top Bar */}
-      <header className="min-h-[72px] h-auto py-4 md:py-0 border-b border-border/30 px-6 flex flex-col md:flex-row md:items-center justify-between shrink-0 gap-4 md:gap-0">
-        <div className="text-sm font-medium text-foreground/60 flex flex-wrap items-center gap-4">
-          <span>Applied: <span className="text-foreground">{applied}</span></span>
-          <span className="w-1 h-1 rounded-full bg-border hidden md:block"></span>
-          <span>Interviews: <span className="text-foreground">{interviews}</span></span>
-          <span className="w-1 h-1 rounded-full bg-border hidden md:block"></span>
-          <span>Offers: <span className="text-foreground">{offers}</span></span>
-        </div>
-        
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-foreground/40" />
-            <input 
-              type="text"
-              placeholder="Search company..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-4 py-2 bg-card border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-accent w-48 transition-all focus:w-64"
-            />
+    <div className="flex-1 flex flex-col h-full bg-background relative overflow-hidden">
+      {/* Top Header Section */}
+      <header className="pt-10 pb-6 px-10 flex flex-col gap-8 relative z-10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div>
+            <h1 className="text-4xl font-bold tracking-tight text-foreground mb-2 font-outfit">Workspace</h1>
+            <p className="text-muted-foreground text-sm font-medium">Manage your professional evolution.</p>
           </div>
           
-          <button
-            onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center gap-2 bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shrink-0"
-          >
-            <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">Add Application</span>
+          <div className="flex items-center gap-3">
+            <div className="relative group">
+              <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50 group-focus-within:text-foreground transition-colors" />
+              <input 
+                type="text"
+                placeholder="Search candidates..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-11 pr-5 py-3 bg-surface border border-border rounded-2xl text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/10 w-64 transition-all focus:w-80 placeholder:text-muted-foreground/40 font-medium"
+              />
+            </div>
+            
+            <button
+              onClick={() => setIsAddModalOpen(true)}
+              className="flex items-center gap-2.5 bg-foreground text-background px-6 py-3 rounded-2xl text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98] shadow-sm hover:shadow-lg"
+            >
+              <Plus className="w-4 h-4 stroke-[3]" />
+              <span>Add Application</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Stats Strip */}
+        <div className="flex flex-wrap gap-4">
+          {stats.map((stat, i) => (
+            <div key={i} className="flex items-center gap-3 px-5 py-2.5 bg-surface/50 border border-border-muted rounded-full group hover:border-border transition-colors">
+              <div className="text-muted-foreground/60 group-hover:text-foreground transition-colors">{stat.icon}</div>
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground/70 group-hover:text-foreground transition-colors">{stat.label}</span>
+              <span className="text-sm font-black text-foreground ml-1">{stat.count}</span>
+            </div>
+          ))}
+          <button className="ml-auto flex items-center gap-2 px-4 py-2.5 text-muted-foreground hover:text-foreground transition-colors text-xs font-bold uppercase tracking-widest">
+            <Filter className="w-4 h-4" />
+            <span>Filter</span>
           </button>
         </div>
       </header>
 
-      {/* Board */}
-      <div className="flex-1 overflow-x-auto p-4 md:p-6 snap-x snap-mandatory">
-        {applications.length === 0 && !searchTerm ? (
-          <div className="h-full flex flex-col items-center justify-center text-center max-w-md mx-auto">
-            <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mb-6 text-accent">
-              <Ghost className="w-8 h-8" />
-            </div>
-            <h2 className="text-xl font-bold text-foreground mb-2">No applications yet</h2>
-            <p className="text-foreground/60 mb-6">Start tracking your job search journey. Your next role is waiting.</p>
-            <button
-              onClick={() => setIsAddModalOpen(true)}
-              className="bg-accent text-white px-6 py-2.5 rounded-lg font-medium hover:bg-accent/90 transition-colors cursor-pointer"
+      {/* Board Container */}
+      <div className="flex-1 overflow-x-auto p-10 pt-2 custom-scrollbar">
+        <AnimatePresence mode="wait">
+          {applications.length === 0 && !searchTerm ? (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="h-[60vh] flex flex-col items-center justify-center text-center max-w-lg mx-auto"
             >
-              Add your first application
-            </button>
-          </div>
-        ) : (
-          <DragDropContext onDragEnd={onDragEnd}>
-            <div className="flex gap-4 md:gap-6 h-full items-start pb-4">
-              {COLUMNS.map((column) => (
-                <Column
-                  key={column.id}
-                  id={column.id}
-                  title={column.title}
-                  emptyMessage={column.emptyMessage}
-                  applications={groupedApplications[column.id]}
-                />
-              ))}
-            </div>
-          </DragDropContext>
-        )}
+              <div className="w-24 h-24 bg-surface rounded-[2.5rem] flex items-center justify-center mb-10 text-foreground border border-border-muted shadow-sm">
+                <Ghost className="w-10 h-10" />
+              </div>
+              <h2 className="text-3xl font-bold text-foreground mb-4 font-outfit">Your board is quiet.</h2>
+              <p className="text-muted-foreground font-medium mb-10 leading-relaxed">
+                The best way to stop being ghosted is to flood the funnel. Start tracking your next big move today.
+              </p>
+              <button
+                onClick={() => setIsAddModalOpen(true)}
+                className="bg-foreground text-background px-10 py-4 rounded-[1.5rem] font-bold hover:scale-105 transition-all shadow-xl active:scale-95"
+              >
+                Launch First Application
+              </button>
+            </motion.div>
+          ) : (
+            <DragDropContext onDragEnd={onDragEnd}>
+              <div className="flex gap-10 h-full items-start pb-10">
+                {COLUMNS.map((column) => (
+                  <Column
+                    key={column.id}
+                    id={column.id}
+                    title={column.title}
+                    emptyMessage={column.emptyMessage}
+                    applications={groupedApplications[column.id]}
+                  />
+                ))}
+              </div>
+            </DragDropContext>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

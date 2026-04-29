@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import Link from 'next/link';
+import { Ghost, ArrowRight, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -23,34 +25,55 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-950 p-4">
-      <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
-          <p className="text-zinc-400">Sign in to continue tracking your job applications.</p>
+    <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
+      {/* Background Innovations */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-indigo-500/5 blur-[120px] rounded-full" />
+        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-purple-500/5 blur-[120px] rounded-full" />
+        <div className="absolute inset-0 opacity-[0.02] mix-blend-overlay" 
+             style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3%3Cfilter id='noiseFilter'%3%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3%3C/filter%3%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3%3C/svg%3")` }} 
+        />
+      </div>
+
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-[440px] relative z-10 p-8"
+      >
+        <div className="flex flex-col items-center mb-12">
+          <div className="w-16 h-16 rounded-[2rem] bg-foreground text-background flex items-center justify-center mb-8 shadow-2xl">
+            <Ghost className="w-8 h-8" />
+          </div>
+          <h1 className="text-4xl font-bold tracking-tight text-foreground mb-3 font-outfit">Welcome back.</h1>
+          <p className="text-muted-foreground text-sm font-medium text-center max-w-[280px] leading-relaxed">
+            Continue your professional evolution with Ghosted Intelligence.
+          </p>
         </div>
         
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1">Email Address</label>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="space-y-2">
+            <label className="text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest ml-1">Work Email</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
-              placeholder="you@example.com"
+              className="w-full bg-surface border border-border-muted rounded-2xl px-5 py-4 text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all placeholder:text-muted-foreground/30 font-medium"
+              placeholder="name@company.com"
             />
           </div>
           
-          <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1">Password</label>
+          <div className="space-y-2">
+            <div className="flex justify-between items-center px-1">
+              <label className="text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest">Security Token</label>
+              <button type="button" className="text-[10px] font-bold text-muted-foreground/40 hover:text-foreground transition-colors uppercase tracking-wider">Forgot?</button>
+            </div>
             <input
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+              className="w-full bg-surface border border-border-muted rounded-2xl px-5 py-4 text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all placeholder:text-muted-foreground/30 font-medium"
               placeholder="••••••••"
             />
           </div>
@@ -58,24 +81,28 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg transition-colors flex justify-center items-center"
+            className="w-full bg-foreground text-background font-bold py-4 rounded-[1.5rem] transition-all flex justify-center items-center gap-3 hover:scale-[1.02] active:scale-[0.98] shadow-lg disabled:opacity-50"
           >
             {isSubmitting ? (
-              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-            ) : "Sign In"}
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <>
+                <span>Enter Workspace</span>
+                <ArrowRight className="w-4 h-4" />
+              </>
+            )}
           </button>
         </form>
         
-        <p className="mt-6 text-center text-sm text-zinc-400">
-          Don't have an account?{' '}
-          <Link href="/register" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
-            Register here
+        <div className="mt-10 pt-8 border-t border-border-muted flex flex-col items-center gap-4">
+          <p className="text-sm text-muted-foreground font-medium">
+            New to the intelligence platform?
+          </p>
+          <Link href="/register" className="text-sm font-bold text-foreground hover:underline underline-offset-4 decoration-2 decoration-foreground/20">
+            Establish Credentials
           </Link>
-        </p>
-      </div>
+        </div>
+      </motion.div>
     </div>
   );
 }
