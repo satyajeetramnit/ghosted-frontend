@@ -25,7 +25,7 @@ function CardComponent({ application, index }: CardProps) {
         <motion.div
           ref={provided.innerRef}
           {...provided.draggableProps}
-          {...provided.dragHandleProps}
+          {...(provided.dragHandleProps as any)}
           onClick={() => setSelectedApplication(application)}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}

@@ -205,7 +205,9 @@ export default function ContactsPage() {
                     <div className="flex items-center gap-2">
                       <h3 className="font-bold text-foreground text-lg tracking-tight font-outfit truncate">{contact.name}</h3>
                       {contact.category === 'POI' && (
-                        <ShieldCheck className="w-3.5 h-3.5 text-foreground/20" title="Point of Influence" />
+                        <span title="Point of Influence">
+                          <ShieldCheck className="w-3.5 h-3.5 text-foreground/20" />
+                        </span>
                       )}
                     </div>
                     <div className="flex items-center gap-2">

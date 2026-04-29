@@ -11,6 +11,7 @@ import { useProfileStore } from "@/store/useProfileStore";
 import { useTemplateStore } from "@/store/useTemplateStore";
 import { generateLatex } from "@/lib/latexGenerator";
 import { ResumeData, GlobalProfile, SavedResume } from "@/types/resume";
+import { format } from 'date-fns';
 
 import JobDescriptionInput from "@/components/resume/JobDescriptionInput";
 import ResumeDisplay from "@/components/resume/ResumeDisplay";

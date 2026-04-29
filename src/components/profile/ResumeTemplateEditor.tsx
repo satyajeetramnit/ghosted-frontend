@@ -3,7 +3,7 @@
 import { useState } from "react";
 import {
   Briefcase, GraduationCap, Code, Plus, Pencil, Trash2,
-  ChevronUp, ChevronDown, Check, X, Building2, Calendar, Target, Award, BookOpen, Layers
+  ChevronUp, ChevronDown, Check, X, Building2, Calendar, Target, Award, BookOpen, Layers, Sparkles
 } from "lucide-react";
 import { useTemplateStore } from "@/store/useTemplateStore";
 import {
