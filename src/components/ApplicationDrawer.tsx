@@ -76,9 +76,9 @@ export default function ApplicationDrawer() {
   if (isRefetching && !selectedApplication) {
     return (
       <div className="fixed inset-0 z-50 flex justify-end">
-        <div className="fixed inset-0 bg-background/20 backdrop-blur-sm" onClick={() => setSelectedApplication(null)} />
+        <div className="fixed inset-0 bg-background/50 backdrop-blur-sm" onClick={() => setSelectedApplication(null)} />
         <div className="relative h-full w-full sm:max-w-lg bg-background border-l border-border shadow-2xl flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-muted-foreground/20" />
+          <Loader2 className="w-8 h-8 animate-spin text-muted-foreground/90" />
         </div>
       </div>
     );
@@ -141,7 +141,7 @@ export default function ApplicationDrawer() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-background/60 backdrop-blur-[8px]" 
+          className="fixed inset-0 bg-background/90 backdrop-blur-[8px]" 
           onClick={() => setSelectedApplication(null)} 
         />
         
@@ -154,7 +154,7 @@ export default function ApplicationDrawer() {
           className="relative h-full w-full sm:max-w-xl bg-background border-l border-border shadow-[0_0_80px_rgba(0,0,0,0.15)] flex flex-col overflow-hidden"
         >
           {/* Subtle Grain Overlay */}
-          <div className="absolute inset-0 pointer-events-none opacity-[0.03] mix-blend-overlay z-0" 
+          <div className="absolute inset-0 pointer-events-none opacity-[0.05] mix-blend-overlay z-0" 
                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3%3Cfilter id='noiseFilter'%3%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3%3C/filter%3%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3%3C/svg%3")` }} 
           />
 
@@ -162,7 +162,7 @@ export default function ApplicationDrawer() {
           <div className="relative z-10 px-8 pt-10 pb-8 flex flex-col gap-6">
             <div className="flex items-start justify-between">
               <div className="space-y-1 max-w-[80%]">
-                <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground/60 uppercase tracking-[0.15em] mb-1">
+                <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground/90 uppercase tracking-[0.15em] mb-1">
                   <Building2 className="w-3 h-3" />
                   <span>{app.companyName}</span>
                 </div>
@@ -182,7 +182,7 @@ export default function ApplicationDrawer() {
                 <button
                   onClick={handleDelete}
                   disabled={isDeletingApplication}
-                  className="p-2.5 rounded-xl hover:bg-red-500/10 text-muted-foreground/40 hover:text-red-500 transition-all border border-transparent hover:border-red-500/20"
+                  className="p-2.5 rounded-xl hover:bg-red-500/10 text-muted-foreground/80 hover:text-red-500 transition-all border border-transparent hover:border-red-500/20"
                 >
                   {isDeletingApplication ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                 </button>
@@ -204,7 +204,7 @@ export default function ApplicationDrawer() {
                   className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border ${
                     app.status === status 
                       ? "bg-foreground text-background border-foreground shadow-lg shadow-foreground/5" 
-                      : "bg-surface text-muted-foreground/60 border-border-muted hover:border-border hover:text-foreground"
+                      : "bg-surface text-muted-foreground/90 border-border-muted hover:border-border hover:text-foreground"
                   }`}
                 >
                   {status}
@@ -219,7 +219,7 @@ export default function ApplicationDrawer() {
             {/* Recruitment Pipeline */}
             <section className="space-y-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-[13px] font-black uppercase tracking-[0.2em] text-foreground/40 font-inter">Recruitment Pipeline</h3>
+                <h3 className="text-[13px] font-black uppercase tracking-[0.2em] text-foreground/80 font-inter">Recruitment Pipeline</h3>
                 <div className="h-px flex-1 bg-border-muted mx-4" />
               </div>
 
@@ -232,13 +232,13 @@ export default function ApplicationDrawer() {
                     </div>
                     <div>
                       <h4 className="text-sm font-bold text-foreground">Online Assessment</h4>
-                      <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">{app.oa?.status || 'PENDING'}</p>
+                      <p className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-widest">{app.oa?.status || 'PENDING'}</p>
                     </div>
                   </div>
                   {app.oa && !editingOA && (
                     <button 
                       onClick={() => { setOANotes(app.oa?.notes || ''); setEditingOA(true); }}
-                      className="text-[10px] font-black text-foreground/40 hover:text-foreground transition-colors uppercase tracking-widest px-3 py-1 bg-background border border-border-muted rounded-full"
+                      className="text-[10px] font-black text-foreground/80 hover:text-foreground transition-colors uppercase tracking-widest px-3 py-1 bg-background border border-border-muted rounded-full"
                     >
                       Edit Notes
                     </button>
@@ -248,12 +248,12 @@ export default function ApplicationDrawer() {
                 {app.oa ? (
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-background/50 border border-border-muted/50 rounded-2xl p-3">
-                        <p className="text-[9px] font-bold text-muted-foreground/40 uppercase tracking-widest mb-1">Platform</p>
+                      <div className="bg-background/50 border border-border-muted rounded-2xl p-3">
+                        <p className="text-[9px] font-bold text-muted-foreground/80 uppercase tracking-widest mb-1">Platform</p>
                         <p className="text-xs font-bold text-foreground">{app.oa.platform}</p>
                       </div>
-                      <div className="bg-background/50 border border-border-muted/50 rounded-2xl p-3">
-                        <p className="text-[9px] font-bold text-muted-foreground/40 uppercase tracking-widest mb-1">Deadline</p>
+                      <div className="bg-background/50 border border-border-muted rounded-2xl p-3">
+                        <p className="text-[9px] font-bold text-muted-foreground/80 uppercase tracking-widest mb-1">Deadline</p>
                         <p className="text-xs font-bold text-foreground">{app.oa.deadline ? format(new Date(app.oa.deadline), 'MMM d, p') : 'No deadline'}</p>
                       </div>
                     </div>
@@ -264,7 +264,7 @@ export default function ApplicationDrawer() {
                           value={oaNotes}
                           onChange={(e) => setOANotes(e.target.value)}
                           placeholder="Log questions, performance, and insights..."
-                          className="w-full bg-background border border-border rounded-2xl p-4 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/10 min-h-[120px] font-medium placeholder:text-muted-foreground/20"
+                          className="w-full bg-background border border-border rounded-2xl p-4 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/10 min-h-[120px] font-medium placeholder:text-muted-foreground/90"
                         />
                         <div className="flex justify-end gap-2">
                           <button onClick={() => setEditingOA(false)} className="px-4 py-2 text-[10px] font-bold text-muted-foreground hover:text-foreground transition-colors">Discard</button>
@@ -289,7 +289,7 @@ export default function ApplicationDrawer() {
                 ) : (
                   <button 
                     onClick={() => setShowSetupOA(true)}
-                    className="w-full py-6 border border-dashed border-border-muted rounded-[1.5rem] text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/30 hover:border-foreground/20 hover:text-foreground/40 hover:bg-surface/80 transition-all group/btn"
+                    className="w-full py-6 border border-dashed border-border-muted rounded-[1.5rem] text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/70 hover:border-foreground/20 hover:text-foreground/80 hover:bg-surface/80 transition-all group/btn"
                   >
                     <Plus className="w-4 h-4 mx-auto mb-2 opacity-20 group-hover/btn:opacity-100 transition-opacity" />
                     Configure OA Round
@@ -324,8 +324,8 @@ export default function ApplicationDrawer() {
                              <div>
                                <p className="text-sm font-bold text-foreground capitalize tracking-tight">{round.type.replace('_', ' ')} Interview</p>
                                <div className="flex items-center gap-2 mt-0.5">
-                                 <Clock className="w-3 h-3 text-muted-foreground/40" />
-                                 <p className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-wider">{round.scheduledAt ? format(new Date(round.scheduledAt), 'MMM d, h:mm a') : 'Unscheduled'}</p>
+                                 <Clock className="w-3 h-3 text-muted-foreground/80" />
+                                 <p className="text-[10px] font-bold text-muted-foreground/90 uppercase tracking-wider">{round.scheduledAt ? format(new Date(round.scheduledAt), 'MMM d, h:mm a') : 'Unscheduled'}</p>
                                </div>
                              </div>
                            </div>
@@ -334,14 +334,14 @@ export default function ApplicationDrawer() {
                               {!editingInterviewId && (
                                  <button 
                                    onClick={() => { setEditingInterviewId(round.id); setRoundNotes(round.notes || ''); }}
-                                   className="text-[9px] font-black uppercase tracking-widest text-foreground/30 hover:text-foreground transition-all px-3 py-1.5 bg-background border border-border-muted rounded-full opacity-0 group-hover/round:opacity-100"
+                                   className="text-[9px] font-black uppercase tracking-widest text-foreground/70 hover:text-foreground transition-all px-3 py-1.5 bg-background border border-border-muted rounded-full opacity-0 group-hover/round:opacity-100"
                                  >
                                    Insight
                                  </button>
                               )}
                               
                               {round.meetingLink && (
-                                <a href={round.meetingLink} target="_blank" rel="noopener noreferrer" className="p-2 bg-background border border-border-muted rounded-xl text-foreground/40 hover:text-foreground hover:border-border transition-all">
+                                <a href={round.meetingLink} target="_blank" rel="noopener noreferrer" className="p-2 bg-background border border-border-muted rounded-xl text-foreground/80 hover:text-foreground hover:border-border transition-all">
                                   <ExternalLink className="w-3.5 h-3.5" />
                                 </a>
                               )}
@@ -349,7 +349,7 @@ export default function ApplicationDrawer() {
                               <button
                                 onClick={() => handleDeleteInterview(round.id)}
                                 disabled={isDeletingInterview}
-                                className="p-2 text-muted-foreground/20 hover:text-red-500 transition-all opacity-0 group-hover/round:opacity-100"
+                                className="p-2 text-muted-foreground/90 hover:text-red-500 transition-all opacity-0 group-hover/round:opacity-100"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
                               </button>
@@ -387,7 +387,7 @@ export default function ApplicationDrawer() {
                                      <p className="text-xs text-muted-foreground/80 leading-relaxed font-medium whitespace-pre-wrap">{round.notes}</p>
                                      <button 
                                        onClick={() => { setEditingInterviewId(round.id); setRoundNotes(round.notes || ''); }}
-                                       className="absolute top-3 right-3 text-foreground/20 hover:text-foreground text-[9px] font-black uppercase tracking-widest opacity-0 group-hover/note:opacity-100 transition-all"
+                                       className="absolute top-3 right-3 text-foreground/60 hover:text-foreground text-[9px] font-black uppercase tracking-widest opacity-0 group-hover/note:opacity-100 transition-all"
                                      >
                                        Edit
                                      </button>
@@ -400,7 +400,7 @@ export default function ApplicationDrawer() {
                     ))
                   ) : (
                     <div className="py-8 border border-dashed border-border-muted rounded-[1.5rem] flex flex-col items-center justify-center">
-                       <p className="text-[10px] font-bold text-muted-foreground/30 uppercase tracking-[0.2em]">Silence. No rounds yet.</p>
+                       <p className="text-[10px] font-bold text-muted-foreground/70 uppercase tracking-[0.2em]">Silence. No rounds yet.</p>
                     </div>
                   )}
                 </div>
@@ -410,7 +410,7 @@ export default function ApplicationDrawer() {
             {/* Context & Metadata */}
             <section className="space-y-8">
               <div className="flex items-center justify-between">
-                <h3 className="text-[13px] font-black uppercase tracking-[0.2em] text-foreground/40 font-inter">Workspace Metadata</h3>
+                <h3 className="text-[13px] font-black uppercase tracking-[0.2em] text-foreground/80 font-inter">Workspace Metadata</h3>
                 <div className="h-px flex-1 bg-border-muted mx-4" />
               </div>
 
@@ -421,9 +421,9 @@ export default function ApplicationDrawer() {
                        <div className="p-2 bg-background border border-border-muted rounded-xl text-muted-foreground group-hover:text-foreground transition-all">
                           <Calendar className="w-4 h-4" />
                        </div>
-                       <button onClick={() => { setDateValue(app.appliedDate); setEditingDate(true); }} className="text-[9px] font-black text-muted-foreground/30 hover:text-foreground transition-all uppercase tracking-widest">Update</button>
+                       <button onClick={() => { setDateValue(app.appliedDate); setEditingDate(true); }} className="text-[9px] font-black text-muted-foreground/70 hover:text-foreground transition-all uppercase tracking-widest">Update</button>
                     </div>
-                    <p className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest mb-1">Applied On</p>
+                    <p className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-widest mb-1">Applied On</p>
                     {editingDate ? (
                       <div className="space-y-2 mt-2">
                         <input type="date" value={dateValue} onChange={e => setDateValue(e.target.value)} className="w-full bg-background border border-border rounded-xl px-3 py-2 text-xs focus:outline-none" />
@@ -442,21 +442,21 @@ export default function ApplicationDrawer() {
                        <div className="p-2 bg-background border border-border-muted rounded-xl text-muted-foreground group-hover:text-foreground transition-all">
                           <Bell className="w-4 h-4" />
                        </div>
-                       <span className="text-[9px] font-black text-muted-foreground/20 uppercase tracking-widest">Alert</span>
+                       <span className="text-[9px] font-black text-muted-foreground/90 uppercase tracking-widest">Alert</span>
                     </div>
-                    <p className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest mb-1">Follow Up</p>
+                    <p className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-widest mb-1">Follow Up</p>
                     <h4 className="text-sm font-bold text-foreground">{app.followUpDate ? format(parseLocalDate(app.followUpDate), 'MMM d, yyyy') : 'No Alert'}</h4>
                  </div>
               </div>
 
               {/* Contacts */}
-              <div className="bg-surface/30 border border-border-muted rounded-[2rem] p-6 space-y-6">
+              <div className="bg-surface/50 border border-border-muted rounded-[2rem] p-6 space-y-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <UserCircle2 className="w-4 h-4 text-foreground/40" />
+                    <UserCircle2 className="w-4 h-4 text-foreground/80" />
                     <h4 className="text-xs font-bold text-foreground uppercase tracking-widest">Key Contacts</h4>
                   </div>
-                  <button onClick={startEditContacts} className="p-1.5 bg-background border border-border-muted rounded-lg text-muted-foreground/40 hover:text-foreground transition-all">
+                  <button onClick={startEditContacts} className="p-1.5 bg-background border border-border-muted rounded-lg text-muted-foreground/80 hover:text-foreground transition-all">
                     <Pencil className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -464,10 +464,10 @@ export default function ApplicationDrawer() {
                 {!editingContacts ? (
                   <div className="space-y-3">
                     {contacts.length > 0 ? contacts.map(c => (
-                      <div key={c.id} className="bg-background/40 border border-border-muted/50 rounded-2xl p-4 flex items-center justify-between group/contact hover:border-foreground/10 transition-all">
+                      <div key={c.id} className="bg-background/90 border border-border-muted rounded-2xl p-4 flex items-center justify-between group/contact hover:border-foreground/10 transition-all">
                         <div className="space-y-1">
                           <p className="text-sm font-bold text-foreground">{c.name}</p>
-                          <p className="text-[10px] font-medium text-muted-foreground/60">{c.role || 'Stakeholder'}</p>
+                          <p className="text-[10px] font-medium text-muted-foreground/90">{c.role || 'Stakeholder'}</p>
                         </div>
                         <div className="flex items-center gap-2">
                           {c.email && (
@@ -483,7 +483,7 @@ export default function ApplicationDrawer() {
                         </div>
                       </div>
                     )) : (
-                      <p className="text-xs text-muted-foreground/30 italic py-2">No contacts mapped to this workspace.</p>
+                      <p className="text-xs text-muted-foreground/70 italic py-2">No contacts mapped to this workspace.</p>
                     )}
                   </div>
                 ) : (
@@ -501,7 +501,7 @@ export default function ApplicationDrawer() {
                       </div>
                     )}
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/30" />
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/70" />
                       <input type="text" placeholder="Search talent..." value={contactSearch} onChange={e => setContactSearch(e.target.value)}
                         className="w-full bg-surface border border-border rounded-xl pl-10 pr-4 py-2.5 text-xs focus:outline-none" />
                       {searchResults.length > 0 && (
@@ -510,7 +510,7 @@ export default function ApplicationDrawer() {
                             <button key={c.id} onClick={() => { setPendingContactIds(ids => [...ids, c.id]); setContactSearch(''); }}
                               className="w-full text-left px-4 py-2 rounded-xl hover:bg-surface text-xs text-foreground/60 hover:text-foreground transition-all">
                               <span className="font-bold">{c.name}</span>
-                              <span className="text-[10px] text-muted-foreground/40 font-medium uppercase tracking-widest ml-2">{c.companyName}</span>
+                              <span className="text-[10px] text-muted-foreground/80 font-medium uppercase tracking-widest ml-2">{c.companyName}</span>
                             </button>
                           ))}
                         </div>
@@ -518,7 +518,7 @@ export default function ApplicationDrawer() {
                     </div>
                     <div className="flex justify-end gap-3 pt-2">
                       <button onClick={() => setEditingContacts(false)} className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Discard</button>
-                      <button onClick={handleSaveContacts} className="px-4 py-2 bg-foreground text-background rounded-full text-[10px] font-black uppercase tracking-wider">Establish Connections</button>
+                      <button onClick={handleSaveContacts} className="px-4 py-2 bg-foreground text-background rounded-full text-[10px] font-black uppercase tracking-wider">Add Contacts</button>
                     </div>
                   </div>
                 )}
@@ -528,21 +528,21 @@ export default function ApplicationDrawer() {
             {/* Intelligence Journal (Notes) */}
             <section className="space-y-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-[13px] font-black uppercase tracking-[0.2em] text-foreground/40 font-inter">Intelligence Journal</h3>
+                <h3 className="text-[13px] font-black uppercase tracking-[0.2em] text-foreground/80 font-inter">Intelligence Journal</h3>
                 <div className="h-px flex-1 bg-border-muted mx-4" />
               </div>
 
               <div className="space-y-4">
                 {isLoadingNotes ? (
                   <div className="space-y-3">
-                    {[1, 2].map(i => <div key={i} className="h-20 bg-surface/30 animate-pulse rounded-2xl border border-border-muted/50" />)}
+                    {[1, 2].map(i => <div key={i} className="h-20 bg-surface/50 animate-pulse rounded-2xl border border-border-muted" />)}
                   </div>
                 ) : notes.length > 0 ? (
                   <div className="space-y-3">
                     {notes.map((note: Note) => (
-                      <div key={note.id} className="bg-surface/30 border border-border-muted/50 rounded-2xl p-5 hover:border-foreground/10 transition-all group/note">
+                      <div key={note.id} className="bg-surface/50 border border-border-muted rounded-2xl p-5 hover:border-foreground/10 transition-all group/note">
                         <p className="text-sm font-medium text-foreground/80 leading-relaxed whitespace-pre-wrap">{note.content}</p>
-                        <div className="flex items-center gap-2 mt-4 text-[10px] font-bold text-muted-foreground/30 uppercase tracking-widest">
+                        <div className="flex items-center gap-2 mt-4 text-[10px] font-bold text-muted-foreground/70 uppercase tracking-widest">
                           <Clock className="w-3 h-3" />
                           <span>{formatDistanceToNow(new Date(note.createdAt), { addSuffix: true })}</span>
                         </div>
@@ -551,7 +551,7 @@ export default function ApplicationDrawer() {
                   </div>
                 ) : (
                   <div className="py-10 text-center border border-dashed border-border-muted rounded-[1.5rem]">
-                    <p className="text-[10px] font-bold text-muted-foreground/20 uppercase tracking-[0.2em]">Journal is empty. Log your progress.</p>
+                    <p className="text-[10px] font-bold text-muted-foreground/90 uppercase tracking-[0.2em]">Journal is empty. Log your progress.</p>
                   </div>
                 )}
 
@@ -560,7 +560,7 @@ export default function ApplicationDrawer() {
                     value={noteContent}
                     onChange={(e) => setNoteContent(e.target.value)}
                     placeholder="Log a new update or strategic observation..."
-                    className="w-full bg-surface border border-border rounded-[2rem] p-6 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all min-h-[140px] resize-none font-medium placeholder:text-muted-foreground/20"
+                    className="w-full bg-surface border border-border rounded-[2rem] p-6 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all min-h-[140px] resize-none font-medium placeholder:text-muted-foreground/90"
                   />
                   <div className="absolute bottom-4 right-4">
                     <button
@@ -579,7 +579,7 @@ export default function ApplicationDrawer() {
             {/* Linked Intelligence */}
             <section className="space-y-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-[13px] font-black uppercase tracking-[0.2em] text-foreground/40 font-inter">Linked Intelligence</h3>
+                <h3 className="text-[13px] font-black uppercase tracking-[0.2em] text-foreground/80 font-inter">Linked Intelligence</h3>
                 <div className="h-px flex-1 bg-border-muted mx-4" />
               </div>
 
@@ -591,12 +591,12 @@ export default function ApplicationDrawer() {
                     </div>
                     <div className="min-w-0">
                       <p className="text-sm font-bold text-foreground truncate">{linkedResume.jobTitle}</p>
-                      <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest mt-0.5">Resume Forge Artifact</p>
+                      <p className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-widest mt-0.5">Resume Builder Artifact</p>
                     </div>
                   </div>
                   <button
                     onClick={() => updateResume(linkedResume.id, { applicationId: undefined })}
-                    className="p-2 text-muted-foreground/20 hover:text-red-500 transition-all"
+                    className="p-2 text-muted-foreground/90 hover:text-red-500 transition-all"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -605,7 +605,7 @@ export default function ApplicationDrawer() {
                 <div className="relative">
                   <button
                     onClick={() => setShowResumeDropdown(v => !v)}
-                    className="w-full flex items-center justify-between px-6 py-4 bg-surface border border-border-muted rounded-[1.5rem] text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 hover:text-foreground hover:border-border transition-all"
+                    className="w-full flex items-center justify-between px-6 py-4 bg-surface border border-border-muted rounded-[1.5rem] text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/80 hover:text-foreground hover:border-border transition-all"
                   >
                     <span className="flex items-center gap-3"><LinkIcon className="w-3.5 h-3.5" /> Bind Resume Artifact</span>
                     <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showResumeDropdown ? 'rotate-180' : ''}`} />
@@ -619,7 +619,7 @@ export default function ApplicationDrawer() {
                         className="absolute bottom-full mb-3 w-full bg-background border border-border rounded-[1.5rem] shadow-[0_10px_40px_rgba(0,0,0,0.2)] z-30 p-2 max-h-48 overflow-y-auto"
                       >
                         {savedResumes.length === 0 ? (
-                          <p className="text-[10px] font-bold text-muted-foreground/20 uppercase tracking-widest text-center py-6">No artifacts found.</p>
+                          <p className="text-[10px] font-bold text-muted-foreground/90 uppercase tracking-widest text-center py-6">No artifacts found.</p>
                         ) : (
                           savedResumes.map(r => (
                             <button

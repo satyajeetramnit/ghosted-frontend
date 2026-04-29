@@ -30,7 +30,7 @@ export default function LoginPage() {
       <div className="absolute inset-0 z-0">
         <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-indigo-500/5 blur-[120px] rounded-full" />
         <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-purple-500/5 blur-[120px] rounded-full" />
-        <div className="absolute inset-0 opacity-[0.02] mix-blend-overlay" 
+        <div className="absolute inset-0 opacity-[0.05] mix-blend-overlay" 
              style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3%3Cfilter id='noiseFilter'%3%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3%3C/filter%3%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3%3C/svg%3")` }} 
         />
       </div>
@@ -52,28 +52,28 @@ export default function LoginPage() {
         
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
-            <label className="text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest ml-1">Work Email</label>
+            <label className="text-[11px] font-bold text-muted-foreground/90 uppercase tracking-widest ml-1">Work Email</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-surface border border-border-muted rounded-2xl px-5 py-4 text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all placeholder:text-muted-foreground/30 font-medium"
+              className="w-full bg-surface border border-border-muted rounded-2xl px-5 py-4 text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all placeholder:text-muted-foreground/70 font-medium"
               placeholder="name@company.com"
             />
           </div>
           
           <div className="space-y-2">
             <div className="flex justify-between items-center px-1">
-              <label className="text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest">Security Token</label>
-              <button type="button" className="text-[10px] font-bold text-muted-foreground/40 hover:text-foreground transition-colors uppercase tracking-wider">Forgot?</button>
+              <label className="text-[11px] font-bold text-muted-foreground/90 uppercase tracking-widest">Security Token</label>
+              <button type="button" className="text-[10px] font-bold text-muted-foreground/80 hover:text-foreground transition-colors uppercase tracking-wider">Forgot?</button>
             </div>
             <input
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-surface border border-border-muted rounded-2xl px-5 py-4 text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all placeholder:text-muted-foreground/30 font-medium"
+              className="w-full bg-surface border border-border-muted rounded-2xl px-5 py-4 text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all placeholder:text-muted-foreground/70 font-medium"
               placeholder="••••••••"
             />
           </div>

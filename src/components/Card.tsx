@@ -39,8 +39,8 @@ function CardComponent({ application, index }: CardProps) {
           {/* Ghosted Indicator */}
           {isGhosted && (
             <div className="absolute top-4 right-4 flex items-center gap-1.5 px-2 py-1 bg-surface border border-border-muted rounded-full group/ghost">
-              <Ghost className="w-3 h-3 text-muted-foreground/60 group-hover/ghost:text-foreground transition-colors" />
-              <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/40 group-hover/ghost:text-foreground transition-colors">Ghosted?</span>
+              <Ghost className="w-3 h-3 text-muted-foreground/90 group-hover/ghost:text-foreground transition-colors" />
+              <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/80 group-hover/ghost:text-foreground transition-colors">Ghosted?</span>
             </div>
           )}
 
@@ -48,7 +48,7 @@ function CardComponent({ application, index }: CardProps) {
           <div className="flex flex-col gap-4 relative z-10">
             <div className="flex items-start justify-between">
               <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground/50 uppercase tracking-[0.1em]">
+                <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground/80 uppercase tracking-[0.1em]">
                   <Building2 className="w-3 h-3" />
                   <span>{application.companyName}</span>
                 </div>
@@ -71,19 +71,19 @@ function CardComponent({ application, index }: CardProps) {
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-between pt-4 border-t border-border-muted/50 mt-2">
+            <div className="flex items-center justify-between pt-4 border-t border-border-muted mt-2">
               <div className="flex items-center gap-2">
                  <div className="w-6 h-6 rounded-full bg-surface border border-border-muted flex items-center justify-center overflow-hidden">
-                    <span className="text-[10px] font-bold text-foreground/50">
+                    <span className="text-[10px] font-bold text-foreground/80">
                       {application.contacts[0]?.name?.charAt(0) ?? '?'}
                     </span>
                  </div>
-                 <span className="text-[11px] font-medium text-muted-foreground/60 group-hover:text-foreground transition-colors truncate max-w-[100px]">
+                 <span className="text-[11px] font-medium text-muted-foreground/90 group-hover:text-foreground transition-colors truncate max-w-[100px]">
                     {application.contacts[0]?.name ?? 'Unassigned'}
                  </span>
               </div>
               
-              <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground/40 group-hover:text-muted-foreground transition-colors uppercase tracking-wider">
+              <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground/80 group-hover:text-muted-foreground transition-colors uppercase tracking-wider">
                 <Calendar className="w-3 h-3" />
                 <span>{formatDistanceToNow(appliedLocal, { addSuffix: true }).replace('about ', '')}</span>
               </div>

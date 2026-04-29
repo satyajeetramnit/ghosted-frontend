@@ -86,7 +86,7 @@ export default function KanbanBoard() {
         </div>
         <div className="flex gap-8 overflow-hidden">
           {[1, 2, 3, 4].map(i => (
-             <div key={i} className="flex-col shrink-0 w-[300px] bg-surface/30 rounded-[2rem] p-5 border border-border-muted/50">
+             <div key={i} className="flex-col shrink-0 w-[300px] bg-surface/50 rounded-[2rem] p-5 border border-border-muted">
                <div className="w-1/2 h-6 bg-surface animate-pulse rounded-full mb-6" />
                <div className="space-y-4">
                  <div className="w-full h-32 bg-surface animate-pulse rounded-2xl" />
@@ -112,18 +112,18 @@ export default function KanbanBoard() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <h1 className="text-4xl font-bold tracking-tight text-foreground mb-2 font-outfit">Workspace</h1>
-            <p className="text-muted-foreground text-sm font-medium">Manage your professional evolution.</p>
+            <p className="text-muted-foreground text-sm font-medium">Track and manage your job applications.</p>
           </div>
           
           <div className="flex items-center gap-3">
             <div className="relative group">
-              <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/50 group-focus-within:text-foreground transition-colors" />
+              <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/80 group-focus-within:text-foreground transition-colors" />
               <input 
                 type="text"
                 placeholder="Search candidates..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-11 pr-5 py-3 bg-surface border border-border rounded-2xl text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/10 w-64 transition-all focus:w-80 placeholder:text-muted-foreground/40 font-medium"
+                className="pl-11 pr-5 py-3 bg-surface border border-border rounded-2xl text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-foreground/10 w-64 transition-all focus:w-80 placeholder:text-muted-foreground/80 font-medium"
               />
             </div>
             
@@ -141,7 +141,7 @@ export default function KanbanBoard() {
         <div className="flex flex-wrap gap-4">
           {stats.map((stat, i) => (
             <div key={i} className="flex items-center gap-3 px-5 py-2.5 bg-surface/50 border border-border-muted rounded-full group hover:border-border transition-colors">
-              <div className="text-muted-foreground/60 group-hover:text-foreground transition-colors">{stat.icon}</div>
+              <div className="text-muted-foreground/90 group-hover:text-foreground transition-colors">{stat.icon}</div>
               <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground/70 group-hover:text-foreground transition-colors">{stat.label}</span>
               <span className="text-sm font-black text-foreground ml-1">{stat.count}</span>
             </div>
@@ -167,13 +167,13 @@ export default function KanbanBoard() {
               </div>
               <h2 className="text-3xl font-bold text-foreground mb-4 font-outfit">Your board is quiet.</h2>
               <p className="text-muted-foreground font-medium mb-10 leading-relaxed">
-                The best way to stop being ghosted is to flood the funnel. Start tracking your next big move today.
+                The best way to stop being ghosted is to flood the funnel. Start tracking your applications today.
               </p>
               <button
                 onClick={() => setIsAddModalOpen(true)}
                 className="bg-foreground text-background px-10 py-4 rounded-[1.5rem] font-bold hover:scale-105 transition-all shadow-xl active:scale-95"
               >
-                Launch First Application
+                Add First Application
               </button>
             </motion.div>
           ) : (

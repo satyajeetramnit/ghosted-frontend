@@ -88,7 +88,7 @@ export default function AddApplicationModal() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-background/60 backdrop-blur-[12px]" 
+            className="fixed inset-0 bg-background/90 backdrop-blur-[12px]" 
             onClick={() => setIsAddModalOpen(false)} 
           />
           
@@ -100,7 +100,7 @@ export default function AddApplicationModal() {
             className="relative w-full max-w-xl bg-background border border-border shadow-[0_20px_80px_rgba(0,0,0,0.2)] rounded-[2.5rem] overflow-hidden flex flex-col max-h-[90vh]"
           >
             {/* Subtle Grain */}
-            <div className="absolute inset-0 pointer-events-none opacity-[0.02] mix-blend-overlay z-0" 
+            <div className="absolute inset-0 pointer-events-none opacity-[0.05] mix-blend-overlay z-0" 
                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3%3Cfilter id='noiseFilter'%3%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3%3C/filter%3%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3%3C/svg%3")` }} 
             />
 
@@ -122,34 +122,34 @@ export default function AddApplicationModal() {
               <div className="space-y-6">
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest ml-1">Enterprise</label>
+                    <label className="text-[11px] font-bold text-muted-foreground/90 uppercase tracking-widest ml-1">Enterprise</label>
                     <div className="relative">
-                      <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/30" />
-                      <input required value={companyName} onChange={e => setCompanyName(e.target.value)} placeholder="Google, OpenAI..." className="w-full bg-surface border border-border-muted rounded-2xl pl-12 pr-5 py-4 text-sm font-medium focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all placeholder:text-muted-foreground/20" />
+                      <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/70" />
+                      <input required value={companyName} onChange={e => setCompanyName(e.target.value)} placeholder="Google, OpenAI..." className="w-full bg-surface border border-border-muted rounded-2xl pl-12 pr-5 py-4 text-sm font-medium focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all placeholder:text-muted-foreground/90" />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest ml-1">Strategic Role</label>
+                    <label className="text-[11px] font-bold text-muted-foreground/90 uppercase tracking-widest ml-1">Strategic Role</label>
                     <div className="relative">
-                      <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/30" />
-                      <input required value={jobTitle} onChange={e => setJobTitle(e.target.value)} placeholder="Staff Engineer" className="w-full bg-surface border border-border-muted rounded-2xl pl-12 pr-5 py-4 text-sm font-medium focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all placeholder:text-muted-foreground/20" />
+                      <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/70" />
+                      <input required value={jobTitle} onChange={e => setJobTitle(e.target.value)} placeholder="Staff Engineer" className="w-full bg-surface border border-border-muted rounded-2xl pl-12 pr-5 py-4 text-sm font-medium focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all placeholder:text-muted-foreground/90" />
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest ml-1">Inception Date</label>
+                  <label className="text-[11px] font-bold text-muted-foreground/90 uppercase tracking-widest ml-1">Inception Date</label>
                   <div className="relative">
-                    <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/30" />
+                    <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/70" />
                     <input type="date" required value={appliedDate} onChange={e => setAppliedDate(e.target.value)} className="w-full bg-surface border border-border-muted rounded-2xl pl-12 pr-5 py-4 text-sm font-medium focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all" />
                   </div>
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest ml-1">Initial Status</label>
+                  <label className="text-[11px] font-bold text-muted-foreground/90 uppercase tracking-widest ml-1">Initial Status</label>
                   <div className="flex flex-wrap gap-2">
                     {(['APPLIED', 'SCREENING', 'INTERVIEW', 'OFFER', 'REJECTED'] as ApplicationStatus[]).map(s => (
-                      <button key={s} type="button" onClick={() => setStatus(s)} className={`px-5 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border ${status === s ? 'bg-foreground text-background border-foreground shadow-lg' : 'bg-surface border-border-muted text-muted-foreground/50 hover:border-border hover:text-foreground'}`}>
+                      <button key={s} type="button" onClick={() => setStatus(s)} className={`px-5 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border ${status === s ? 'bg-foreground text-background border-foreground shadow-lg' : 'bg-surface border-border-muted text-muted-foreground/80 hover:border-border hover:text-foreground'}`}>
                         {s}
                       </button>
                     ))}
@@ -161,13 +161,13 @@ export default function AddApplicationModal() {
               <div className="pt-8 border-t border-border-muted space-y-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <UserCircle2 className="w-4 h-4 text-muted-foreground/40" />
-                    <h3 className="text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest">Key Stakeholders</h3>
+                    <UserCircle2 className="w-4 h-4 text-muted-foreground/80" />
+                    <h3 className="text-[11px] font-bold text-muted-foreground/90 uppercase tracking-widest">Key Stakeholders</h3>
                   </div>
                   <button
                     type="button"
                     onClick={() => setShowSearch(s => !s)}
-                    className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-foreground/40 hover:text-foreground transition-colors px-3 py-1.5 bg-surface border border-border-muted rounded-full"
+                    className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-foreground/80 hover:text-foreground transition-colors px-3 py-1.5 bg-surface border border-border-muted rounded-full"
                   >
                     <Plus className="w-3 h-3" />
                     <span>Bind Existing</span>
@@ -189,7 +189,7 @@ export default function AddApplicationModal() {
 
                 {showSearch && (
                   <div className="relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/30" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/70" />
                     <input
                       type="text"
                       placeholder="Search global talent database..."
@@ -208,9 +208,9 @@ export default function AddApplicationModal() {
                             <button key={c.id} type="button" onClick={() => toggleContact(c)}
                               className="w-full text-left px-5 py-3 rounded-xl hover:bg-surface text-sm font-bold text-foreground/60 hover:text-foreground transition-all"
                             >
-                              {c.name} <span className="text-[10px] font-medium text-muted-foreground/40 ml-2 uppercase tracking-widest">{c.companyName}</span>
+                              {c.name} <span className="text-[10px] font-medium text-muted-foreground/80 ml-2 uppercase tracking-widest">{c.companyName}</span>
                             </button>
-                          )) : <div className="p-5 text-[10px] font-bold text-center text-muted-foreground/20 uppercase tracking-[0.2em]">No matches found</div>}
+                          )) : <div className="p-5 text-[10px] font-bold text-center text-muted-foreground/90 uppercase tracking-[0.2em]">No matches found</div>}
                         </motion.div>
                       )}
                     </AnimatePresence>
@@ -220,11 +220,11 @@ export default function AddApplicationModal() {
                 {linkedIds.length === 0 && (
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-[9px] font-black text-muted-foreground/30 uppercase tracking-widest ml-1">New Stakeholder Name</label>
+                      <label className="text-[9px] font-black text-muted-foreground/70 uppercase tracking-widest ml-1">New Contact Name</label>
                       <input value={newContactName} onChange={e => setNewContactName(e.target.value)} placeholder="Jane Doe" className="w-full bg-surface/50 border border-border-muted rounded-xl px-4 py-3 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-foreground/10" />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[9px] font-black text-muted-foreground/30 uppercase tracking-widest ml-1">Intelligence Channel</label>
+                      <label className="text-[9px] font-black text-muted-foreground/70 uppercase tracking-widest ml-1">Intelligence Channel</label>
                       <input type="email" value={newContactEmail} onChange={e => setNewContactEmail(e.target.value)} placeholder="jane@company.com" className="w-full bg-surface/50 border border-border-muted rounded-xl px-4 py-3 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-foreground/10" />
                     </div>
                   </div>
@@ -233,7 +233,7 @@ export default function AddApplicationModal() {
 
               {/* Actions */}
               <div className="pt-10 flex items-center justify-between border-t border-border-muted">
-                <button type="button" onClick={() => setIsAddModalOpen(false)} className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground/40 hover:text-foreground transition-colors">Abort</button>
+                <button type="button" onClick={() => setIsAddModalOpen(false)} className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground/80 hover:text-foreground transition-colors">Cancel</button>
                 <button 
                   type="submit" 
                   disabled={isPending} 

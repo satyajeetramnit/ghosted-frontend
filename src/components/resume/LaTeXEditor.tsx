@@ -7,7 +7,7 @@ import { useState } from "react";
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,
   loading: () => (
-    <div className="flex items-center justify-center h-full text-foreground/40 text-sm">
+    <div className="flex items-center justify-center h-full text-foreground/80 text-sm">
       Loading editor…
     </div>
   ),
@@ -32,7 +32,7 @@ export default function LaTeXEditor({ value, onChange }: Props) {
       <div className="flex items-center justify-between px-4 py-3 border-b border-border/40 bg-background/50 rounded-t-xl shrink-0">
         <h2 className="text-xs uppercase tracking-widest text-accent font-medium">LaTeX Source</h2>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-foreground/30 font-mono">{value.split("\n").length} lines</span>
+          <span className="text-xs text-foreground/70 font-mono">{value.split("\n").length} lines</span>
           <button
             onClick={handleCopy}
             className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-foreground/60 bg-card border border-border/50 rounded-md hover:bg-border/30 transition-colors"

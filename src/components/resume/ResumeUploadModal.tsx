@@ -105,13 +105,13 @@ export default function ResumeUploadModal({ onExtracted, onClose }: Props) {
         <div className="flex items-center justify-between px-6 py-4 border-b border-border/30">
           <div>
             <h2 className="text-base font-semibold text-foreground">Import Existing Resume</h2>
-            <p className="text-xs text-foreground/50 mt-0.5">
+            <p className="text-xs text-foreground/80 mt-0.5">
               AI will extract all details and pre-fill the resume builder
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-border/30 text-foreground/40 hover:text-foreground/70 transition-colors"
+            className="p-1.5 rounded-lg hover:bg-border/30 text-foreground/80 hover:text-foreground/70 transition-colors"
           >
             <X size={16} />
           </button>
@@ -130,11 +130,11 @@ export default function ResumeUploadModal({ onExtracted, onClose }: Props) {
             onDrop={handleDrop}
             onClick={() => fileRef.current?.click()}
           >
-            <Upload size={26} className="mx-auto text-foreground/30 mb-2" />
+            <Upload size={26} className="mx-auto text-foreground/70 mb-2" />
             <p className="text-sm font-medium text-foreground/70">
               Drop a <strong>.pdf</strong>, <strong>.txt</strong>, or <strong>.tex</strong> file here, or click to browse
             </p>
-            <p className="text-xs text-foreground/30 mt-1">PDF text is extracted automatically before AI parsing</p>
+            <p className="text-xs text-foreground/70 mt-1">PDF text is extracted automatically before AI parsing</p>
             <input
               ref={fileRef}
               type="file"
@@ -146,7 +146,7 @@ export default function ResumeUploadModal({ onExtracted, onClose }: Props) {
 
           <div className="flex items-center gap-2">
             <div className="flex-1 h-px bg-border/30" />
-            <span className="text-xs text-foreground/30">or</span>
+            <span className="text-xs text-foreground/70">or</span>
             <div className="flex-1 h-px bg-border/30" />
           </div>
 
@@ -164,7 +164,7 @@ export default function ResumeUploadModal({ onExtracted, onClose }: Props) {
               <label className="text-xs font-medium text-foreground/60 flex items-center gap-1">
                 <FileText size={12} /> Resume Text
               </label>
-              <span className="text-xs text-foreground/30">{text.length.toLocaleString()} chars</span>
+              <span className="text-xs text-foreground/70">{text.length.toLocaleString()} chars</span>
             </div>
             <textarea
               value={text}

@@ -40,7 +40,7 @@ export default function AddInterviewRoundModal({ applicationId, onClose }: AddIn
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-background/60 backdrop-blur-[12px]" 
+          className="fixed inset-0 bg-background/90 backdrop-blur-[12px]" 
           onClick={onClose} 
         />
         
@@ -51,7 +51,7 @@ export default function AddInterviewRoundModal({ applicationId, onClose }: AddIn
           className="relative w-full max-w-md bg-background border border-border shadow-[0_20px_80px_rgba(0,0,0,0.2)] rounded-[2rem] overflow-hidden flex flex-col"
         >
           {/* Subtle Grain Overlay */}
-          <div className="absolute inset-0 pointer-events-none opacity-[0.02] mix-blend-overlay z-0" 
+          <div className="absolute inset-0 pointer-events-none opacity-[0.05] mix-blend-overlay z-0" 
                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3%3Cfilter id='noiseFilter'%3%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3%3C/filter%3%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3%3C/svg%3")` }} 
           />
 
@@ -69,14 +69,14 @@ export default function AddInterviewRoundModal({ applicationId, onClose }: AddIn
 
           <form onSubmit={handleSubmit} className="relative z-10 p-8 space-y-6">
             <div className="space-y-3">
-              <label className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest ml-1">Round Type</label>
+              <label className="text-[10px] font-bold text-muted-foreground/90 uppercase tracking-widest ml-1">Round Type</label>
               <div className="flex flex-wrap gap-2">
                 {(['TECHNICAL', 'HR', 'BEHAVIORAL', 'SYSTEM_DESIGN', 'MIXED'] as InterviewType[]).map(t => (
                   <button 
                     key={t} 
                     type="button" 
                     onClick={() => setType(t)}
-                    className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wider border transition-all ${type === t ? 'bg-foreground text-background border-foreground shadow-lg' : 'bg-surface border-border-muted text-muted-foreground/40 hover:border-border hover:text-foreground'}`}
+                    className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-wider border transition-all ${type === t ? 'bg-foreground text-background border-foreground shadow-lg' : 'bg-surface border-border-muted text-muted-foreground/80 hover:border-border hover:text-foreground'}`}
                   >
                     {t.replace('_', ' ')}
                   </button>
@@ -85,9 +85,9 @@ export default function AddInterviewRoundModal({ applicationId, onClose }: AddIn
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest ml-1">Scheduled Time</label>
+              <label className="text-[10px] font-bold text-muted-foreground/90 uppercase tracking-widest ml-1">Scheduled Time</label>
               <div className="relative">
-                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/30" />
+                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/70" />
                 <input 
                   required
                   type="datetime-local" 
@@ -99,21 +99,21 @@ export default function AddInterviewRoundModal({ applicationId, onClose }: AddIn
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest ml-1">Meeting Access Channel</label>
+              <label className="text-[10px] font-bold text-muted-foreground/90 uppercase tracking-widest ml-1">Meeting Access Channel</label>
               <div className="relative">
-                <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/30" />
+                <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/70" />
                 <input 
                   type="url" 
                   value={meetingLink} 
                   onChange={e => setMeetingLink(e.target.value)}
                   placeholder="Zoom, Google Meet, Teams link..." 
-                  className="w-full bg-surface border border-border-muted rounded-2xl pl-12 pr-4 py-3.5 text-sm font-medium focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all placeholder:text-muted-foreground/20"
+                  className="w-full bg-surface border border-border-muted rounded-2xl pl-12 pr-4 py-3.5 text-sm font-medium focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all placeholder:text-muted-foreground/90"
                 />
               </div>
             </div>
 
             <div className="pt-6 flex items-center justify-between border-t border-border-muted mt-4">
-              <button type="button" onClick={onClose} className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40 hover:text-foreground transition-colors">Abort</button>
+              <button type="button" onClick={onClose} className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 hover:text-foreground transition-colors">Cancel</button>
               <button 
                 type="submit" 
                 disabled={isPending || !scheduledAt} 

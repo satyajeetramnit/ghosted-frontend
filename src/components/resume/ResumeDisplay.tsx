@@ -13,7 +13,7 @@ interface Props {
 
 export default function ResumeDisplay({ resume }: Props) {
   return (
-    <div className="bg-surface/30 rounded-[2.5rem] border border-border-muted p-10 space-y-12">
+    <div className="bg-surface/50 rounded-[2.5rem] border border-border-muted p-10 space-y-12">
       {/* Header Artifact */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-border-muted pb-10">
         <div className="space-y-4">
@@ -26,19 +26,19 @@ export default function ResumeDisplay({ resume }: Props) {
              </h2>
              <div className="flex flex-wrap gap-x-6 gap-y-2 pt-2">
                {resume.email && (
-                 <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+                 <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground/90 uppercase tracking-widest">
                    <Mail className="w-3.5 h-3.5" />
                    <span>{resume.email}</span>
                  </div>
                )}
                {resume.phone && (
-                 <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+                 <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground/90 uppercase tracking-widest">
                    <Phone className="w-3.5 h-3.5" />
                    <span>{resume.phone}</span>
                  </div>
                )}
                {resume.location && (
-                 <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+                 <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground/90 uppercase tracking-widest">
                    <MapPin className="w-3.5 h-3.5" />
                    <span>{resume.location}</span>
                  </div>
@@ -49,13 +49,13 @@ export default function ResumeDisplay({ resume }: Props) {
 
         <div className="flex flex-wrap gap-3">
           {resume.linkedin && (
-             <div className="flex items-center gap-2 px-4 py-2 bg-background border border-border-muted rounded-xl text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+             <div className="flex items-center gap-2 px-4 py-2 bg-background border border-border-muted rounded-xl text-[10px] font-black uppercase tracking-widest text-muted-foreground/90">
                <ExternalLink className="w-3 h-3" />
                <span>LinkedIn</span>
              </div>
           )}
           {resume.github && (
-             <div className="flex items-center gap-2 px-4 py-2 bg-background border border-border-muted rounded-xl text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+             <div className="flex items-center gap-2 px-4 py-2 bg-background border border-border-muted rounded-xl text-[10px] font-black uppercase tracking-widest text-muted-foreground/90">
                <GitBranch className="w-3 h-3" />
                <span>GitHub</span>
              </div>
@@ -67,7 +67,7 @@ export default function ResumeDisplay({ resume }: Props) {
       {resume.summary && (
         <section className="space-y-6">
           <div className="flex items-center gap-4">
-            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40 font-inter">Strategic Objective</h3>
+            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/80 font-inter">Strategic Objective</h3>
             <div className="h-px flex-1 bg-border-muted" />
           </div>
           <p className="text-base text-foreground/80 leading-relaxed font-medium italic">"{resume.summary}"</p>
@@ -78,7 +78,7 @@ export default function ResumeDisplay({ resume }: Props) {
       {resume.skills.length > 0 && (
         <section className="space-y-6">
           <div className="flex items-center gap-4">
-            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40 font-inter">Competency Matrix</h3>
+            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/80 font-inter">Competency Matrix</h3>
             <div className="h-px flex-1 bg-border-muted" />
           </div>
           <div className="flex flex-wrap gap-2">
@@ -95,7 +95,7 @@ export default function ResumeDisplay({ resume }: Props) {
       {resume.experience.length > 0 && (
         <section className="space-y-8">
           <div className="flex items-center gap-4">
-            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40 font-inter">Professional Trajectory</h3>
+            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/80 font-inter">Professional Trajectory</h3>
             <div className="h-px flex-1 bg-border-muted" />
           </div>
           <div className="space-y-12">
@@ -106,12 +106,12 @@ export default function ResumeDisplay({ resume }: Props) {
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
                   <div className="space-y-1">
                     <p className="text-xl font-bold text-foreground font-outfit">{exp.title}</p>
-                    <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+                    <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground/90 uppercase tracking-widest">
                        <Building2 className="w-3.5 h-3.5" />
                        <span>{exp.company}</span>
                     </div>
                   </div>
-                  <div className="flex flex-col md:items-end gap-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
+                  <div className="flex flex-col md:items-end gap-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/80">
                     <div className="flex items-center gap-2">
                        <Calendar className="w-3.5 h-3.5" />
                        <span>{exp.startDate} – {exp.endDate}</span>
@@ -137,24 +137,24 @@ export default function ResumeDisplay({ resume }: Props) {
         </section>
       )}
 
-      {/* Academic Foundation */}
+      {/* Education */}
       {resume.education.length > 0 && (
         <section className="space-y-8">
           <div className="flex items-center gap-4">
-            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40 font-inter">Academic Foundation</h3>
+            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/80 font-inter">Education</h3>
             <div className="h-px flex-1 bg-border-muted" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {resume.education.map((edu, i) => (
-              <div key={i} className="bg-background/40 border border-border-muted rounded-[1.5rem] p-6 space-y-4">
+              <div key={i} className="bg-background/90 border border-border-muted rounded-[1.5rem] p-6 space-y-4">
                 <div className="space-y-1">
                   <p className="text-lg font-bold text-foreground font-outfit">{edu.institution}</p>
-                  <p className="text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+                  <p className="text-[11px] font-bold text-muted-foreground/90 uppercase tracking-widest">
                     {edu.degree} in {edu.field}
                   </p>
                 </div>
                 <div className="flex items-center justify-between pt-4 border-t border-border-muted">
-                   <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">
+                   <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground/80 uppercase tracking-widest">
                       <Calendar className="w-3.5 h-3.5" />
                       <span>{edu.graduationDate}</span>
                    </div>
@@ -170,11 +170,11 @@ export default function ResumeDisplay({ resume }: Props) {
         </section>
       )}
 
-      {/* Signal Prototypes (Projects) */}
+      {/* Projects (Projects) */}
       {resume.projects.length > 0 && (
         <section className="space-y-8">
           <div className="flex items-center gap-4">
-            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40 font-inter">Signal Prototypes</h3>
+            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/80 font-inter">Projects</h3>
             <div className="h-px flex-1 bg-border-muted" />
           </div>
           <div className="grid grid-cols-1 gap-6">
@@ -184,20 +184,20 @@ export default function ResumeDisplay({ resume }: Props) {
                   <div className="space-y-1">
                     <p className="text-xl font-bold text-foreground font-outfit">{proj.name}</p>
                     {proj.link && (
-                      <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">
+                      <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground/80 uppercase tracking-widest">
                          <Target className="w-3.5 h-3.5" />
                          <span>{proj.link}</span>
                       </div>
                     )}
                   </div>
-                  <div className="p-3 bg-background border border-border-muted rounded-xl text-muted-foreground/20 group-hover:text-foreground transition-all">
+                  <div className="p-3 bg-background border border-border-muted rounded-xl text-muted-foreground/90 group-hover:text-foreground transition-all">
                     <Code className="w-5 h-5" />
                   </div>
                 </div>
                 <p className="text-sm text-foreground/70 leading-relaxed font-medium mb-6">{proj.description}</p>
                 <div className="flex flex-wrap gap-2">
                   {proj.technologies.map((tech) => (
-                    <span key={tech} className="px-3 py-1 bg-background border border-border-muted rounded-lg text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 group-hover:text-foreground group-hover:border-border transition-all">
+                    <span key={tech} className="px-3 py-1 bg-background border border-border-muted rounded-lg text-[9px] font-black uppercase tracking-widest text-muted-foreground/90 group-hover:text-foreground group-hover:border-border transition-all">
                       {tech}
                     </span>
                   ))}

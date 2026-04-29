@@ -16,15 +16,15 @@ function Field({
 }) {
   return (
     <div className="space-y-1.5">
-      <label className="block text-[10px] font-black text-muted-foreground/40 uppercase tracking-widest ml-1">{label}</label>
+      <label className="block text-[10px] font-black text-muted-foreground/80 uppercase tracking-widest ml-1">{label}</label>
       <div className="relative group">
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within:text-foreground transition-colors">{icon}</span>
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/70 group-focus-within:text-foreground transition-colors">{icon}</span>
         <input
           type={type}
           value={value ?? ""}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="w-full pl-11 pr-4 py-3 bg-background border border-border-muted rounded-xl text-sm font-medium text-foreground placeholder:text-muted-foreground/20 focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all"
+          className="w-full pl-11 pr-4 py-3 bg-background border border-border-muted rounded-xl text-sm font-medium text-foreground placeholder:text-muted-foreground/90 focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all"
         />
       </div>
     </div>
@@ -63,7 +63,7 @@ export default function ProfileForm() {
       {/* Contact Section */}
       <section className="space-y-6">
         <div className="flex items-center gap-4">
-          <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40 font-inter">Contact Parameters</h3>
+          <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/80 font-inter">Contact Parameters</h3>
           <div className="h-px flex-1 bg-border-muted" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -85,7 +85,7 @@ export default function ProfileForm() {
       {/* Online Signal Section */}
       <section className="space-y-6">
         <div className="flex items-center gap-4">
-          <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40 font-inter">Signal Sources</h3>
+          <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/80 font-inter">Signal Sources</h3>
           <div className="h-px flex-1 bg-border-muted" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -103,17 +103,17 @@ export default function ProfileForm() {
       {/* Core Background Section */}
       <section className="space-y-6">
         <div className="flex items-center gap-4">
-          <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40 font-inter">Semantic Context</h3>
+          <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/80 font-inter">Semantic Context</h3>
           <div className="h-px flex-1 bg-border-muted" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Field label="Designated Title" icon={<Zap size={14} />}
+          <Field label="Job Title" icon={<Zap size={14} />}
             placeholder="Senior Software Engineer" value={form.currentTitle} onChange={set("currentTitle")} />
           <Field label="Temporal Magnitude (Years Exp)" icon={<ShieldCheck size={14} />}
             placeholder="3+" value={form.yearsExp} onChange={set("yearsExp")} />
         </div>
         <div className="space-y-2">
-          <label className="block text-[10px] font-black text-muted-foreground/40 uppercase tracking-widest ml-1">
+          <label className="block text-[10px] font-black text-muted-foreground/80 uppercase tracking-widest ml-1">
             Baseline Abstract (Summary)
           </label>
           <textarea
@@ -121,7 +121,7 @@ export default function ProfileForm() {
             value={form.existingSummary}
             onChange={(e) => set("existingSummary")(e.target.value)}
             placeholder="Input your core professional narrative. Ghosted AI will perform semantic enrichment during artifact generation."
-            className="w-full px-5 py-4 bg-background border border-border-muted rounded-2xl text-sm font-medium text-foreground placeholder:text-muted-foreground/20 focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all resize-none leading-relaxed"
+            className="w-full px-5 py-4 bg-background border border-border-muted rounded-2xl text-sm font-medium text-foreground placeholder:text-muted-foreground/90 focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all resize-none leading-relaxed"
           />
         </div>
       </section>
@@ -135,7 +135,7 @@ export default function ProfileForm() {
               : "bg-foreground text-background"
           }`}
         >
-          {saved ? <><Check size={14} /> Synced to Core</> : <><Sparkles size={14} /> Commit Changes</>}
+          {saved ? <><Check size={14} /> Interviewed to Core</> : <><Sparkles size={14} /> Save Changes</>}
         </button>
       </div>
     </div>

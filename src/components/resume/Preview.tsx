@@ -214,7 +214,7 @@ export default function Preview({ latex }: Props) {
     <div className="bg-card rounded-xl border border-border/50 overflow-hidden flex flex-col" style={{ minHeight: "600px" }}>
       <div className="px-4 py-3 border-b border-border/40 bg-background/50 rounded-t-xl shrink-0">
         <h2 className="text-xs uppercase tracking-widest text-accent font-medium">Resume Preview</h2>
-        <p className="text-xs text-foreground/40 mt-0.5">Rendered with KaTeX — structural layout is approximate</p>
+        <p className="text-xs text-foreground/80 mt-0.5">Rendered with KaTeX — structural layout is approximate</p>
       </div>
       <div className="flex-1 overflow-auto p-6 bg-white">
         <div

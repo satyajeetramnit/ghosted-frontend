@@ -32,7 +32,7 @@ export default function AIEditPanel({ onApply, isProcessing }: Props) {
   }
 
   return (
-    <div className="bg-surface/30 rounded-[2rem] border border-border-muted p-6 space-y-5">
+    <div className="bg-surface/50 rounded-[2rem] border border-border-muted p-6 space-y-5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-foreground text-background flex items-center justify-center">
@@ -40,7 +40,7 @@ export default function AIEditPanel({ onApply, isProcessing }: Props) {
           </div>
           <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/60">Semantic Refinement</h2>
         </div>
-        <div className="flex items-center gap-2 text-[9px] font-bold text-muted-foreground/30 uppercase tracking-widest">
+        <div className="flex items-center gap-2 text-[9px] font-bold text-muted-foreground/70 uppercase tracking-widest">
            <Zap className="w-3 h-3" />
            <span>Dynamic LaTeX Engine</span>
         </div>
@@ -48,14 +48,14 @@ export default function AIEditPanel({ onApply, isProcessing }: Props) {
 
       <div className="flex gap-3">
         <div className="relative flex-1">
-          <Sparkles className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/30" />
+          <Sparkles className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/70" />
           <input
             type="text"
             value={instruction}
             onChange={(e) => setInstruction(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleApply()}
             placeholder="Instruct the AI to refine the artifact structure…"
-            className="w-full pl-12 pr-4 py-3.5 text-sm bg-background border border-border-muted text-foreground placeholder:text-muted-foreground/20 rounded-xl focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all font-medium"
+            className="w-full pl-12 pr-4 py-3.5 text-sm bg-background border border-border-muted text-foreground placeholder:text-muted-foreground/90 rounded-xl focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all font-medium"
           />
         </div>
         <button
@@ -67,10 +67,10 @@ export default function AIEditPanel({ onApply, isProcessing }: Props) {
         </button>
       </div>
 
-      <div className="border border-border-muted rounded-xl overflow-hidden bg-background/20">
+      <div className="border border-border-muted rounded-xl overflow-hidden bg-background/50">
         <button
           onClick={() => setShowSuggestions((s) => !s)}
-          className="w-full flex items-center justify-between px-4 py-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground/40 hover:text-foreground transition-all"
+          className="w-full flex items-center justify-between px-4 py-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 hover:text-foreground transition-all"
         >
           Heuristic suggestions
           {showSuggestions ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
@@ -84,7 +84,7 @@ export default function AIEditPanel({ onApply, isProcessing }: Props) {
                     key={s}
                     onClick={() => handleApply(s)}
                     disabled={isProcessing}
-                    className="text-left text-[10px] font-bold px-4 py-2.5 rounded-lg hover:bg-foreground hover:text-background text-muted-foreground/60 transition-all disabled:opacity-50 border border-transparent hover:border-foreground"
+                    className="text-left text-[10px] font-bold px-4 py-2.5 rounded-lg hover:bg-foreground hover:text-background text-muted-foreground/90 transition-all disabled:opacity-50 border border-transparent hover:border-foreground"
                   >
                     {s}
                   </button>
@@ -98,15 +98,15 @@ export default function AIEditPanel({ onApply, isProcessing }: Props) {
       {history.length > 0 && (
         <div className="pt-2">
           <div className="flex items-center gap-2 mb-2 px-1">
-             <History className="w-3 h-3 text-muted-foreground/20" />
-             <p className="text-[9px] font-black text-muted-foreground/30 uppercase tracking-[0.2em]">Iteration History</p>
+             <History className="w-3 h-3 text-muted-foreground/90" />
+             <p className="text-[9px] font-black text-muted-foreground/70 uppercase tracking-[0.2em]">Iteration History</p>
           </div>
           <div className="flex flex-wrap gap-2">
             {history.map((h, i) => (
               <button
                 key={i}
                 onClick={() => handleApply(h)}
-                className="text-left text-[9px] font-bold px-3 py-1.5 rounded-full bg-surface border border-border-muted hover:border-foreground/20 text-muted-foreground/60 truncate transition-all max-w-[200px]"
+                className="text-left text-[9px] font-bold px-3 py-1.5 rounded-full bg-surface border border-border-muted hover:border-foreground/20 text-muted-foreground/90 truncate transition-all max-w-[200px]"
               >
                 {h}
               </button>

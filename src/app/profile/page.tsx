@@ -14,11 +14,11 @@ export default function ProfilePage() {
   return (
     <div className="flex-1 overflow-y-auto p-10 custom-scrollbar relative z-10">
       <header className="mb-12 space-y-2">
-        <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] mb-2">
+        <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em] mb-2">
           <Fingerprint className="w-4 h-4" />
           <span>Core Identity</span>
         </div>
-        <h1 className="text-4xl font-bold tracking-tight text-foreground font-outfit">Neural Configuration</h1>
+        <h1 className="text-4xl font-bold tracking-tight text-foreground font-outfit">Profile Configuration</h1>
         <p className="text-muted-foreground font-medium max-w-2xl leading-relaxed">
           Define your professional semantic identity. These parameters serve as the foundation for all AI-generated artifacts and strategic alignments.
         </p>
@@ -29,7 +29,7 @@ export default function ProfilePage() {
         {(
           [
             { id: "profile" as Tab, label: "Core Profile", icon: <User size={12} /> },
-            { id: "template" as Tab, label: "Experience Blueprint", icon: <FileText size={12} /> },
+            { id: "template" as Tab, label: "Experience", icon: <FileText size={12} /> },
           ] as const
         ).map((tab) => (
           <button
@@ -38,7 +38,7 @@ export default function ProfilePage() {
             className={`flex items-center gap-2.5 px-6 py-3 text-[10px] font-black uppercase tracking-widest rounded-full transition-all ${
               activeTab === tab.id
                 ? "bg-foreground text-background shadow-lg"
-                : "text-muted-foreground/40 hover:text-foreground"
+                : "text-muted-foreground/80 hover:text-foreground"
             }`}
           >
             {tab.icon}
@@ -54,7 +54,7 @@ export default function ProfilePage() {
         transition={{ duration: 0.3 }}
         className="pb-20"
       >
-        <div className="bg-surface/30 rounded-[2.5rem] border border-border-muted p-10 relative overflow-hidden">
+        <div className="bg-surface/50 rounded-[2.5rem] border border-border-muted p-10 relative overflow-hidden">
            {/* Subtle Glow */}
            <div className="absolute -right-20 -top-20 w-64 h-64 bg-indigo-500/5 rounded-full blur-[80px] pointer-events-none" />
            

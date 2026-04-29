@@ -44,11 +44,11 @@ export default function SettingsPage() {
       <div className="bg-surface/50 border border-border-muted rounded-[2.5rem] p-8 flex items-center justify-between group hover:border-border transition-all">
         <div className="space-y-1">
           <h3 className="text-sm font-bold text-foreground">System Health</h3>
-          <p className="text-xs text-muted-foreground/60">Ghosted Intelligence Engine v1.0.4 is running optimally.</p>
+          <p className="text-xs text-muted-foreground/90">Ghosted Intelligence Engine v1.0.4 is running optimally.</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-foreground/40">Synchronized</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-foreground/80">Interviewhronized</span>
         </div>
       </div>
     </div>
@@ -59,7 +59,7 @@ function SettingsGroup({ title, icon, items }: { title: string, icon: React.Reac
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3 px-2">
-        <div className="text-muted-foreground/40">{icon}</div>
+        <div className="text-muted-foreground/80">{icon}</div>
         <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/60">{title}</h3>
       </div>
       <div className="space-y-3">
@@ -71,10 +71,10 @@ function SettingsGroup({ title, icon, items }: { title: string, icon: React.Reac
               </div>
               <div>
                 <p className="text-sm font-bold text-foreground">{item.label}</p>
-                <p className="text-[11px] text-muted-foreground/60 mt-0.5">{item.description}</p>
+                <p className="text-[11px] text-muted-foreground/90 mt-0.5">{item.description}</p>
               </div>
             </div>
-            <ArrowRight className="w-4 h-4 text-muted-foreground/20 group-hover:text-foreground transition-all translate-x-[-10px] opacity-0 group-hover:translate-x-0 group-hover:opacity-100" />
+            <ArrowRight className="w-4 h-4 text-muted-foreground/90 group-hover:text-foreground transition-all translate-x-[-10px] opacity-0 group-hover:translate-x-0 group-hover:opacity-100" />
           </button>
         ))}
       </div>

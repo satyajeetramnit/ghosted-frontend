@@ -13,7 +13,7 @@ interface ColumnProps {
   emptyMessage: string;
 }
 
-export default function Column({ id, title, applications, emptyMessage }: ColumnProps) {
+function Column({ id, title, applications, emptyMessage }: ColumnProps) {
   return (
     <div className="flex flex-col w-[320px] shrink-0 group">
       {/* Column Header */}
@@ -26,7 +26,7 @@ export default function Column({ id, title, applications, emptyMessage }: Column
             {applications.length}
           </span>
         </div>
-        <button className="p-1.5 text-muted-foreground/40 hover:text-foreground hover:bg-surface rounded-lg transition-all opacity-0 group-hover:opacity-100">
+        <button className="p-1.5 text-muted-foreground/80 hover:text-foreground hover:bg-surface rounded-lg transition-all opacity-0 group-hover:opacity-100">
           <MoreHorizontal className="w-4 h-4" />
         </button>
       </div>
@@ -48,7 +48,7 @@ export default function Column({ id, title, applications, emptyMessage }: Column
             
             {applications.length === 0 && (
               <div className="h-32 border border-dashed border-border-muted rounded-[1.5rem] flex items-center justify-center p-6 text-center group/empty transition-all hover:border-border">
-                <p className="text-[11px] font-medium text-muted-foreground/40 leading-relaxed uppercase tracking-wider group-hover/empty:text-muted-foreground/60 transition-colors">
+                <p className="text-[11px] font-medium text-muted-foreground/80 leading-relaxed uppercase tracking-wider group-hover/empty:text-muted-foreground/90 transition-colors">
                   {emptyMessage}
                 </p>
               </div>

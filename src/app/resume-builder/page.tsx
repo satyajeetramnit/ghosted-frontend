@@ -171,9 +171,9 @@ export default function ResumeBuilderPage() {
   }
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
-    { id: "resume", label: "Semantic View", icon: <FileText size={12} /> },
-    { id: "latex", label: "Source Code", icon: <Code2 size={12} /> },
-    { id: "preview", label: "Artifact PDF", icon: <Eye size={12} /> },
+    { id: "resume", label: "Content View", icon: <FileText size={12} /> },
+    { id: "latex", label: "LaTeX Source", icon: <Code2 size={12} /> },
+    { id: "preview", label: "Preview PDF", icon: <Eye size={12} /> },
   ];
 
   const profileMissing = !profile.name?.trim();
@@ -189,14 +189,14 @@ export default function ResumeBuilderPage() {
       )}
 
       {/* Library Sidebar */}
-      <aside className="w-80 shrink-0 border-r border-border-muted flex flex-col bg-surface/30 backdrop-blur-md hidden xl:flex">
+      <aside className="w-80 shrink-0 border-r border-border-muted flex flex-col bg-surface/50 backdrop-blur-md hidden xl:flex">
         <div className="p-8 space-y-6">
            <div className="space-y-1">
-             <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em]">
+             <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em]">
                <Layers className="w-3.5 h-3.5" />
-               <span>Artifact Library</span>
+               <span>Saved Resumes</span>
              </div>
-             <h2 className="text-xl font-bold text-foreground font-outfit">Resume Forge</h2>
+             <h2 className="text-xl font-bold text-foreground font-outfit">Resume Builder</h2>
            </div>
            
            <button
@@ -204,7 +204,7 @@ export default function ResumeBuilderPage() {
              className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-foreground text-background rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-xl hover:scale-[1.02] active:scale-95 transition-all"
            >
              <Plus className="w-4 h-4" />
-             Forge New Artifact
+             Create New Resume
            </button>
         </div>
 
@@ -223,18 +223,18 @@ export default function ResumeBuilderPage() {
                 className={`group relative rounded-[1.8rem] p-5 cursor-pointer transition-all duration-500 border ${activeResumeId === r.id ? "bg-background border-border shadow-lg" : "bg-surface/50 border-border-muted hover:border-border hover:bg-surface"}`}
               >
                 <div className="flex items-start gap-4 pr-6">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${activeResumeId === r.id ? "bg-foreground text-background" : "bg-background border border-border-muted text-muted-foreground/30 group-hover:text-foreground"}`}>
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${activeResumeId === r.id ? "bg-foreground text-background" : "bg-background border border-border-muted text-muted-foreground/70 group-hover:text-foreground"}`}>
                     <Building2 className="w-5 h-5" />
                   </div>
                   <div className="min-w-0 space-y-1">
                     <p className="text-sm font-bold text-foreground font-outfit truncate">{r.companyName}</p>
-                    <p className="text-[11px] font-medium text-muted-foreground/60 truncate tracking-tight">{r.jobTitle}</p>
-                    <p className="text-[9px] font-bold text-muted-foreground/30 uppercase tracking-widest pt-2">{format(new Date(r.updatedAt), 'MMM d, yyyy')}</p>
+                    <p className="text-[11px] font-medium text-muted-foreground/90 truncate tracking-tight">{r.jobTitle}</p>
+                    <p className="text-[9px] font-bold text-muted-foreground/70 uppercase tracking-widest pt-2">{format(new Date(r.updatedAt), 'MMM d, yyyy')}</p>
                   </div>
                 </div>
                 <button
                   onClick={(e) => { e.stopPropagation(); deleteResume(r.id); if (activeResumeId === r.id) handleNewResume(); }}
-                  className="absolute top-4 right-4 p-2 opacity-0 group-hover:opacity-100 text-muted-foreground/20 hover:text-red-500 transition-all"
+                  className="absolute top-4 right-4 p-2 opacity-0 group-hover:opacity-100 text-muted-foreground/90 hover:text-red-500 transition-all"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -253,9 +253,9 @@ export default function ResumeBuilderPage() {
                  <Zap className="w-5 h-5" />
                </div>
                <div>
-                  <h1 className="text-xl font-bold text-foreground font-outfit tracking-tight">Intelligence Forge</h1>
-                  <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">
-                    <span>Targeting</span>
+                  <h1 className="text-xl font-bold text-foreground font-outfit tracking-tight">Resume Forge</h1>
+                  <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground/80 uppercase tracking-widest">
+                    <span>Target</span>
                     <ChevronRight className="w-3 h-3" />
                     <span className="text-foreground/60">{companyName || 'Undefined Entity'}</span>
                   </div>
@@ -266,17 +266,17 @@ export default function ResumeBuilderPage() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowUploadModal(true)}
-              className="flex items-center gap-2 px-5 py-2.5 bg-surface border border-border-muted rounded-full text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 hover:text-foreground hover:border-border transition-all"
+              className="flex items-center gap-2 px-5 py-2.5 bg-surface border border-border-muted rounded-full text-[10px] font-black uppercase tracking-widest text-muted-foreground/90 hover:text-foreground hover:border-border transition-all"
             >
               <Upload className="w-3.5 h-3.5" />
-              Ingest Data
+              Upload Data
             </button>
             <Link
               href="/profile"
               className="flex items-center gap-2 px-5 py-2.5 bg-foreground text-background rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg hover:scale-105 active:scale-95 transition-all"
             >
               <Settings2 className="w-3.5 h-3.5" />
-              Configure Core
+              Settings
             </Link>
           </div>
         </header>
@@ -287,7 +287,7 @@ export default function ResumeBuilderPage() {
               <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} className="overflow-hidden">
                 <div className="flex items-center gap-4 p-5 rounded-[1.5rem] border border-amber-500/20 bg-amber-500/5 text-amber-500/80 text-xs font-medium">
                   <AlertCircle className="w-5 h-5 shrink-0" />
-                  <span className="flex-1">Semantic profile incomplete. Forge will utilize generic intelligence.</span>
+                  <span className="flex-1">Profile incomplete. The generator will use default values..</span>
                   <Link href="/profile" className="px-4 py-1.5 bg-amber-500/10 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-amber-500/20 transition-all">Setup</Link>
                 </div>
               </motion.div>
@@ -296,29 +296,29 @@ export default function ResumeBuilderPage() {
 
           <div className="grid grid-cols-2 gap-8">
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-muted-foreground/40 uppercase tracking-[0.2em] ml-2">Target Enterprise</label>
+              <label className="text-[10px] font-black text-muted-foreground/80 uppercase tracking-[0.2em] ml-2">Target Company</label>
               <div className="relative group">
-                <Building2 className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/30 group-focus-within:text-foreground transition-colors" />
-                <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="e.g. Anthropic, Neuralink..." className="w-full pl-12 pr-6 py-4 bg-surface/50 border border-border-muted rounded-2xl text-sm font-bold text-foreground placeholder:text-muted-foreground/20 focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all" />
+                <Building2 className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/70 group-focus-within:text-foreground transition-colors" />
+                <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="e.g. Anthropic, Neuralink..." className="w-full pl-12 pr-6 py-4 bg-surface/50 border border-border-muted rounded-2xl text-sm font-bold text-foreground placeholder:text-muted-foreground/90 focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all" />
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-muted-foreground/40 uppercase tracking-[0.2em] ml-2">Objective Role</label>
+              <label className="text-[10px] font-black text-muted-foreground/80 uppercase tracking-[0.2em] ml-2">Target Role</label>
               <div className="relative group">
-                <Briefcase className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/30 group-focus-within:text-foreground transition-colors" />
-                <input type="text" value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} placeholder="e.g. Systems Architect" className="w-full pl-12 pr-6 py-4 bg-surface/50 border border-border-muted rounded-2xl text-sm font-bold text-foreground placeholder:text-muted-foreground/20 focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all" />
+                <Briefcase className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/70 group-focus-within:text-foreground transition-colors" />
+                <input type="text" value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} placeholder="e.g. Systems Architect" className="w-full pl-12 pr-6 py-4 bg-surface/50 border border-border-muted rounded-2xl text-sm font-bold text-foreground placeholder:text-muted-foreground/90 focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all" />
               </div>
             </div>
           </div>
 
           {/* Social Injectors */}
-          <div className="bg-surface/30 border border-border-muted rounded-[2rem] p-8 space-y-6">
+          <div className="bg-surface/50 border border-border-muted rounded-[2rem] p-8 space-y-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Globe className="w-4 h-4 text-muted-foreground/40" />
-                <h3 className="text-[11px] font-black text-foreground/60 uppercase tracking-[0.2em]">Digital Signal Injection</h3>
+                <Globe className="w-4 h-4 text-muted-foreground/80" />
+                <h3 className="text-[11px] font-black text-foreground/60 uppercase tracking-[0.2em]">Social Links</h3>
               </div>
-              <p className="text-[10px] font-medium text-muted-foreground/40 italic">Active signals will be compiled into the artifact header.</p>
+              <p className="text-[10px] font-medium text-muted-foreground/80 italic">These links will be included in your resume header..</p>
             </div>
             <div className="flex flex-wrap gap-3">
               {LINK_KEYS.map(({ key, label }) => {
@@ -329,7 +329,7 @@ export default function ResumeBuilderPage() {
                     key={key}
                     disabled={!available}
                     onClick={() => available && toggleLink(key)}
-                    className={`px-5 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-full border transition-all ${!available ? "opacity-10 grayscale border-border-muted bg-transparent" : enabled ? "bg-foreground text-background border-foreground shadow-lg" : "bg-surface/50 border-border-muted text-muted-foreground/40 hover:border-border hover:text-foreground"}`}
+                    className={`px-5 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-full border transition-all ${!available ? "opacity-10 grayscale border-border-muted bg-transparent" : enabled ? "bg-foreground text-background border-foreground shadow-lg" : "bg-surface/50 border-border-muted text-muted-foreground/80 hover:border-border hover:text-foreground"}`}
                   >
                     {label}
                   </button>
@@ -354,7 +354,7 @@ export default function ResumeBuilderPage() {
                       <button 
                         key={tab.id} 
                         onClick={() => setActiveTab(tab.id)} 
-                        className={`flex items-center gap-2 px-5 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-full transition-all ${activeTab === tab.id ? "bg-foreground text-background shadow-md" : "text-muted-foreground/40 hover:text-foreground"}`}
+                        className={`flex items-center gap-2 px-5 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-full transition-all ${activeTab === tab.id ? "bg-foreground text-background shadow-md" : "text-muted-foreground/80 hover:text-foreground"}`}
                       >
                         {tab.icon}
                         <span>{tab.label}</span>
@@ -366,7 +366,7 @@ export default function ResumeBuilderPage() {
                     onClick={handleSave}
                     className={`flex items-center gap-3 px-8 py-3 rounded-full text-[11px] font-black uppercase tracking-widest transition-all ${saveStatus === "saved" ? "bg-green-500 text-white shadow-lg shadow-green-500/20" : "bg-foreground text-background shadow-xl hover:scale-105 active:scale-95"}`}
                   >
-                    {saveStatus === "saved" ? <><Check className="w-4 h-4" /> Artifact Compiled</> : <><Save className="w-4 h-4" /> Commit to Library</>}
+                    {saveStatus === "saved" ? <><Check className="w-4 h-4" /> Resume Saved</> : <><Save className="w-4 h-4" /> Save to Library</>}
                   </button>
                 </div>
 
@@ -381,12 +381,12 @@ export default function ResumeBuilderPage() {
 
           {!resumeData && !isGenerating && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-24 space-y-6">
-              <div className="w-24 h-24 rounded-[2.5rem] bg-surface border border-border-muted flex items-center justify-center mx-auto text-muted-foreground/10 group-hover:scale-110 transition-transform">
+              <div className="w-24 h-24 rounded-[2.5rem] bg-surface border border-border-muted flex items-center justify-center mx-auto text-muted-foreground/80 group-hover:scale-110 transition-transform">
                 <FileText className="w-10 h-10" />
               </div>
               <div className="space-y-2">
-                <p className="text-[11px] font-black text-foreground/40 uppercase tracking-[0.3em]">System Standby</p>
-                <p className="text-sm text-muted-foreground max-w-xs mx-auto font-medium">Input target intelligence (Job Description) to initialize artifact synthesis.</p>
+                <p className="text-[11px] font-black text-foreground/80 uppercase tracking-[0.3em]">Ready</p>
+                <p className="text-sm text-muted-foreground max-w-xs mx-auto font-medium">Input a Job Description to generate a tailored resume.</p>
               </div>
             </motion.div>
           )}

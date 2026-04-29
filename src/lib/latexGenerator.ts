@@ -100,7 +100,7 @@ export function generateLatex(resume: ResumeData): string {
         ? `\\href{https://${proj.link}}{${esc(proj.name)}}`
         : esc(proj.name);
       const srcCell = proj.link
-        ? `{\\href{https://${proj.link}}{- Source Code}}`
+        ? `{\\href{https://${proj.link}}{- LaTeX Source}}`
         : "";
       return (
         `  \\resumeSubheading{${nameCell}}{${srcCell}}\n` +

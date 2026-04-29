@@ -25,7 +25,7 @@ export default function Sidebar() {
           </div>
           <div className="flex flex-col">
             <span className="text-xl font-bold tracking-tight text-foreground">Ghosted</span>
-            <span className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/60 leading-none">Intelligence</span>
+            <span className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/90 leading-none">Intelligence</span>
           </div>
         </Link>
       </div>
@@ -33,7 +33,7 @@ export default function Sidebar() {
       {/* Navigation */}
       <div className="flex-1 space-y-8">
         <div>
-          <h3 className="px-4 text-[11px] font-semibold text-muted-foreground/50 uppercase tracking-[0.2em] mb-4">Core</h3>
+          <h3 className="px-4 text-[11px] font-semibold text-muted-foreground/80 uppercase tracking-[0.2em] mb-4">Core</h3>
           <nav className="space-y-1.5">
             <NavItem href="/" icon={<LayoutDashboard />} label="Dashboard" active={pathname === "/"} />
             <NavItem href="/contacts" icon={<Users />} label="Contacts" active={pathname === "/contacts"} />
@@ -42,9 +42,9 @@ export default function Sidebar() {
         </div>
 
         <div>
-          <h3 className="px-4 text-[11px] font-semibold text-muted-foreground/50 uppercase tracking-[0.2em] mb-4">Tools</h3>
+          <h3 className="px-4 text-[11px] font-semibold text-muted-foreground/80 uppercase tracking-[0.2em] mb-4">Tools</h3>
           <nav className="space-y-1.5">
-            <NavItem href="/resume-builder" icon={<FileText />} label="Resume Forge" active={pathname === "/resume-builder"} />
+            <NavItem href="/resume-builder" icon={<FileText />} label="Resume Builder" active={pathname === "/resume-builder"} />
             <NavItem href="/settings" icon={<Settings />} label="Preferences" active={pathname === "/settings"} />
           </nav>
         </div>
@@ -66,7 +66,7 @@ export default function Sidebar() {
             <div className="font-medium text-sm text-foreground truncate">{user.firstName} {user.lastName}</div>
             <div className="text-[11px] text-muted-foreground truncate group-hover:text-foreground/70 transition-colors">View Workspace</div>
           </div>
-          <ChevronRight className="w-4 h-4 text-muted-foreground/30 group-hover:text-muted-foreground transition-colors" />
+          <ChevronRight className="w-4 h-4 text-muted-foreground/70 group-hover:text-muted-foreground transition-colors" />
         </Link>
         
         <button 
@@ -98,7 +98,7 @@ function NavItem({ href, icon, label, active = false }: { href: string, icon: Re
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
         />
       )}
-      <div className={`transition-colors duration-300 ${active ? "text-foreground" : "text-muted-foreground/60 group-hover:text-foreground"} [&>svg]:w-[18px] [&>svg]:h-[18px]`}>
+      <div className={`transition-colors duration-300 ${active ? "text-foreground" : "text-muted-foreground/90 group-hover:text-foreground"} [&>svg]:w-[18px] [&>svg]:h-[18px]`}>
         {icon}
       </div>
       <span className="text-sm font-medium tracking-tight">{label}</span>

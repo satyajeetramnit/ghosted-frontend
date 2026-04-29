@@ -47,7 +47,7 @@ function Field({ label, required, icon, type = "text", placeholder, value, onCha
         {required && <span className="text-red-400 ml-0.5">*</span>}
       </label>
       <div className="relative">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/30">{icon}</span>
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/70">{icon}</span>
         <input
           type={type}
           value={value}
@@ -91,13 +91,13 @@ export default function PersonalInfoModal({ onConfirm, onSkip, prefill }: Props)
         <div className="flex items-center justify-between px-6 py-4 border-b border-border/30 sticky top-0 bg-card rounded-t-2xl z-10">
           <div>
             <h2 className="text-base font-semibold text-foreground">Your Profile</h2>
-            <p className="text-xs text-foreground/50 mt-0.5">
+            <p className="text-xs text-foreground/80 mt-0.5">
               This info will be pre-filled into your generated resume
             </p>
           </div>
           <button
             onClick={onSkip}
-            className="p-1.5 rounded-lg hover:bg-border/30 text-foreground/40 hover:text-foreground/70 transition-colors"
+            className="p-1.5 rounded-lg hover:bg-border/30 text-foreground/80 hover:text-foreground/70 transition-colors"
           >
             <X size={16} />
           </button>
@@ -158,7 +158,7 @@ export default function PersonalInfoModal({ onConfirm, onSkip, prefill }: Props)
             <div>
               <label className="block text-xs font-medium text-foreground/60 mb-1">
                 Existing Summary{" "}
-                <span className="text-foreground/30 font-normal">(optional — AI will enhance it)</span>
+                <span className="text-foreground/70 font-normal">(optional — AI will enhance it)</span>
               </label>
               <textarea
                 rows={4}
