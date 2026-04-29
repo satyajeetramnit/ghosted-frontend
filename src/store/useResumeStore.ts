@@ -1,12 +1,23 @@
 import { create } from 'zustand';
-import { SavedResume, ResumeData } from '@/types/resume';
+import { SavedResume } from '@/types/resume';
 
+/**
+ * In-memory cache for saved resumes.
+ * NOTE: This store is intentionally NOT persisted to localStorage.
+ * The source of truth is the backend. The resume builder page
+ * calls useSavedResumes() on mount to hydrate this store from the DB.
+ */
 interface ResumeStoreState {
   savedResumes: SavedResume[];
   activeResumeId: string | null;
-  addResume: (resume: Omit<SavedResume, 'id' | 'createdAt' | 'updatedAt'>) => string;
-  updateResume: (id: string, updates: Partial<Pick<SavedResume, 'resumeData' | 'latexCode' | 'companyName' | 'jobTitle' | 'applicationId'>>) => void;
-  deleteResume: (id: string) => void;
+
+  // Hydrate from the server (called once on page load)
+  setResumes: (resumes: SavedResume[]) => void;
+
+  // Local state helpers (optimistic)
+  upsertResume: (resume: SavedResume) => void;
+  removeResume: (id: string) => void;
+
   setActiveResume: (id: string | null) => void;
   getResumeByApplication: (applicationId: string) => SavedResume | undefined;
 }
@@ -15,39 +26,27 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
   savedResumes: [],
   activeResumeId: null,
 
-  addResume: (resume) => {
-    const id = `resume_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-    const now = new Date().toISOString();
-    const newResume: SavedResume = {
-      ...resume,
-      id,
-      createdAt: now,
-      updatedAt: now,
-    };
-    set((state) => ({ savedResumes: [newResume, ...state.savedResumes] }));
-    return id;
-  },
+  setResumes: (resumes) => set({ savedResumes: resumes }),
 
-  updateResume: (id, updates) => {
-    set((state) => ({
-      savedResumes: state.savedResumes.map((r) =>
-        r.id === id ? { ...r, ...updates, updatedAt: new Date().toISOString() } : r
-      ),
-    }));
-  },
+  upsertResume: (resume) =>
+    set((state) => {
+      const exists = state.savedResumes.some((r) => r.id === resume.id);
+      if (exists) {
+        return {
+          savedResumes: state.savedResumes.map((r) => (r.id === resume.id ? resume : r)),
+        };
+      }
+      return { savedResumes: [resume, ...state.savedResumes] };
+    }),
 
-  deleteResume: (id) => {
+  removeResume: (id) =>
     set((state) => ({
       savedResumes: state.savedResumes.filter((r) => r.id !== id),
       activeResumeId: state.activeResumeId === id ? null : state.activeResumeId,
-    }));
-  },
+    })),
 
-  setActiveResume: (id) => {
-    set({ activeResumeId: id });
-  },
+  setActiveResume: (id) => set({ activeResumeId: id }),
 
-  getResumeByApplication: (applicationId) => {
-    return get().savedResumes.find((r) => r.applicationId === applicationId);
-  },
+  getResumeByApplication: (applicationId) =>
+    get().savedResumes.find((r) => r.applicationId === applicationId),
 }));

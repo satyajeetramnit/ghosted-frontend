@@ -210,3 +210,64 @@ export const applicationService = {
     await api.delete(`/applications/${id}`);
   },
 };
+
+// ─── Profile & Resume Builder ─────────────────────────────────────────────────
+
+export interface BackendProfile {
+  name?: string;
+  email?: string;
+  phone?: string;
+  location?: string;
+  linkedin?: string;
+  github?: string;
+  portfolio?: string;
+  leetcode?: string;
+  hackerrank?: string;
+  currentTitle?: string;
+  yearsExp?: string;
+  existingSummary?: string;
+  experiencesJson?: string;
+  educationJson?: string;
+  projectsJson?: string;
+}
+
+export interface BackendSavedResume {
+  id: string;
+  companyName: string;
+  jobTitle: string;
+  applicationId?: string | null;
+  resumeDataJson: string;
+  latexCode: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export const profileService = {
+  getProfile: async (): Promise<BackendProfile> => {
+    const response = await api.get<ApiResponse<BackendProfile>>('/profile');
+    return response.data.data;
+  },
+  saveProfile: async (data: BackendProfile): Promise<BackendProfile> => {
+    const response = await api.put<ApiResponse<BackendProfile>>('/profile', data);
+    return response.data.data;
+  },
+};
+
+export const savedResumeService = {
+  list: async (): Promise<BackendSavedResume[]> => {
+    const response = await api.get<ApiResponse<BackendSavedResume[]>>('/profile/resumes');
+    return response.data.data;
+  },
+  create: async (data: Omit<BackendSavedResume, 'id' | 'createdAt' | 'updatedAt'>): Promise<BackendSavedResume> => {
+    const response = await api.post<ApiResponse<BackendSavedResume>>('/profile/resumes', data);
+    return response.data.data;
+  },
+  update: async (id: string, data: Partial<Omit<BackendSavedResume, 'id' | 'createdAt' | 'updatedAt'>>): Promise<BackendSavedResume> => {
+    const response = await api.put<ApiResponse<BackendSavedResume>>(`/profile/resumes/${id}`, data);
+    return response.data.data;
+  },
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`/profile/resumes/${id}`);
+  },
+};
+

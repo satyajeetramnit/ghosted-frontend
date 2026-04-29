@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import {
-  FileText, Code2, Eye, Upload, Trash2, Plus, Building2, Save, Check, AlertCircle, Info, Sparkles, Loader2, BookOpen, Layers, Briefcase, Zap, Globe, ArrowRight, Settings2, ShieldCheck, ChevronRight
+  FileText, Code2, Eye, Upload, Trash2, Plus, Building2, Check, Sparkles, BookOpen, Layers, Zap, Settings2, ChevronRight, AlertCircle, Briefcase, Globe, Save
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useResumeStore } from "@/store/useResumeStore";
 import { useProfileStore } from "@/store/useProfileStore";
 import { useTemplateStore } from "@/store/useTemplateStore";
+import { useSavedResumes, useCreateSavedResume, useUpdateSavedResume, useDeleteSavedResume } from "@/hooks/useProfile";
 import { generateLatex } from "@/lib/latexGenerator";
 import { ResumeData, GlobalProfile, SavedResume } from "@/types/resume";
 import { format } from 'date-fns';
@@ -35,10 +36,32 @@ const LINK_KEYS: { key: LinkKey; label: string }[] = [
 export default function ResumeBuilderPage() {
   const { user } = useAuth();
 
-  const { savedResumes, addResume, updateResume, deleteResume, activeResumeId, setActiveResume } =
-    useResumeStore();
+  const { savedResumes, setResumes, upsertResume, removeResume, activeResumeId, setActiveResume } = useResumeStore();
   const { profile } = useProfileStore();
   const { template } = useTemplateStore();
+
+  // ── Backend resume CRUD ──────────────────────────────────────────────────
+  const { data: remoteResumes, isLoading: isLoadingResumes } = useSavedResumes();
+  const { mutate: createResumeOnServer } = useCreateSavedResume();
+  const { mutate: updateResumeOnServer } = useUpdateSavedResume();
+  const { mutate: deleteResumeOnServer } = useDeleteSavedResume();
+
+  // Hydrate store from server
+  useEffect(() => {
+    if (remoteResumes) {
+      const mapped: SavedResume[] = remoteResumes.map((r) => ({
+        id: r.id,
+        companyName: r.companyName,
+        jobTitle: r.jobTitle,
+        applicationId: r.applicationId ?? undefined,
+        resumeData: JSON.parse(r.resumeDataJson) as ResumeData,
+        latexCode: r.latexCode,
+        createdAt: r.createdAt,
+        updatedAt: r.updatedAt,
+      }));
+      setResumes(mapped);
+    }
+  }, [remoteResumes]);
 
   const [resumeData, setResumeData] = useState<ResumeData | null>(null);
   const [latexCode, setLatexCode] = useState("");
@@ -140,11 +163,40 @@ export default function ResumeBuilderPage() {
     if (!resumeData || !latexCode) return;
     const name = companyName.trim() || "Untitled Company";
     const title = jobTitle.trim() || "Unknown Role";
+    const resumeDataJson = JSON.stringify(resumeData);
+
     if (activeResumeId) {
-      updateResume(activeResumeId, { resumeData, latexCode, companyName: name, jobTitle: title });
+      // Update existing
+      updateResumeOnServer(
+        { id: activeResumeId, data: { resumeDataJson, latexCode, companyName: name, jobTitle: title } },
+        {
+          onSuccess: (updated) => {
+            upsertResume({
+              id: updated.id, companyName: updated.companyName, jobTitle: updated.jobTitle,
+              applicationId: updated.applicationId ?? undefined,
+              resumeData: JSON.parse(updated.resumeDataJson) as ResumeData,
+              latexCode: updated.latexCode, createdAt: updated.createdAt, updatedAt: updated.updatedAt,
+            });
+          },
+        }
+      );
     } else {
-      const id = addResume({ companyName: name, jobTitle: title, resumeData, latexCode });
-      setActiveResume(id);
+      // Create new
+      createResumeOnServer(
+        { companyName: name, jobTitle: title, resumeDataJson, latexCode },
+        {
+          onSuccess: (created) => {
+            const mapped: SavedResume = {
+              id: created.id, companyName: created.companyName, jobTitle: created.jobTitle,
+              applicationId: created.applicationId ?? undefined,
+              resumeData: JSON.parse(created.resumeDataJson) as ResumeData,
+              latexCode: created.latexCode, createdAt: created.createdAt, updatedAt: created.updatedAt,
+            };
+            upsertResume(mapped);
+            setActiveResume(mapped.id);
+          },
+        }
+      );
     }
     setSaveStatus("saved");
     setTimeout(() => setSaveStatus("idle"), 2000);
@@ -233,7 +285,7 @@ export default function ResumeBuilderPage() {
                   </div>
                 </div>
                 <button
-                  onClick={(e) => { e.stopPropagation(); deleteResume(r.id); if (activeResumeId === r.id) handleNewResume(); }}
+                  onClick={(e) => { e.stopPropagation(); deleteResumeOnServer(r.id, { onSuccess: () => { removeResume(r.id); if (activeResumeId === r.id) handleNewResume(); } }); }}
                   className="absolute top-4 right-4 p-2 opacity-0 group-hover:opacity-100 text-muted-foreground/90 hover:text-red-500 transition-all"
                 >
                   <Trash2 className="w-4 h-4" />

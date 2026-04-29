@@ -30,7 +30,7 @@ export default function ApplicationDrawer() {
   const { mutate: updateContacts, isPending: isSavingContacts } = useUpdateContacts();
   const { mutate: deleteApplication, isPending: isDeletingApplication } = useDeleteApplication();
 
-  const { savedResumes, updateResume } = useResumeStore();
+  const { savedResumes, upsertResume } = useResumeStore();
   const [showResumeDropdown, setShowResumeDropdown] = useState(false);
 
   const [noteContent, setNoteContent] = useState('');
@@ -595,7 +595,7 @@ export default function ApplicationDrawer() {
                     </div>
                   </div>
                   <button
-                    onClick={() => updateResume(linkedResume.id, { applicationId: undefined })}
+                    onClick={() => upsertResume({ ...linkedResume, applicationId: undefined })}
                     className="p-2 text-muted-foreground/90 hover:text-red-500 transition-all"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -624,7 +624,7 @@ export default function ApplicationDrawer() {
                           savedResumes.map(r => (
                             <button
                               key={r.id}
-                              onClick={() => { updateResume(r.id, { applicationId: app.id }); setShowResumeDropdown(false); }}
+                              onClick={() => { upsertResume({ ...r, applicationId: app.id }); setShowResumeDropdown(false); }}
                               className="w-full text-left px-5 py-3 rounded-xl hover:bg-surface text-xs font-bold text-foreground/60 hover:text-foreground transition-all"
                             >
                               {r.companyName} — {r.jobTitle}

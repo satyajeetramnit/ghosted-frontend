@@ -6,6 +6,7 @@ import {
   ChevronUp, ChevronDown, Check, X, Building2, Calendar, Target, Award, BookOpen, Layers, Sparkles
 } from "lucide-react";
 import { useTemplateStore } from "@/store/useTemplateStore";
+import { useSaveProfile } from "@/hooks/useProfile";
 import {
   ExperienceTemplate, EducationTemplate, ProjectTemplate,
 } from "@/types/resume";
@@ -463,6 +464,26 @@ function ProjectsSection() {
 // ─── Main Export ──────────────────────────────────────────────────────────────
 
 export default function ResumeTemplateEditor() {
+  const { template } = useTemplateStore();
+  const { mutate: saveProfile, isPending: isSaving } = useSaveProfile();
+  const [saved, setSaved] = useState(false);
+
+  function handleSaveTemplate() {
+    saveProfile(
+      {
+        experiencesJson: JSON.stringify(template.experiences),
+        educationJson: JSON.stringify(template.education),
+        projectsJson: JSON.stringify(template.projects),
+      },
+      {
+        onSuccess: () => {
+          setSaved(true);
+          setTimeout(() => setSaved(false), 2500);
+        },
+      }
+    );
+  }
+
   return (
     <div className="max-w-4xl space-y-16">
       <div className="bg-foreground text-background rounded-[2.5rem] p-10 relative overflow-hidden shadow-2xl">
@@ -473,13 +494,21 @@ export default function ResumeTemplateEditor() {
               <h2 className="text-2xl font-bold font-outfit tracking-tight">Experience Configuration</h2>
             </div>
             <p className="text-sm font-medium text-background/60 leading-relaxed max-w-xl">
-              Define your professional foundational data. During synthesis, <span className="text-background font-bold underline underline-offset-4 decoration-indigo-500/50">AI will perform semantic expansion</span> of your experiences and projects to align with target job specifications.
+              Configure your experience, education, and projects. The AI will expand these into tailored resume bullets for each job you apply to.
             </p>
           </div>
-          <div className="shrink-0 flex items-center gap-2 px-6 py-3 bg-background/10 rounded-2xl border border-white/10 text-[10px] font-black uppercase tracking-widest text-background/80 backdrop-blur-md">
+          <button
+            onClick={handleSaveTemplate}
+            disabled={isSaving}
+            className={`shrink-0 flex items-center gap-2 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest backdrop-blur-md transition-all disabled:opacity-60 ${
+              saved
+                ? "bg-green-500/20 border border-green-400/30 text-green-300"
+                : "bg-background/10 border border-white/10 text-background/80 hover:bg-background/20"
+            }`}
+          >
             <Layers className="w-4 h-4" />
-            <span>Multi-modal Context</span>
-          </div>
+            <span>{saved ? "Saved!" : isSaving ? "Saving..." : "Save Template"}</span>
+          </button>
         </div>
         {/* Subtle Decorative Elements */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 blur-[100px] rounded-full -mr-20 -mt-20" />
