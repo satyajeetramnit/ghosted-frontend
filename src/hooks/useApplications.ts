@@ -23,18 +23,41 @@ export const useUpdateApplicationStatus = (page = 0, size = 100) => {
   const queryKey = ['applications', page, size];
 
   return useMutation({
-    mutationFn: ({ id, status }: { id: string; status: ApplicationStatus }) => 
+    mutationFn: ({ id, status, destinationIndex }: { id: string; status: ApplicationStatus; destinationIndex?: number }) => 
       applicationService.updateStatus(id, status),
-    onMutate: async ({ id, status }) => {
+    onMutate: async ({ id, status, destinationIndex }) => {
       await queryClient.cancelQueries({ queryKey });
       const previousData = queryClient.getQueryData<PageResponse<Application>>(queryKey);
 
       if (previousData) {
+        const newContent = [...previousData.content];
+        const itemIndex = newContent.findIndex(app => app.id === id);
+        if (itemIndex > -1) {
+          const item = { ...newContent[itemIndex], status };
+          newContent.splice(itemIndex, 1);
+          
+          if (destinationIndex !== undefined) {
+            // Find where to insert in the flat array to match destinationIndex in the grouped array
+            let statusCount = 0;
+            let insertIndex = newContent.length;
+            for (let i = 0; i < newContent.length; i++) {
+              if (newContent[i].status === status) {
+                if (statusCount === destinationIndex) {
+                  insertIndex = i;
+                  break;
+                }
+                statusCount++;
+              }
+            }
+            newContent.splice(insertIndex, 0, item);
+          } else {
+            newContent.push(item);
+          }
+        }
+
         queryClient.setQueryData<PageResponse<Application>>(queryKey, {
           ...previousData,
-          content: previousData.content.map(app => 
-            app.id === id ? { ...app, status } : app
-          ),
+          content: newContent,
         });
       }
 

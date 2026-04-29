@@ -22,14 +22,11 @@ function CardComponent({ application, index }: CardProps) {
   return (
     <Draggable draggableId={application.id} index={index}>
       {(provided, snapshot) => (
-        <motion.div
+        <div
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...(provided.dragHandleProps as any)}
           onClick={() => setSelectedApplication(application)}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.05 }}
           className={`
             group relative bg-card p-6 rounded-[1.5rem] border transition-all duration-300 cursor-grab active:cursor-grabbing overflow-hidden
             ${snapshot.isDragging ? 'shadow-2xl shadow-foreground/5 border-foreground z-50 scale-[1.02]' : 'border-border-muted hover:border-border hover:bg-surface/50'}
@@ -99,7 +96,7 @@ function CardComponent({ application, index }: CardProps) {
               <ExternalLink className="w-3.5 h-3.5" />
             </button>
           </div>
-        </motion.div>
+        </div>
       )}
     </Draggable>
   );

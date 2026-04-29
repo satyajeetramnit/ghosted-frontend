@@ -26,23 +26,16 @@ export default function KanbanBoard() {
   const { mutate: updateStatus } = useUpdateApplicationStatus();
   const { setIsAddModalOpen } = useApplicationStore();
   const [searchTerm, setSearchTerm] = useState('');
-  const [isDragging, setIsDragging] = useState(false);
-  const [localApplications, setLocalApplications] = useState<Application[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     if (!isAuthLoading && !user) {
       router.push('/login');
     }
   }, [user, isAuthLoading, router]);
 
-  // Sync local applications when NOT dragging
-  useEffect(() => {
-    if (!isDragging && pageData?.content) {
-      setLocalApplications(pageData.content);
-    }
-  }, [pageData, isDragging]);
-
-  const applications = localApplications;
+  const applications = pageData?.content || [];
 
   const groupedApplications = useMemo(() => {
     const grouped: Record<ApplicationStatus, Application[]> = {
@@ -67,24 +60,13 @@ export default function KanbanBoard() {
     return grouped;
   }, [applications, searchTerm]);
 
-  const onDragStart = () => {
-    setIsDragging(true);
-  };
-
   const onDragEnd = (result: DropResult) => {
-    setIsDragging(false);
     const { destination, source, draggableId } = result;
     if (!destination) return;
     if (destination.droppableId === source.droppableId && destination.index === source.index) return;
 
     const newStatus = destination.droppableId as ApplicationStatus;
-    
-    // Optimistically update local state immediately to avoid "jump"
-    setLocalApplications(prev => prev.map(app => 
-      app.id === draggableId ? { ...app, status: newStatus } : app
-    ));
-
-    updateStatus({ id: draggableId, status: newStatus });
+    updateStatus({ id: draggableId, status: newStatus, destinationIndex: destination.index });
   };
 
   if (isAuthLoading || !user) {
@@ -95,7 +77,7 @@ export default function KanbanBoard() {
     );
   }
 
-  if (isQueryLoading) {
+  if (isQueryLoading || !isMounted) {
     return (
       <div className="flex-1 flex flex-col h-full bg-background p-8">
         <div className="h-20 flex items-center justify-between mb-8">
@@ -195,7 +177,7 @@ export default function KanbanBoard() {
               </button>
             </motion.div>
           ) : (
-            <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
+            <DragDropContext onDragEnd={onDragEnd}>
               <div className="flex gap-10 h-full items-start pb-10">
                 {COLUMNS.map((column) => (
                   <Column
