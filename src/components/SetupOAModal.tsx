@@ -1,9 +1,10 @@
 "use client";
 
-import { X, ClipboardList, Loader2 } from 'lucide-react';
+import { X, ClipboardList, Loader2, Calendar, Layout, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { OAStatus } from '../types';
 import { useUpdateOA } from '../hooks/useApplications';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface SetupOAModalProps {
   applicationId: string;
@@ -28,51 +29,76 @@ export default function SetupOAModal({ applicationId, onClose }: SetupOAModalPro
   };
 
   return (
-    <>
-      <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[60] transition-opacity" onClick={onClose} />
-      <div className="fixed inset-0 flex items-center justify-center z-[70] p-4 pointer-events-none">
-        <div className="bg-card w-full max-w-md rounded-2xl border border-border shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 pointer-events-auto flex flex-col">
-          <div className="flex items-center justify-between p-6 border-b border-border/30">
-            <h3 className="text-xl font-bold text-foreground flex items-center gap-2">
-              <ClipboardList className="w-5 h-5 text-accent" />
-              Setup OA Round
-            </h3>
-            <button onClick={onClose} className="p-2 hover:bg-background rounded-lg text-foreground/50 hover:text-foreground transition-colors">
+    <AnimatePresence>
+      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-background/60 backdrop-blur-[12px]" 
+          onClick={onClose} 
+        />
+        
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          className="relative w-full max-w-md bg-background border border-border shadow-[0_20px_80px_rgba(0,0,0,0.2)] rounded-[2rem] overflow-hidden flex flex-col"
+        >
+          {/* Subtle Grain Overlay */}
+          <div className="absolute inset-0 pointer-events-none opacity-[0.02] mix-blend-overlay z-0" 
+               style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3%3Cfilter id='noiseFilter'%3%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3%3C/filter%3%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3%3C/svg%3")` }} 
+          />
+
+          <div className="relative z-10 p-8 border-b border-border-muted flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-foreground text-background flex items-center justify-center">
+                <ClipboardList className="w-5 h-5" />
+              </div>
+              <h3 className="text-xl font-bold text-foreground font-outfit">Setup Assessment</h3>
+            </div>
+            <button onClick={onClose} className="p-2 rounded-lg hover:bg-surface text-muted-foreground transition-all">
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-6 space-y-6">
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground/80">Platform</label>
-              <input 
-                required 
-                value={platform} 
-                onChange={e => setPlatform(e.target.value)}
-                placeholder="HackerRank, CodeSignal, etc." 
-                className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all"
-              />
+          <form onSubmit={handleSubmit} className="relative z-10 p-8 space-y-6">
+            <div className="space-y-2">
+              <label className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest ml-1">Platform</label>
+              <div className="relative">
+                <Layout className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/30" />
+                <input 
+                  required 
+                  value={platform} 
+                  onChange={e => setPlatform(e.target.value)}
+                  placeholder="HackerRank, CodeSignal..." 
+                  className="w-full bg-surface border border-border-muted rounded-2xl pl-12 pr-4 py-3.5 text-sm font-medium focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all placeholder:text-muted-foreground/20"
+                />
+              </div>
             </div>
 
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground/80">Deadline</label>
-              <input 
-                type="datetime-local" 
-                value={deadline} 
-                onChange={e => setDeadline(e.target.value)}
-                className="w-full bg-background border border-border rounded-xl px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all dark:[color-scheme:dark]"
-              />
+            <div className="space-y-2">
+              <label className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest ml-1">Submission Deadline</label>
+              <div className="relative">
+                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/30" />
+                <input 
+                  type="datetime-local" 
+                  value={deadline} 
+                  onChange={e => setDeadline(e.target.value)}
+                  className="w-full bg-surface border border-border-muted rounded-2xl pl-12 pr-4 py-3.5 text-sm font-medium focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all dark:[color-scheme:dark]"
+                />
+              </div>
             </div>
 
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-foreground/80">Assessment Status</label>
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest ml-1">State</label>
               <div className="flex flex-wrap gap-2">
                  {(['PENDING', 'SUBMITTED', 'PASSED', 'FAILED'] as OAStatus[]).map(s => (
                    <button 
                      key={s} 
                      type="button" 
                      onClick={() => setStatus(s)}
-                     className={`px-4 py-1.5 rounded-full text-xs font-bold border transition-all ${status === s ? 'bg-accent/20 border-accent text-accent' : 'bg-background border-border text-foreground/40 hover:border-foreground/20'}`}
+                     className={`px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-wider border transition-all ${status === s ? 'bg-foreground text-background border-foreground shadow-lg' : 'bg-surface border-border-muted text-muted-foreground/40 hover:border-border hover:text-foreground'}`}
                    >
                      {s}
                    </button>
@@ -80,20 +106,20 @@ export default function SetupOAModal({ applicationId, onClose }: SetupOAModalPro
               </div>
             </div>
 
-            <div className="pt-6 flex justify-end gap-3 border-t border-border/30 mt-6">
-              <button type="button" onClick={onClose} className="px-5 py-2.5 rounded-xl font-medium text-foreground hover:bg-background transition-colors">Cancel</button>
+            <div className="pt-6 flex items-center justify-between border-t border-border-muted mt-4">
+              <button type="button" onClick={onClose} className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40 hover:text-foreground transition-colors">Abort</button>
               <button 
                 type="submit" 
                 disabled={isPending || !platform} 
-                className="bg-accent hover:bg-accent/90 text-white px-8 py-2.5 rounded-xl font-bold shadow-lg shadow-accent/20 transition-all disabled:opacity-70 flex items-center justify-center gap-2"
+                className="bg-foreground text-background px-8 py-3 rounded-full font-black uppercase tracking-widest text-[11px] shadow-lg hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100 flex items-center gap-2"
               >
-                {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
-                Save OA
+                {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                <span>Initialize Round</span>
               </button>
             </div>
           </form>
-        </div>
+        </motion.div>
       </div>
-    </>
+    </AnimatePresence>
   );
 }
