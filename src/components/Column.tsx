@@ -14,7 +14,7 @@ interface ColumnProps {
 
 export default function Column({ id, title, applications, emptyMessage }: ColumnProps) {
   return (
-    <div className="flex flex-col w-[320px] shrink-0 h-full max-h-full group">
+    <div className="flex flex-col w-[320px] shrink-0 group">
       {/* Column Header */}
       <div className="flex items-center justify-between mb-6 px-2">
         <div className="flex items-center gap-3">
@@ -37,7 +37,7 @@ export default function Column({ id, title, applications, emptyMessage }: Column
             ref={provided.innerRef}
             {...provided.droppableProps}
             className={`
-              flex-1 flex flex-col gap-5 p-2 rounded-[2rem] transition-all duration-300 overflow-y-auto custom-scrollbar pb-10
+              flex-1 flex flex-col gap-5 p-2 rounded-[2rem] transition-all duration-300 pb-10
               ${snapshot.isDraggingOver ? 'bg-surface/50 border border-dashed border-border' : 'bg-transparent'}
             `}
           >

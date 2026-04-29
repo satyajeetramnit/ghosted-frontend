@@ -104,7 +104,7 @@ export default function KanbanBoard() {
   ];
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-background relative overflow-hidden">
+    <div className="flex-1 flex flex-col h-full bg-background relative">
       {/* Top Header Section */}
       <header className="pt-10 pb-6 px-10 flex flex-col gap-8 relative z-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -152,7 +152,7 @@ export default function KanbanBoard() {
       </header>
 
       {/* Board Container */}
-      <div className="flex-1 overflow-x-auto p-10 pt-2 custom-scrollbar">
+      <div className="flex-1 p-10 pt-2">
         <AnimatePresence mode="wait">
           {applications.length === 0 && !searchTerm ? (
             <motion.div 

@@ -3,8 +3,9 @@
 import { ResumeData } from "@/types/resume";
 import {
   User, Mail, Phone, MapPin, ExternalLink, GitBranch,
-  Briefcase, GraduationCap, Code, Wrench,
+  Briefcase, GraduationCap, Code, Wrench, Sparkles, Building2, Calendar, Target
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface Props {
   resume: ResumeData;
@@ -12,49 +13,77 @@ interface Props {
 
 export default function ResumeDisplay({ resume }: Props) {
   return (
-    <div className="bg-card rounded-xl border border-border/50 p-5 space-y-5">
-      {/* Header */}
-      <div className="border-b border-border/30 pb-4">
-        <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
-          <User size={18} className="text-accent" />
-          {resume.name}
-        </h2>
-        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-foreground/60">
-          {resume.email && (
-            <span className="flex items-center gap-1"><Mail size={12} />{resume.email}</span>
-          )}
-          {resume.phone && (
-            <span className="flex items-center gap-1"><Phone size={12} />{resume.phone}</span>
-          )}
-          {resume.location && (
-            <span className="flex items-center gap-1"><MapPin size={12} />{resume.location}</span>
-          )}
+    <div className="bg-surface/30 rounded-[2.5rem] border border-border-muted p-10 space-y-12">
+      {/* Header Artifact */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-border-muted pb-10">
+        <div className="space-y-4">
+          <div className="w-16 h-16 rounded-2xl bg-foreground text-background flex items-center justify-center shadow-xl">
+             <User className="w-8 h-8" />
+          </div>
+          <div className="space-y-1">
+             <h2 className="text-4xl font-bold text-foreground font-outfit tracking-tight leading-tight">
+               {resume.name}
+             </h2>
+             <div className="flex flex-wrap gap-x-6 gap-y-2 pt-2">
+               {resume.email && (
+                 <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+                   <Mail className="w-3.5 h-3.5" />
+                   <span>{resume.email}</span>
+                 </div>
+               )}
+               {resume.phone && (
+                 <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+                   <Phone className="w-3.5 h-3.5" />
+                   <span>{resume.phone}</span>
+                 </div>
+               )}
+               {resume.location && (
+                 <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+                   <MapPin className="w-3.5 h-3.5" />
+                   <span>{resume.location}</span>
+                 </div>
+               )}
+             </div>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-3">
           {resume.linkedin && (
-            <span className="flex items-center gap-1"><ExternalLink size={12} />{resume.linkedin}</span>
+             <div className="flex items-center gap-2 px-4 py-2 bg-background border border-border-muted rounded-xl text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+               <ExternalLink className="w-3 h-3" />
+               <span>LinkedIn</span>
+             </div>
           )}
           {resume.github && (
-            <span className="flex items-center gap-1"><GitBranch size={12} />{resume.github}</span>
+             <div className="flex items-center gap-2 px-4 py-2 bg-background border border-border-muted rounded-xl text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+               <GitBranch className="w-3 h-3" />
+               <span>GitHub</span>
+             </div>
           )}
         </div>
       </div>
 
-      {/* Summary */}
+      {/* Summary Module */}
       {resume.summary && (
-        <section>
-          <h3 className="text-[11px] uppercase tracking-widest text-accent font-medium mb-2">Summary</h3>
-          <p className="text-sm text-foreground/80 leading-relaxed">{resume.summary}</p>
+        <section className="space-y-6">
+          <div className="flex items-center gap-4">
+            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40 font-inter">Strategic Objective</h3>
+            <div className="h-px flex-1 bg-border-muted" />
+          </div>
+          <p className="text-base text-foreground/80 leading-relaxed font-medium italic">"{resume.summary}"</p>
         </section>
       )}
 
-      {/* Skills */}
+      {/* Skills Matrix */}
       {resume.skills.length > 0 && (
-        <section>
-          <h3 className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-accent font-medium mb-2">
-            <Wrench size={12} /> Technical Skills
-          </h3>
-          <div className="flex flex-wrap gap-1.5">
+        <section className="space-y-6">
+          <div className="flex items-center gap-4">
+            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40 font-inter">Competency Matrix</h3>
+            <div className="h-px flex-1 bg-border-muted" />
+          </div>
+          <div className="flex flex-wrap gap-2">
             {resume.skills.map((skill) => (
-              <span key={skill} className="px-2.5 py-0.5 bg-accent/10 text-accent text-xs font-medium rounded-full border border-accent/20">
+              <span key={skill} className="px-4 py-2 bg-foreground text-background text-[10px] font-black uppercase tracking-widest rounded-full shadow-md">
                 {skill}
               </span>
             ))}
@@ -62,29 +91,43 @@ export default function ResumeDisplay({ resume }: Props) {
         </section>
       )}
 
-      {/* Experience */}
+      {/* Professional Trajectory */}
       {resume.experience.length > 0 && (
-        <section>
-          <h3 className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-accent font-medium mb-3">
-            <Briefcase size={12} /> Work Experience
-          </h3>
-          <div className="space-y-4">
+        <section className="space-y-8">
+          <div className="flex items-center gap-4">
+            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40 font-inter">Professional Trajectory</h3>
+            <div className="h-px flex-1 bg-border-muted" />
+          </div>
+          <div className="space-y-12">
             {resume.experience.map((exp, i) => (
-              <div key={i} className="relative pl-4 border-l-2 border-accent/20">
-                <div className="flex flex-wrap justify-between items-start gap-1">
-                  <div>
-                    <p className="font-semibold text-foreground text-sm">{exp.title}</p>
-                    <p className="text-foreground/60 text-sm">{exp.company}</p>
+              <div key={i} className="group relative pl-10 border-l border-border-muted hover:border-foreground transition-colors duration-500">
+                <div className="absolute -left-[5px] top-0 w-[9px] h-[9px] rounded-full bg-border-muted group-hover:bg-foreground transition-all duration-500" />
+                
+                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
+                  <div className="space-y-1">
+                    <p className="text-xl font-bold text-foreground font-outfit">{exp.title}</p>
+                    <div className="flex items-center gap-2 text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+                       <Building2 className="w-3.5 h-3.5" />
+                       <span>{exp.company}</span>
+                    </div>
                   </div>
-                  <div className="text-right text-xs text-foreground/40">
-                    <p>{exp.startDate} – {exp.endDate}</p>
-                    <p>{exp.location}</p>
+                  <div className="flex flex-col md:items-end gap-1 text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
+                    <div className="flex items-center gap-2">
+                       <Calendar className="w-3.5 h-3.5" />
+                       <span>{exp.startDate} – {exp.endDate}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                       <MapPin className="w-3.5 h-3.5" />
+                       <span>{exp.location}</span>
+                    </div>
                   </div>
                 </div>
-                <ul className="mt-2 space-y-1">
+                
+                <ul className="space-y-3">
                   {exp.bullets.map((bullet, j) => (
-                    <li key={j} className="text-sm text-foreground/70 flex gap-2 before:content-['•'] before:text-accent before:flex-shrink-0">
-                      {bullet}
+                    <li key={j} className="text-sm text-foreground/70 leading-relaxed font-medium flex gap-4">
+                      <span className="w-1.5 h-1.5 rounded-full bg-border-muted mt-1.5 shrink-0 group-hover:bg-foreground/20 transition-all" />
+                      <span>{bullet}</span>
                     </li>
                   ))}
                 </ul>
@@ -94,46 +137,67 @@ export default function ResumeDisplay({ resume }: Props) {
         </section>
       )}
 
-      {/* Education */}
+      {/* Academic Foundation */}
       {resume.education.length > 0 && (
-        <section>
-          <h3 className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-accent font-medium mb-3">
-            <GraduationCap size={12} /> Education
-          </h3>
-          <div className="space-y-2">
+        <section className="space-y-8">
+          <div className="flex items-center gap-4">
+            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40 font-inter">Academic Foundation</h3>
+            <div className="h-px flex-1 bg-border-muted" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {resume.education.map((edu, i) => (
-              <div key={i} className="flex justify-between items-start">
-                <div>
-                  <p className="font-semibold text-foreground text-sm">{edu.institution}</p>
-                  <p className="text-foreground/60 text-sm">
+              <div key={i} className="bg-background/40 border border-border-muted rounded-[1.5rem] p-6 space-y-4">
+                <div className="space-y-1">
+                  <p className="text-lg font-bold text-foreground font-outfit">{edu.institution}</p>
+                  <p className="text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest">
                     {edu.degree} in {edu.field}
-                    {edu.gpa && <span className="ml-2 text-foreground/40">GPA: {edu.gpa}</span>}
                   </p>
                 </div>
-                <p className="text-xs text-foreground/40">{edu.graduationDate}</p>
+                <div className="flex items-center justify-between pt-4 border-t border-border-muted">
+                   <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">
+                      <Calendar className="w-3.5 h-3.5" />
+                      <span>{edu.graduationDate}</span>
+                   </div>
+                   {edu.gpa && (
+                     <div className="px-3 py-1 bg-surface border border-border-muted rounded-full text-[10px] font-black text-foreground">
+                       GPA: {edu.gpa}
+                     </div>
+                   )}
+                </div>
               </div>
             ))}
           </div>
         </section>
       )}
 
-      {/* Projects */}
+      {/* Signal Prototypes (Projects) */}
       {resume.projects.length > 0 && (
-        <section>
-          <h3 className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-accent font-medium mb-3">
-            <Code size={12} /> Projects
-          </h3>
-          <div className="space-y-3">
+        <section className="space-y-8">
+          <div className="flex items-center gap-4">
+            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/40 font-inter">Signal Prototypes</h3>
+            <div className="h-px flex-1 bg-border-muted" />
+          </div>
+          <div className="grid grid-cols-1 gap-6">
             {resume.projects.map((proj, i) => (
-              <div key={i} className="bg-background rounded-lg p-3 border border-border/40">
-                <div className="flex justify-between items-start">
-                  <p className="font-semibold text-foreground text-sm">{proj.name}</p>
-                  {proj.link && <span className="text-xs text-accent">{proj.link}</span>}
+              <div key={i} className="bg-surface/50 border border-border-muted rounded-[2rem] p-8 group hover:bg-surface hover:border-border transition-all">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="space-y-1">
+                    <p className="text-xl font-bold text-foreground font-outfit">{proj.name}</p>
+                    {proj.link && (
+                      <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">
+                         <Target className="w-3.5 h-3.5" />
+                         <span>{proj.link}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-3 bg-background border border-border-muted rounded-xl text-muted-foreground/20 group-hover:text-foreground transition-all">
+                    <Code className="w-5 h-5" />
+                  </div>
                 </div>
-                <p className="text-sm text-foreground/70 mt-1">{proj.description}</p>
-                <div className="flex flex-wrap gap-1 mt-2">
+                <p className="text-sm text-foreground/70 leading-relaxed font-medium mb-6">{proj.description}</p>
+                <div className="flex flex-wrap gap-2">
                   {proj.technologies.map((tech) => (
-                    <span key={tech} className="px-2 py-0.5 bg-card border border-border/50 text-xs text-foreground/60 rounded">
+                    <span key={tech} className="px-3 py-1 bg-background border border-border-muted rounded-lg text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 group-hover:text-foreground group-hover:border-border transition-all">
                       {tech}
                     </span>
                   ))}

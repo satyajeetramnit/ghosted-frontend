@@ -1,9 +1,9 @@
-﻿"use client";
+"use client";
 
 import { useState, useCallback } from "react";
 import Link from "next/link";
 import {
-  FileText, Code2, Eye, Upload, Trash2, Plus, Building2, Save, Check, AlertCircle, Info,
+  FileText, Code2, Eye, Upload, Trash2, Plus, Building2, Save, Check, AlertCircle, Info, Sparkles, Loader2, BookOpen, Layers, Briefcase, Zap, Globe, ArrowRight, Settings2, ShieldCheck, ChevronRight
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useResumeStore } from "@/store/useResumeStore";
@@ -18,6 +18,7 @@ import LaTeXEditor from "@/components/resume/LaTeXEditor";
 import AIEditPanel from "@/components/resume/AIEditPanel";
 import Preview from "@/components/resume/Preview";
 import ResumeUploadModal from "@/components/resume/ResumeUploadModal";
+import { motion, AnimatePresence } from "framer-motion";
 
 type Tab = "resume" | "latex" | "preview";
 type LinkKey = "linkedin" | "github" | "portfolio" | "leetcode" | "hackerrank";
@@ -169,16 +170,16 @@ export default function ResumeBuilderPage() {
   }
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
-    { id: "resume", label: "Resume", icon: <FileText size={14} /> },
-    { id: "latex", label: "LaTeX", icon: <Code2 size={14} /> },
-    { id: "preview", label: "Preview", icon: <Eye size={14} /> },
+    { id: "resume", label: "Semantic View", icon: <FileText size={12} /> },
+    { id: "latex", label: "Source Code", icon: <Code2 size={12} /> },
+    { id: "preview", label: "Artifact PDF", icon: <Eye size={12} /> },
   ];
 
   const profileMissing = !profile.name?.trim();
   const templateMissing = template.experiences.length === 0;
 
   return (
-    <div className="flex h-full overflow-hidden">
+    <div className="flex-1 flex h-full overflow-hidden bg-transparent">
       {showUploadModal && (
         <ResumeUploadModal
           onExtracted={handleResumeExtracted}
@@ -186,107 +187,139 @@ export default function ResumeBuilderPage() {
         />
       )}
 
-      <aside className="w-64 shrink-0 border-r border-border/30 flex flex-col bg-background overflow-hidden hidden md:flex">
-        <div className="px-4 py-4 border-b border-border/30">
-          <h2 className="text-xs uppercase tracking-widest text-foreground/50 font-medium mb-3">My Resumes</h2>
-          <button
-            onClick={handleNewResume}
-            className="cursor-pointer w-full flex items-center gap-2 px-3 py-2 bg-accent/10 hover:bg-accent/20 text-accent text-sm font-medium rounded-lg transition-colors border border-accent/20"
-          >
-            <Plus size={14} />
-            New Resume
-          </button>
+      {/* Library Sidebar */}
+      <aside className="w-80 shrink-0 border-r border-border-muted flex flex-col bg-surface/30 backdrop-blur-md hidden xl:flex">
+        <div className="p-8 space-y-6">
+           <div className="space-y-1">
+             <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em]">
+               <Layers className="w-3.5 h-3.5" />
+               <span>Artifact Library</span>
+             </div>
+             <h2 className="text-xl font-bold text-foreground font-outfit">Resume Forge</h2>
+           </div>
+           
+           <button
+             onClick={handleNewResume}
+             className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-foreground text-background rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-xl hover:scale-[1.02] active:scale-95 transition-all"
+           >
+             <Plus className="w-4 h-4" />
+             Forge New Artifact
+           </button>
         </div>
-        <div className="flex-1 overflow-y-auto p-3 space-y-2">
+
+        <div className="flex-1 overflow-y-auto px-6 pb-10 space-y-4 custom-scrollbar">
           {savedResumes.length === 0 ? (
-            <p className="text-xs text-foreground/30 text-center mt-6 px-2">No saved resumes yet. Generate one and save it here.</p>
+            <div className="py-20 text-center space-y-4 opacity-20">
+               <BookOpen className="w-10 h-10 mx-auto" />
+               <p className="text-[10px] font-bold uppercase tracking-[0.2em]">No artifacts stored.</p>
+            </div>
           ) : (
             savedResumes.map((r) => (
-              <div
+              <motion.div
                 key={r.id}
+                layout
                 onClick={() => handleLoadResume(r)}
-                className={`group relative rounded-lg p-3 cursor-pointer transition-colors border ${activeResumeId === r.id ? "bg-accent/10 border-accent/30 text-accent" : "bg-card border-border/30 hover:bg-card/80 text-foreground"}`}
+                className={`group relative rounded-[1.8rem] p-5 cursor-pointer transition-all duration-500 border ${activeResumeId === r.id ? "bg-background border-border shadow-lg" : "bg-surface/50 border-border-muted hover:border-border hover:bg-surface"}`}
               >
-                <div className="flex items-start gap-2 pr-6">
-                  <Building2 size={14} className="mt-0.5 shrink-0 opacity-70" />
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium truncate">{r.companyName}</p>
-                    <p className="text-xs opacity-60 truncate">{r.jobTitle}</p>
-                    <p className="text-[10px] opacity-40 mt-0.5">{new Date(r.updatedAt).toLocaleDateString()}</p>
+                <div className="flex items-start gap-4 pr-6">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${activeResumeId === r.id ? "bg-foreground text-background" : "bg-background border border-border-muted text-muted-foreground/30 group-hover:text-foreground"}`}>
+                    <Building2 className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0 space-y-1">
+                    <p className="text-sm font-bold text-foreground font-outfit truncate">{r.companyName}</p>
+                    <p className="text-[11px] font-medium text-muted-foreground/60 truncate tracking-tight">{r.jobTitle}</p>
+                    <p className="text-[9px] font-bold text-muted-foreground/30 uppercase tracking-widest pt-2">{format(new Date(r.updatedAt), 'MMM d, yyyy')}</p>
                   </div>
                 </div>
                 <button
                   onClick={(e) => { e.stopPropagation(); deleteResume(r.id); if (activeResumeId === r.id) handleNewResume(); }}
-                  className="absolute top-2 right-2 p-1 opacity-0 group-hover:opacity-100 text-foreground/40 hover:text-red-400 transition-all rounded"
+                  className="absolute top-4 right-4 p-2 opacity-0 group-hover:opacity-100 text-muted-foreground/20 hover:text-red-500 transition-all"
                 >
-                  <Trash2 size={12} />
+                  <Trash2 className="w-4 h-4" />
                 </button>
-              </div>
+              </motion.div>
             ))
           )}
         </div>
       </aside>
 
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="shrink-0 px-5 py-3 border-b border-border/30 flex items-center gap-3 bg-background/80 backdrop-blur-sm">
-          <div className="flex items-center gap-2 flex-1 min-w-0">
-            <FileText size={16} className="text-accent shrink-0" />
-            <span className="font-semibold text-foreground text-sm">Resume Builder</span>
-            <span className="text-xs border border-accent/30 bg-accent/10 text-accent px-1.5 py-0.5 rounded-md hidden sm:inline">AI Powered</span>
+      {/* Main Workspace */}
+      <div className="flex-1 flex flex-col overflow-hidden relative">
+        <header className="shrink-0 px-10 py-6 flex items-center justify-between bg-transparent z-20">
+          <div className="flex items-center gap-4">
+             <div className="flex items-center gap-3">
+               <div className="w-10 h-10 rounded-xl bg-foreground text-background flex items-center justify-center">
+                 <Zap className="w-5 h-5" />
+               </div>
+               <div>
+                  <h1 className="text-xl font-bold text-foreground font-outfit tracking-tight">Intelligence Forge</h1>
+                  <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">
+                    <span>Targeting</span>
+                    <ChevronRight className="w-3 h-3" />
+                    <span className="text-foreground/60">{companyName || 'Undefined Entity'}</span>
+                  </div>
+               </div>
+             </div>
           </div>
-          <div className="flex items-center gap-2">
+
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setShowUploadModal(true)}
-              className="cursor-pointer flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-foreground/60 bg-card hover:bg-border/30 rounded-lg border border-border/50 transition-all"
+              className="flex items-center gap-2 px-5 py-2.5 bg-surface border border-border-muted rounded-full text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 hover:text-foreground hover:border-border transition-all"
             >
-              <Upload size={12} />
-              Import
+              <Upload className="w-3.5 h-3.5" />
+              Ingest Data
             </button>
             <Link
               href="/profile"
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-accent bg-accent/10 hover:bg-accent/20 rounded-lg border border-accent/20 transition-all"
+              className="flex items-center gap-2 px-5 py-2.5 bg-foreground text-background rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg hover:scale-105 active:scale-95 transition-all"
             >
-              {profile.name ? `Profile: ${profile.name.split(" ")[0]}` : "Set Up Profile"}
+              <Settings2 className="w-3.5 h-3.5" />
+              Configure Core
             </Link>
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-5 space-y-5">
-          {profileMissing && (
-            <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-amber-500/30 bg-amber-500/8 text-amber-400 text-sm">
-              <AlertCircle size={16} className="shrink-0" />
-              <span className="flex-1">Your profile is not set up. AI will use placeholder details.</span>
-              <Link href="/profile" className="text-xs font-medium underline underline-offset-2 hover:text-amber-300">Set Up Profile</Link>
-            </div>
-          )}
-          {templateMissing && !profileMissing && (
-            <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-blue-500/30 bg-blue-500/8 text-blue-400 text-sm">
-              <Info size={16} className="shrink-0" />
-              <span className="flex-1">No experience template configured. AI will use sample experience.</span>
-              <Link href="/profile" className="text-xs font-medium underline underline-offset-2 hover:text-blue-300">Edit Template</Link>
-            </div>
-          )}
+        <div className="flex-1 overflow-y-auto px-10 pb-20 space-y-8 custom-scrollbar relative z-10">
+          <AnimatePresence>
+            {profileMissing && (
+              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} className="overflow-hidden">
+                <div className="flex items-center gap-4 p-5 rounded-[1.5rem] border border-amber-500/20 bg-amber-500/5 text-amber-500/80 text-xs font-medium">
+                  <AlertCircle className="w-5 h-5 shrink-0" />
+                  <span className="flex-1">Semantic profile incomplete. Forge will utilize generic intelligence.</span>
+                  <Link href="/profile" className="px-4 py-1.5 bg-amber-500/10 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-amber-500/20 transition-all">Setup</Link>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-foreground/50 mb-1.5">Company Name</label>
-              <div className="relative">
-                <Building2 size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/30" />
-                <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="e.g. Google" className="w-full pl-9 pr-3 py-2 bg-card border border-border/50 rounded-lg text-sm text-foreground placeholder:text-foreground/25 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/50" />
+          <div className="grid grid-cols-2 gap-8">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-muted-foreground/40 uppercase tracking-[0.2em] ml-2">Target Enterprise</label>
+              <div className="relative group">
+                <Building2 className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/30 group-focus-within:text-foreground transition-colors" />
+                <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="e.g. Anthropic, Neuralink..." className="w-full pl-12 pr-6 py-4 bg-surface/50 border border-border-muted rounded-2xl text-sm font-bold text-foreground placeholder:text-muted-foreground/20 focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all" />
               </div>
             </div>
-            <div>
-              <label className="block text-xs font-medium text-foreground/50 mb-1.5">Job Title</label>
-              <input type="text" value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} placeholder="e.g. Senior Software Engineer" className="w-full px-3 py-2 bg-card border border-border/50 rounded-lg text-sm text-foreground placeholder:text-foreground/25 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/50" />
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-muted-foreground/40 uppercase tracking-[0.2em] ml-2">Objective Role</label>
+              <div className="relative group">
+                <Briefcase className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/30 group-focus-within:text-foreground transition-colors" />
+                <input type="text" value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} placeholder="e.g. Systems Architect" className="w-full pl-12 pr-6 py-4 bg-surface/50 border border-border-muted rounded-2xl text-sm font-bold text-foreground placeholder:text-muted-foreground/20 focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all" />
+              </div>
             </div>
           </div>
 
-          <div className="rounded-xl border border-border/30 bg-card p-4">
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-xs font-semibold text-foreground/60 uppercase tracking-widest">Online Profiles in Header</p>
-              <Link href="/profile" className="text-xs text-accent hover:text-accent/80 transition-colors">Edit Profile</Link>
+          {/* Social Injectors */}
+          <div className="bg-surface/30 border border-border-muted rounded-[2rem] p-8 space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Globe className="w-4 h-4 text-muted-foreground/40" />
+                <h3 className="text-[11px] font-black text-foreground/60 uppercase tracking-[0.2em]">Digital Signal Injection</h3>
+              </div>
+              <p className="text-[10px] font-medium text-muted-foreground/40 italic">Active signals will be compiled into the artifact header.</p>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-3">
               {LINK_KEYS.map(({ key, label }) => {
                 const available = isLinkAvailable(key);
                 const enabled = available && !disabledLinks.has(key);
@@ -295,8 +328,7 @@ export default function ResumeBuilderPage() {
                     key={key}
                     disabled={!available}
                     onClick={() => available && toggleLink(key)}
-                    title={!available ? `Add ${label} URL in Profile` : undefined}
-                    className={`px-3 py-1 text-xs font-medium rounded-full border transition-all ${!available ? "opacity-30 cursor-not-allowed border-border/40 text-foreground/40 bg-transparent" : enabled ? "bg-accent/15 border-accent/30 text-accent" : "bg-transparent border-border/40 text-foreground/40 hover:border-accent/20"}`}
+                    className={`px-5 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-full border transition-all ${!available ? "opacity-10 grayscale border-border-muted bg-transparent" : enabled ? "bg-foreground text-background border-foreground shadow-lg" : "bg-surface/50 border-border-muted text-muted-foreground/40 hover:border-border hover:text-foreground"}`}
                   >
                     {label}
                   </button>
@@ -305,41 +337,57 @@ export default function ResumeBuilderPage() {
             </div>
           </div>
 
-          <JobDescriptionInput onGenerate={handleGenerate} isGenerating={isGenerating} />
+          {/* Job Description Input Overhaul happens in its component, but we style its placement */}
+          <div className="relative group">
+             <JobDescriptionInput onGenerate={handleGenerate} isGenerating={isGenerating} />
+          </div>
 
-          {resumeData && (
-            <>
-              <AIEditPanel onApply={handleAIEdit} isProcessing={isApplyingEdit} />
-              <div className="flex items-center justify-between">
-                <div className="flex gap-1 p-1 bg-card rounded-xl border border-border/30">
-                  {tabs.map((tab) => (
-                    <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium rounded-lg transition-all ${activeTab === tab.id ? "bg-accent/15 text-accent" : "text-foreground/50 hover:text-foreground"}`}>
-                      {tab.icon}
-                      {tab.label}
-                    </button>
-                  ))}
+          <AnimatePresence>
+            {resumeData && (
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+                <AIEditPanel onApply={handleAIEdit} isProcessing={isApplyingEdit} />
+                
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-surface/50 p-4 rounded-[2rem] border border-border-muted">
+                  <div className="flex gap-2 p-1.5 bg-background rounded-[1.5rem] border border-border-muted shadow-inner">
+                    {tabs.map((tab) => (
+                      <button 
+                        key={tab.id} 
+                        onClick={() => setActiveTab(tab.id)} 
+                        className={`flex items-center gap-2 px-5 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-full transition-all ${activeTab === tab.id ? "bg-foreground text-background shadow-md" : "text-muted-foreground/40 hover:text-foreground"}`}
+                      >
+                        {tab.icon}
+                        <span>{tab.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                  
+                  <button
+                    onClick={handleSave}
+                    className={`flex items-center gap-3 px-8 py-3 rounded-full text-[11px] font-black uppercase tracking-widest transition-all ${saveStatus === "saved" ? "bg-green-500 text-white shadow-lg shadow-green-500/20" : "bg-foreground text-background shadow-xl hover:scale-105 active:scale-95"}`}
+                  >
+                    {saveStatus === "saved" ? <><Check className="w-4 h-4" /> Artifact Compiled</> : <><Save className="w-4 h-4" /> Commit to Library</>}
+                  </button>
                 </div>
-                <button
-                  onClick={handleSave}
-                  className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg transition-all ${saveStatus === "saved" ? "bg-green-500/15 text-green-400 border border-green-500/30" : "bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20"}`}
-                >
-                  {saveStatus === "saved" ? <><Check size={14} /> Saved!</> : <><Save size={14} /> Save Resume</>}
-                </button>
-              </div>
-              <div className="pb-8">
-                {activeTab === "resume" && <ResumeDisplay resume={resumeData} />}
-                {activeTab === "latex" && <LaTeXEditor value={latexCode} onChange={setLatexCode} />}
-                {activeTab === "preview" && <Preview latex={latexCode} />}
-              </div>
-            </>
-          )}
 
-          {!resumeData && (
-            <div className="text-center py-16 text-foreground/30">
-              <FileText size={40} className="mx-auto mb-3 opacity-20" />
-              <p className="text-sm">Paste a job description above to generate your tailored resume</p>
-              <p className="text-xs mt-1">Or import an existing resume to edit it</p>
-            </div>
+                <div className="pb-20 relative min-h-[600px]">
+                  {activeTab === "resume" && <ResumeDisplay resume={resumeData} />}
+                  {activeTab === "latex" && <LaTeXEditor value={latexCode} onChange={setLatexCode} />}
+                  {activeTab === "preview" && <Preview latex={latexCode} />}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {!resumeData && !isGenerating && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-24 space-y-6">
+              <div className="w-24 h-24 rounded-[2.5rem] bg-surface border border-border-muted flex items-center justify-center mx-auto text-muted-foreground/10 group-hover:scale-110 transition-transform">
+                <FileText className="w-10 h-10" />
+              </div>
+              <div className="space-y-2">
+                <p className="text-[11px] font-black text-foreground/40 uppercase tracking-[0.3em]">System Standby</p>
+                <p className="text-sm text-muted-foreground max-w-xs mx-auto font-medium">Input target intelligence (Job Description) to initialize artifact synthesis.</p>
+              </div>
+            </motion.div>
           )}
         </div>
       </div>

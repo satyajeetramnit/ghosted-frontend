@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, ChevronDown, ChevronUp } from "lucide-react";
+import { Loader2, ChevronDown, ChevronUp, Sparkles, Wand2, History, Zap } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Props {
   onApply: (instruction: string) => void;
@@ -9,12 +10,12 @@ interface Props {
 }
 
 const SUGGESTIONS = [
-  "Make the header font larger",
-  "Add more spacing between sections",
-  "Use compact margins to fit on one page",
-  "Add color to the section headers",
-  "Add an Objective section",
-  "Remove the Professional Summary section",
+  "Optimize for single-page density",
+  "Enhance typography for readability",
+  "Modernize section header aesthetics",
+  "Balance white space for clean layout",
+  "Inject a Strategic Objective section",
+  "Refine Professional Summary syntax",
 ];
 
 export default function AIEditPanel({ onApply, isProcessing }: Props) {
@@ -31,65 +32,83 @@ export default function AIEditPanel({ onApply, isProcessing }: Props) {
   }
 
   return (
-    <div className="bg-card rounded-xl border border-border/50 p-4">
-      <div className="flex items-center gap-2 mb-3">
-        <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-        <h2 className="text-xs uppercase tracking-widest text-accent font-medium">AI LaTeX Edit</h2>
+    <div className="bg-surface/30 rounded-[2rem] border border-border-muted p-6 space-y-5">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-foreground text-background flex items-center justify-center">
+             <Wand2 className="w-4 h-4" />
+          </div>
+          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/60">Semantic Refinement</h2>
+        </div>
+        <div className="flex items-center gap-2 text-[9px] font-bold text-muted-foreground/30 uppercase tracking-widest">
+           <Zap className="w-3 h-3" />
+           <span>Dynamic LaTeX Engine</span>
+        </div>
       </div>
 
-      <div className="flex gap-2 mb-3">
-        <input
-          type="text"
-          value={instruction}
-          onChange={(e) => setInstruction(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleApply()}
-          placeholder="Describe what to change in the LaTeX…"
-          className="flex-1 px-3 py-2 text-sm bg-background border border-border/50 text-foreground placeholder:text-foreground/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/50"
-        />
+      <div className="flex gap-3">
+        <div className="relative flex-1">
+          <Sparkles className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/30" />
+          <input
+            type="text"
+            value={instruction}
+            onChange={(e) => setInstruction(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleApply()}
+            placeholder="Instruct the AI to refine the artifact structure…"
+            className="w-full pl-12 pr-4 py-3.5 text-sm bg-background border border-border-muted text-foreground placeholder:text-muted-foreground/20 rounded-xl focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all font-medium"
+          />
+        </div>
         <button
           onClick={() => handleApply()}
           disabled={isProcessing || !instruction.trim()}
-          className="px-4 py-2 bg-accent hover:bg-accent/90 text-white text-sm font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 transition-all"
+          className="px-6 py-3.5 bg-foreground text-background rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-30 flex items-center gap-2"
         >
           {isProcessing ? <Loader2 size={14} className="animate-spin" /> : "Apply"}
         </button>
       </div>
 
-      <div className="border border-border/40 rounded-lg overflow-hidden">
+      <div className="border border-border-muted rounded-xl overflow-hidden bg-background/20">
         <button
           onClick={() => setShowSuggestions((s) => !s)}
-          className="w-full flex items-center justify-between px-3 py-2 text-xs font-medium text-foreground/50 bg-background/50 hover:bg-border/20 transition-colors tracking-wide"
+          className="w-full flex items-center justify-between px-4 py-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground/40 hover:text-foreground transition-all"
         >
-          Quick suggestions
+          Heuristic suggestions
           {showSuggestions ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
         </button>
-        {showSuggestions && (
-          <div className="p-2 flex flex-col gap-1 bg-background/30">
-            {SUGGESTIONS.map((s) => (
-              <button
-                key={s}
-                onClick={() => handleApply(s)}
-                disabled={isProcessing}
-                className="text-left text-xs px-2.5 py-1.5 rounded hover:bg-accent/10 hover:text-accent text-foreground/60 transition-colors disabled:opacity-50"
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        )}
+        <AnimatePresence>
+          {showSuggestions && (
+            <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden bg-background/10">
+              <div className="p-3 grid grid-cols-1 md:grid-cols-2 gap-2">
+                {SUGGESTIONS.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => handleApply(s)}
+                    disabled={isProcessing}
+                    className="text-left text-[10px] font-bold px-4 py-2.5 rounded-lg hover:bg-foreground hover:text-background text-muted-foreground/60 transition-all disabled:opacity-50 border border-transparent hover:border-foreground"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {history.length > 0 && (
-        <div className="mt-3">
-          <p className="text-xs font-medium text-foreground/30 mb-1 tracking-wide">Recent edits</p>
-          <div className="space-y-1">
+        <div className="pt-2">
+          <div className="flex items-center gap-2 mb-2 px-1">
+             <History className="w-3 h-3 text-muted-foreground/20" />
+             <p className="text-[9px] font-black text-muted-foreground/30 uppercase tracking-[0.2em]">Iteration History</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
             {history.map((h, i) => (
               <button
                 key={i}
                 onClick={() => handleApply(h)}
-                className="w-full text-left text-xs px-2.5 py-1.5 rounded bg-background/50 hover:bg-border/30 text-foreground/60 truncate transition-colors"
+                className="text-left text-[9px] font-bold px-3 py-1.5 rounded-full bg-surface border border-border-muted hover:border-foreground/20 text-muted-foreground/60 truncate transition-all max-w-[200px]"
               >
-                ↩ {h}
+                {h}
               </button>
             ))}
           </div>

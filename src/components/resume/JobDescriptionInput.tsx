@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, Link } from "lucide-react";
+import { Loader2, Link as LinkIcon, Sparkles, Database, Search } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Props {
   onGenerate: (description: string) => void;
@@ -38,67 +39,82 @@ export default function JobDescriptionInput({ onGenerate, isGenerating }: Props)
   }
 
   return (
-    <div className="bg-card rounded-xl border border-border/50 p-5">
-      <div className="flex items-center gap-2 mb-4">
-        <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-        <h2 className="text-xs uppercase tracking-widest text-accent font-medium">Job Description</h2>
+    <div className="bg-surface/30 rounded-[2.5rem] border border-border-muted p-8 space-y-8">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-background border border-border-muted flex items-center justify-center text-foreground">
+             <Database className="w-4 h-4" />
+          </div>
+          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/60">Target Intelligence</h2>
+        </div>
+        <p className="text-[10px] font-medium text-muted-foreground/40 italic">Provide job specifications for semantic alignment.</p>
       </div>
 
       {/* URL Input */}
-      <div className="mb-4">
-        <label className="block text-xs font-medium text-foreground/60 mb-1.5">
-          Paste a job posting URL
-        </label>
-        <div className="flex gap-2">
+      <div className="space-y-3">
+        <label className="text-[10px] font-black text-muted-foreground/40 uppercase tracking-widest ml-2">Posting URL</label>
+        <div className="flex gap-3">
           <div className="relative flex-1">
-            <Link size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground/40" />
+            <LinkIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/30" />
             <input
               type="url"
               value={urlInput}
               onChange={(e) => setUrlInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleFetchUrl()}
               placeholder="https://jobs.example.com/posting/123"
-              className="w-full pl-9 pr-3 py-2 bg-background border border-border/50 rounded-lg text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/50"
+              className="w-full pl-12 pr-5 py-4 bg-background border border-border-muted rounded-2xl text-sm font-medium text-foreground placeholder:text-muted-foreground/20 focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all"
             />
           </div>
           <button
             onClick={handleFetchUrl}
             disabled={isFetchingUrl || !urlInput.trim()}
-            className="cursor-pointer px-4 py-2 bg-card hover:bg-border/30 text-foreground/70 text-sm font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 transition-colors border border-border/50"
+            className="px-6 py-4 bg-surface border border-border-muted rounded-2xl text-[10px] font-black uppercase tracking-widest text-foreground hover:bg-background hover:border-border transition-all disabled:opacity-30 flex items-center gap-2"
           >
-            {isFetchingUrl ? <Loader2 size={14} className="animate-spin" /> : "Fetch"}
+            {isFetchingUrl ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+            <span>Ingest</span>
           </button>
         </div>
-        {urlError && <p className="mt-1.5 text-xs text-red-400">{urlError}</p>}
+        <AnimatePresence>
+          {urlError && (
+            <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest ml-2">
+              Error: {urlError}
+            </motion.p>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Textarea */}
-      <div className="mb-4">
-        <label className="block text-xs font-medium text-foreground/60 mb-1.5">
-          Or paste the job description directly
-        </label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Paste or type the job description here…"
-          rows={7}
-          className="w-full px-3 py-2 bg-background border border-border/50 rounded-lg text-sm text-foreground placeholder:text-foreground/30 font-mono focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/50 resize-y"
-        />
-        <p className="mt-1 text-xs text-foreground/30">{description.length} characters</p>
+      <div className="space-y-3">
+        <label className="text-[10px] font-black text-muted-foreground/40 uppercase tracking-widest ml-2">Raw Specification</label>
+        <div className="relative group">
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Paste job description text here for manual processing…"
+            rows={8}
+            className="w-full px-6 py-6 bg-background border border-border-muted rounded-[2rem] text-sm text-foreground/80 placeholder:text-muted-foreground/20 focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all resize-none font-medium leading-relaxed"
+          />
+          <div className="absolute bottom-4 right-6 text-[10px] font-black text-muted-foreground/20 uppercase tracking-widest">
+            {description.length} Characters
+          </div>
+        </div>
       </div>
 
       <button
         onClick={() => onGenerate(description)}
         disabled={isGenerating || !description.trim()}
-        className="cursor-pointer w-full py-2.5 bg-accent hover:bg-accent/90 text-white font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all"
+        className="w-full py-5 bg-foreground text-background rounded-full font-black uppercase tracking-[0.2em] text-[11px] shadow-xl hover:scale-[1.01] active:scale-[0.98] transition-all disabled:opacity-20 flex items-center justify-center gap-3"
       >
         {isGenerating ? (
           <>
-            <Loader2 size={16} className="animate-spin" />
-            Generating Resume…
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span>Synthesizing Artifact…</span>
           </>
         ) : (
-          "Generate Resume with AI"
+          <>
+            <Sparkles className="w-4 h-4" />
+            <span>Generate Artifact with AI</span>
+          </>
         )}
       </button>
     </div>
