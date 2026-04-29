@@ -3,12 +3,13 @@
 import { useState } from "react";
 import {
   Briefcase, GraduationCap, Code, Plus, Pencil, Trash2,
-  ChevronUp, ChevronDown, Check, X,
+  ChevronUp, ChevronDown, Check, X, Building2, Calendar, Target, Award, BookOpen, Layers
 } from "lucide-react";
 import { useTemplateStore } from "@/store/useTemplateStore";
 import {
   ExperienceTemplate, EducationTemplate, ProjectTemplate,
 } from "@/types/resume";
+import { motion, AnimatePresence } from "framer-motion";
 
 // ─── Shared input helpers ────────────────────────────────────────────────────
 
@@ -20,13 +21,13 @@ function Input({
 }) {
   return (
     <div className={full ? "col-span-2" : ""}>
-      <label className="block text-xs font-medium text-foreground/50 mb-1">{label}</label>
+      <label className="block text-[10px] font-black text-muted-foreground/40 uppercase tracking-widest ml-1 mb-1.5">{label}</label>
       <input
         type="text"
         value={value ?? ""}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full px-3 py-2 bg-card border border-border/50 rounded-lg text-sm text-foreground placeholder:text-foreground/25 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/50"
+        className="w-full px-4 py-3 bg-background border border-border-muted rounded-xl text-sm font-medium text-foreground placeholder:text-muted-foreground/20 focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all"
       />
     </div>
   );
@@ -38,16 +39,16 @@ function FormActions({
   onSave: () => void; onCancel: () => void; saveLabel?: string;
 }) {
   return (
-    <div className="flex gap-2 mt-3 justify-end">
+    <div className="flex gap-3 mt-6 justify-end">
       <button
         onClick={onCancel}
-        className="flex items-center gap-1 px-3 py-1.5 text-xs text-foreground/50 hover:text-foreground border border-border/40 rounded-lg transition-colors"
+        className="flex items-center gap-2 px-5 py-2.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground/40 hover:text-foreground transition-all"
       >
-        <X size={12} /> Cancel
+        <X size={12} /> Abort
       </button>
       <button
         onClick={onSave}
-        className="flex items-center gap-1 px-3 py-1.5 text-xs text-white bg-accent hover:bg-accent/90 rounded-lg transition-colors"
+        className="flex items-center gap-2 px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-background bg-foreground rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all"
       >
         <Check size={12} /> {saveLabel}
       </button>
@@ -61,20 +62,20 @@ function ReorderButtons({
   onUp: () => void; onDown: () => void; disableUp: boolean; disableDown: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-0.5">
+    <div className="flex flex-col gap-1 pr-2">
       <button
         disabled={disableUp}
         onClick={onUp}
-        className="p-1 rounded text-foreground/30 hover:text-foreground/70 disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+        className="p-1 rounded-lg bg-surface border border-border-muted text-muted-foreground/30 hover:text-foreground disabled:opacity-10 transition-all"
       >
-        <ChevronUp size={13} />
+        <ChevronUp size={12} />
       </button>
       <button
         disabled={disableDown}
         onClick={onDown}
-        className="p-1 rounded text-foreground/30 hover:text-foreground/70 disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+        className="p-1 rounded-lg bg-surface border border-border-muted text-muted-foreground/30 hover:text-foreground disabled:opacity-10 transition-all"
       >
-        <ChevronDown size={13} />
+        <ChevronDown size={12} />
       </button>
     </div>
   );
@@ -113,89 +114,105 @@ function ExperienceSection() {
   const setAdd = (k: keyof ExpDraft) => (v: string) => setAddDraft((p) => ({ ...p, [k]: v }));
 
   return (
-    <div className="bg-card rounded-xl border border-border/50 p-5">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
-          <Briefcase size={14} className="text-accent" /> Work Experience
-        </h3>
-        <p className="text-xs text-foreground/40 mr-auto ml-3">AI fills bullet points per entry</p>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+           <div className="w-8 h-8 rounded-lg bg-foreground text-background flex items-center justify-center">
+             <Briefcase size={14} />
+           </div>
+           <div className="space-y-0.5">
+             <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/60">Experience Blueprint</h3>
+             <p className="text-[9px] font-bold text-muted-foreground/30 uppercase tracking-widest italic">Temporal records of professional engagement.</p>
+           </div>
+        </div>
         {!isAdding && (
           <button
             onClick={() => setIsAdding(true)}
-            className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-accent bg-accent/10 hover:bg-accent/20 border border-accent/20 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-5 py-2 bg-foreground text-background rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all"
           >
-            <Plus size={12} /> Add
+            <Plus size={12} /> Inject Record
           </button>
         )}
       </div>
 
-      {template.experiences.length === 0 && !isAdding && (
-        <p className="text-xs text-foreground/30 text-center py-4">
-          No experience added yet. Add your real work history for accurate AI-generated resumes.
-        </p>
-      )}
-
-      <div className="space-y-2">
+      <div className="space-y-3">
         {template.experiences.map((exp, idx) => (
-          <div
+          <motion.div
             key={exp.id}
-            className={`bg-background rounded-lg border p-3 transition-colors ${editingId === exp.id ? "border-accent/30" : "border-border/30"}`}
+            layout
+            className={`bg-background/40 rounded-[2rem] border p-6 transition-all duration-500 ${editingId === exp.id ? "border-foreground shadow-2xl" : "border-border-muted hover:border-border"}`}
           >
             {editingId === exp.id ? (
               <>
-                <div className="grid grid-cols-2 gap-3">
-                  <Input label="Company*" value={editDraft.company} onChange={setEdit("company")} placeholder="OpenText" full />
-                  <Input label="Job Title*" value={editDraft.title} onChange={setEdit("title")} placeholder="Associate Software Developer" full />
-                  <Input label="Start Date" value={editDraft.startDate} onChange={setEdit("startDate")} placeholder="Jan. 2023" />
-                  <Input label="End Date" value={editDraft.endDate} onChange={setEdit("endDate")} placeholder="Present" />
-                  <Input label="Location" value={editDraft.location} onChange={setEdit("location")} placeholder="Bengaluru, India" full />
+                <div className="grid grid-cols-2 gap-6">
+                  <Input label="Enterprise Name*" value={editDraft.company} onChange={setEdit("company")} placeholder="Anthropic, Google..." full />
+                  <Input label="Designated Title*" value={editDraft.title} onChange={setEdit("title")} placeholder="Senior Systems Architect" full />
+                  <Input label="Temporal Start" value={editDraft.startDate} onChange={setEdit("startDate")} placeholder="Jan. 2023" />
+                  <Input label="Temporal End" value={editDraft.endDate} onChange={setEdit("endDate")} placeholder="Present" />
+                  <Input label="Geographic Location" value={editDraft.location} onChange={setEdit("location")} placeholder="San Francisco, CA" full />
                 </div>
-                <FormActions onSave={saveEdit} onCancel={() => setEditingId(null)} />
+                <FormActions onSave={saveEdit} onCancel={() => setEditingId(null)} saveLabel="Update Record" />
               </>
             ) : (
-              <div className="flex items-start gap-2">
+              <div className="flex items-center gap-6">
                 <ReorderButtons
                   onUp={() => moveExperience(exp.id, "up")}
                   onDown={() => moveExperience(exp.id, "down")}
                   disableUp={idx === 0}
                   disableDown={idx === template.experiences.length - 1}
                 />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="text-sm font-medium text-foreground">{exp.company}</span>
-                    <span className="text-foreground/30 text-xs">·</span>
-                    <span className="text-xs text-foreground/60">{exp.title}</span>
+                <div className="flex-1 min-w-0 space-y-1">
+                  <div className="flex items-center gap-3">
+                    <span className="text-base font-bold text-foreground font-outfit tracking-tight">{exp.company}</span>
+                    <div className="w-1 h-1 rounded-full bg-border-muted" />
+                    <span className="text-[11px] font-black uppercase tracking-widest text-muted-foreground/60">{exp.title}</span>
                   </div>
-                  <p className="text-xs text-foreground/40 mt-0.5">
-                    {exp.startDate} – {exp.endDate}{exp.location ? ` · ${exp.location}` : ""}
-                  </p>
+                  <div className="flex items-center gap-4 text-[10px] font-bold text-muted-foreground/30 uppercase tracking-widest">
+                    <div className="flex items-center gap-1.5">
+                       <Calendar className="w-3 h-3" />
+                       <span>{exp.startDate} – {exp.endDate}</span>
+                    </div>
+                    {exp.location && (
+                       <div className="flex items-center gap-1.5">
+                          <Target className="w-3 h-3" />
+                          <span>{exp.location}</span>
+                       </div>
+                    )}
+                  </div>
                 </div>
-                <div className="flex gap-1 shrink-0">
-                  <button onClick={() => startEdit(exp)} className="p-1.5 rounded hover:bg-border/30 text-foreground/40 hover:text-foreground/70 transition-colors">
-                    <Pencil size={12} />
+                <div className="flex gap-2 shrink-0">
+                  <button onClick={() => startEdit(exp)} className="p-3 rounded-xl bg-surface border border-border-muted text-muted-foreground/30 hover:text-foreground transition-all">
+                    <Pencil size={14} />
                   </button>
-                  <button onClick={() => removeExperience(exp.id)} className="p-1.5 rounded hover:bg-red-500/10 text-foreground/40 hover:text-red-400 transition-colors">
-                    <Trash2 size={12} />
+                  <button onClick={() => removeExperience(exp.id)} className="p-3 rounded-xl bg-surface border border-border-muted text-muted-foreground/20 hover:text-red-500 transition-all">
+                    <Trash2 size={14} />
                   </button>
                 </div>
               </div>
             )}
-          </div>
+          </motion.div>
         ))}
 
-        {isAdding && (
-          <div className="bg-background rounded-lg border border-accent/30 p-3">
-            <p className="text-xs text-accent font-medium mb-3">New Experience</p>
-            <div className="grid grid-cols-2 gap-3">
-              <Input label="Company*" value={addDraft.company} onChange={setAdd("company")} placeholder="OpenText" full />
-              <Input label="Job Title*" value={addDraft.title} onChange={setAdd("title")} placeholder="Associate Software Developer" full />
-              <Input label="Start Date" value={addDraft.startDate} onChange={setAdd("startDate")} placeholder="Jan. 2023" />
-              <Input label="End Date" value={addDraft.endDate} onChange={setAdd("endDate")} placeholder="Present" />
-              <Input label="Location" value={addDraft.location} onChange={setAdd("location")} placeholder="Bengaluru, India" full />
-            </div>
-            <FormActions onSave={saveAdd} onCancel={() => { setIsAdding(false); setAddDraft(EMPTY_EXP); }} saveLabel="Add Experience" />
-          </div>
-        )}
+        <AnimatePresence>
+          {isAdding && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-background/80 rounded-[2rem] border border-foreground p-8 shadow-2xl relative z-20">
+              <div className="flex items-center gap-3 mb-8">
+                 <div className="w-8 h-8 rounded-lg bg-foreground text-background flex items-center justify-center">
+                   <Plus size={14} />
+                 </div>
+                 <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground">New Blueprint Record</h4>
+              </div>
+              <div className="grid grid-cols-2 gap-6">
+                <Input label="Enterprise Name*" value={addDraft.company} onChange={setAdd("company")} placeholder="OpenText" full />
+                <Input label="Designated Title*" value={addDraft.title} onChange={setAdd("title")} placeholder="Associate Software Developer" full />
+                <Input label="Temporal Start" value={addDraft.startDate} onChange={setAdd("startDate")} placeholder="Jan. 2023" />
+                <Input label="Temporal End" value={addDraft.endDate} onChange={setAdd("endDate")} placeholder="Present" />
+                <Input label="Geographic Location" value={addDraft.location} onChange={setAdd("location")} placeholder="Bengaluru, India" full />
+              </div>
+              <FormActions onSave={saveAdd} onCancel={() => { setIsAdding(false); setAddDraft(EMPTY_EXP); }} saveLabel="Establish Record" />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
@@ -209,14 +226,14 @@ const EMPTY_EDU: EduDraft = { institution: "", degree: "", field: "", graduation
 function EduForm({ draft, set: setFn, onSave, onCancel, saveLabel }: { draft: EduDraft; set: (k: keyof EduDraft) => (v: string) => void; onSave: () => void; onCancel: () => void; saveLabel?: string }) {
   return (
     <>
-      <div className="grid grid-cols-2 gap-3">
-        <Input label="Institution*" value={draft.institution} onChange={setFn("institution")} placeholder="Kalinga Institute of Industrial Technology" full />
-        <Input label="Degree" value={draft.degree} onChange={setFn("degree")} placeholder="BTech" />
-        <Input label="Field of Study" value={draft.field} onChange={setFn("field")} placeholder="Information Technology" />
-        <Input label="Graduation Date" value={draft.graduationDate} onChange={setFn("graduationDate")} placeholder="June. 2023" />
-        <Input label="Location" value={draft.location ?? ""} onChange={setFn("location")} placeholder="Bhubaneshwar, India" />
-        <Input label="GPA / CGPA" value={draft.gpa ?? ""} onChange={setFn("gpa")} placeholder="9.02" />
-        <Input label="Coursework" value={draft.coursework ?? ""} onChange={setFn("coursework")} placeholder="Data Structures, Algorithms, OOP" full />
+      <div className="grid grid-cols-2 gap-6">
+        <Input label="Institution*" value={draft.institution} onChange={setFn("institution")} placeholder="University of Intelligence" full />
+        <Input label="Degree Type" value={draft.degree} onChange={setFn("degree")} placeholder="BTech" />
+        <Input label="Field of Specialization" value={draft.field} onChange={setFn("field")} placeholder="Information Technology" />
+        <Input label="Conferred Date" value={draft.graduationDate} onChange={setFn("graduationDate")} placeholder="June. 2023" />
+        <Input label="Geographic Location" value={draft.location ?? ""} onChange={setFn("location")} placeholder="Bhubaneshwar, India" />
+        <Input label="Magnitude (GPA/CGPA)" value={draft.gpa ?? ""} onChange={setFn("gpa")} placeholder="9.02" />
+        <Input label="Specialized Coursework" value={draft.coursework ?? ""} onChange={setFn("coursework")} placeholder="Data Structures, Algorithms, OOP" full />
       </div>
       <FormActions onSave={onSave} onCancel={onCancel} saveLabel={saveLabel} />
     </>
@@ -250,64 +267,79 @@ function EducationSection() {
   const setAdd = (k: keyof EduDraft) => (v: string) => setAddDraft((p) => ({ ...p, [k]: v }));
 
   return (
-    <div className="bg-card rounded-xl border border-border/50 p-5">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
-          <GraduationCap size={14} className="text-accent" /> Education
-        </h3>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+           <div className="w-8 h-8 rounded-lg bg-foreground text-background flex items-center justify-center">
+             <GraduationCap size={14} />
+           </div>
+           <div className="space-y-0.5">
+             <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/60">Academic Foundation</h3>
+             <p className="text-[9px] font-bold text-muted-foreground/30 uppercase tracking-widest italic">Foundational knowledge systems and certification.</p>
+           </div>
+        </div>
         {!isAdding && (
           <button
             onClick={() => setIsAdding(true)}
-            className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-accent bg-accent/10 hover:bg-accent/20 border border-accent/20 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-5 py-2 bg-foreground text-background rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all"
           >
-            <Plus size={12} /> Add
+            <Plus size={12} /> Inject Foundation
           </button>
         )}
       </div>
 
-      {template.education.length === 0 && !isAdding && (
-        <p className="text-xs text-foreground/30 text-center py-4">No education added yet.</p>
-      )}
-
-      <div className="space-y-2">
+      <div className="space-y-3">
         {template.education.map((edu) => (
-          <div
+          <motion.div
             key={edu.id}
-            className={`bg-background rounded-lg border p-3 transition-colors ${editingId === edu.id ? "border-accent/30" : "border-border/30"}`}
+            layout
+            className={`bg-background/40 rounded-[2rem] border p-6 transition-all duration-500 ${editingId === edu.id ? "border-foreground shadow-2xl" : "border-border-muted hover:border-border"}`}
           >
             {editingId === edu.id ? (
-              <EduForm draft={editDraft} set={setEdit} onSave={saveEdit} onCancel={() => setEditingId(null)} />
+              <EduForm draft={editDraft} set={setEdit} onSave={saveEdit} onCancel={() => setEditingId(null)} saveLabel="Update Foundation" />
             ) : (
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground">{edu.institution}</p>
-                  <p className="text-xs text-foreground/60">
-                    {[edu.degree, edu.field].filter(Boolean).join(" in ")}
-                    {edu.gpa ? <span className="text-foreground/40 ml-2">CGPA: {edu.gpa}</span> : null}
-                  </p>
-                  <p className="text-xs text-foreground/40 mt-0.5">
-                    {edu.graduationDate}{edu.location ? ` · ${edu.location}` : ""}
-                  </p>
+              <div className="flex items-center justify-between gap-6">
+                <div className="flex-1 min-w-0 space-y-1">
+                  <p className="text-base font-bold text-foreground font-outfit tracking-tight">{edu.institution}</p>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">
+                      {[edu.degree, edu.field].filter(Boolean).join(" in ")}
+                    </span>
+                    {edu.gpa && (
+                      <>
+                        <div className="w-1 h-1 rounded-full bg-border-muted" />
+                        <span className="text-[10px] font-bold text-foreground">MAGNITUDE: {edu.gpa}</span>
+                      </>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-4 text-[10px] font-bold text-muted-foreground/30 uppercase tracking-widest pt-1">
+                     <div className="flex items-center gap-1.5">
+                        <Calendar size={12} />
+                        <span>CONFERRED: {edu.graduationDate}</span>
+                     </div>
+                  </div>
                 </div>
-                <div className="flex gap-1 shrink-0">
-                  <button onClick={() => startEdit(edu)} className="p-1.5 rounded hover:bg-border/30 text-foreground/40 hover:text-foreground/70 transition-colors">
-                    <Pencil size={12} />
+                <div className="flex gap-2 shrink-0">
+                  <button onClick={() => startEdit(edu)} className="p-3 rounded-xl bg-surface border border-border-muted text-muted-foreground/30 hover:text-foreground transition-all">
+                    <Pencil size={14} />
                   </button>
-                  <button onClick={() => removeEducation(edu.id)} className="p-1.5 rounded hover:bg-red-500/10 text-foreground/40 hover:text-red-400 transition-colors">
-                    <Trash2 size={12} />
+                  <button onClick={() => removeEducation(edu.id)} className="p-3 rounded-xl bg-surface border border-border-muted text-muted-foreground/20 hover:text-red-500 transition-all">
+                    <Trash2 size={14} />
                   </button>
                 </div>
               </div>
             )}
-          </div>
+          </motion.div>
         ))}
 
-        {isAdding && (
-          <div className="bg-background rounded-lg border border-accent/30 p-3">
-            <p className="text-xs text-accent font-medium mb-3">New Education</p>
-            <EduForm draft={addDraft} set={setAdd} onSave={saveAdd} onCancel={() => { setIsAdding(false); setAddDraft(EMPTY_EDU); }} saveLabel="Add Education" />
-          </div>
-        )}
+        <AnimatePresence>
+          {isAdding && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-background/80 rounded-[2rem] border border-foreground p-8 shadow-2xl relative z-20">
+              <p className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground mb-8">New Academic Foundation</p>
+              <EduForm draft={addDraft} set={setAdd} onSave={saveAdd} onCancel={() => { setIsAdding(false); setAddDraft(EMPTY_EDU); }} saveLabel="Establish Foundation" />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
@@ -345,75 +377,84 @@ function ProjectsSection() {
   const setAdd = (k: keyof ProjDraft) => (v: string) => setAddDraft((p) => ({ ...p, [k]: v }));
 
   return (
-    <div className="bg-card rounded-xl border border-border/50 p-5">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
-          <Code size={14} className="text-accent" /> Projects
-        </h3>
-        <p className="text-xs text-foreground/40 mr-auto ml-3">AI fills descriptions & tech stack</p>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+           <div className="w-8 h-8 rounded-lg bg-foreground text-background flex items-center justify-center">
+             <Code size={14} />
+           </div>
+           <div className="space-y-0.5">
+             <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground/60">Signal Prototypes</h3>
+             <p className="text-[9px] font-bold text-muted-foreground/30 uppercase tracking-widest italic">Applied intelligence and functional artifacts.</p>
+           </div>
+        </div>
         {!isAdding && (
           <button
             onClick={() => setIsAdding(true)}
-            className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-accent bg-accent/10 hover:bg-accent/20 border border-accent/20 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-5 py-2 bg-foreground text-background rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all"
           >
-            <Plus size={12} /> Add
+            <Plus size={12} /> Inject Prototype
           </button>
         )}
       </div>
 
-      {template.projects.length === 0 && !isAdding && (
-        <p className="text-xs text-foreground/30 text-center py-4">No projects added yet.</p>
-      )}
-
-      <div className="space-y-2">
+      <div className="space-y-3">
         {template.projects.map((proj, idx) => (
-          <div
+          <motion.div
             key={proj.id}
-            className={`bg-background rounded-lg border p-3 transition-colors ${editingId === proj.id ? "border-accent/30" : "border-border/30"}`}
+            layout
+            className={`bg-background/40 rounded-[2rem] border p-6 transition-all duration-500 ${editingId === proj.id ? "border-foreground shadow-2xl" : "border-border-muted hover:border-border"}`}
           >
             {editingId === proj.id ? (
               <>
-                <div className="grid grid-cols-2 gap-3">
-                  <Input label="Project Name*" value={editDraft.name} onChange={setEdit("name")} placeholder="Last 10 Years Analytics Platform" full />
-                  <Input label="Live URL / GitHub link" value={editDraft.link ?? ""} onChange={setEdit("link")} placeholder="https://last10years.vercel.app/" full />
+                <div className="grid grid-cols-2 gap-6">
+                  <Input label="Prototype Designation*" value={editDraft.name} onChange={setEdit("name")} placeholder="Neural Analytics Platform" full />
+                  <Input label="Digital Signal Link (URL)" value={editDraft.link ?? ""} onChange={setEdit("link")} placeholder="https://artifact.vercel.app/" full />
                 </div>
-                <FormActions onSave={saveEdit} onCancel={() => setEditingId(null)} />
+                <FormActions onSave={saveEdit} onCancel={() => setEditingId(null)} saveLabel="Update Prototype" />
               </>
             ) : (
-              <div className="flex items-start gap-2">
+              <div className="flex items-center gap-6">
                 <ReorderButtons
                   onUp={() => moveProject(proj.id, "up")}
                   onDown={() => moveProject(proj.id, "down")}
                   disableUp={idx === 0}
                   disableDown={idx === template.projects.length - 1}
                 />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground">{proj.name}</p>
-                  {proj.link && <p className="text-xs text-accent/70 truncate mt-0.5">{proj.link}</p>}
+                <div className="flex-1 min-w-0 space-y-1">
+                  <p className="text-base font-bold text-foreground font-outfit tracking-tight">{proj.name}</p>
+                  {proj.link && (
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">
+                       <Target size={12} />
+                       <span className="truncate">{proj.link}</span>
+                    </div>
+                  )}
                 </div>
-                <div className="flex gap-1 shrink-0">
-                  <button onClick={() => startEdit(proj)} className="p-1.5 rounded hover:bg-border/30 text-foreground/40 hover:text-foreground/70 transition-colors">
-                    <Pencil size={12} />
+                <div className="flex gap-2 shrink-0">
+                  <button onClick={() => startEdit(proj)} className="p-3 rounded-xl bg-surface border border-border-muted text-muted-foreground/30 hover:text-foreground transition-all">
+                    <Pencil size={14} />
                   </button>
-                  <button onClick={() => removeProject(proj.id)} className="p-1.5 rounded hover:bg-red-500/10 text-foreground/40 hover:text-red-400 transition-colors">
-                    <Trash2 size={12} />
+                  <button onClick={() => removeProject(proj.id)} className="p-3 rounded-xl bg-surface border border-border-muted text-muted-foreground/20 hover:text-red-500 transition-all">
+                    <Trash2 size={14} />
                   </button>
                 </div>
               </div>
             )}
-          </div>
+          </motion.div>
         ))}
 
-        {isAdding && (
-          <div className="bg-background rounded-lg border border-accent/30 p-3">
-            <p className="text-xs text-accent font-medium mb-3">New Project</p>
-            <div className="grid grid-cols-2 gap-3">
-              <Input label="Project Name*" value={addDraft.name} onChange={setAdd("name")} placeholder="Last 10 Years Analytics Platform" full />
-              <Input label="Live URL / GitHub link" value={addDraft.link ?? ""} onChange={setAdd("link")} placeholder="https://last10years.vercel.app/" full />
-            </div>
-            <FormActions onSave={saveAdd} onCancel={() => { setIsAdding(false); setAddDraft(EMPTY_PROJ); }} saveLabel="Add Project" />
-          </div>
-        )}
+        <AnimatePresence>
+          {isAdding && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-background/80 rounded-[2rem] border border-foreground p-8 shadow-2xl relative z-20">
+              <p className="text-[11px] font-black uppercase tracking-[0.2em] text-foreground mb-8">New Signal Prototype</p>
+              <div className="grid grid-cols-2 gap-6">
+                <Input label="Prototype Designation*" value={addDraft.name} onChange={setAdd("name")} placeholder="Neural Analytics Platform" full />
+                <Input label="Digital Signal Link (URL)" value={addDraft.link ?? ""} onChange={setAdd("link")} placeholder="https://artifact.vercel.app/" full />
+              </div>
+              <FormActions onSave={saveAdd} onCancel={() => { setIsAdding(false); setAddDraft(EMPTY_PROJ); }} saveLabel="Establish Prototype" />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
@@ -423,11 +464,27 @@ function ProjectsSection() {
 
 export default function ResumeTemplateEditor() {
   return (
-    <div className="max-w-2xl space-y-5">
-      <div className="bg-accent/5 border border-accent/20 rounded-xl p-4 text-sm text-foreground/60">
-        Define your real experience, education and projects here. When you generate a resume,{" "}
-        <span className="text-foreground/80">AI fills in bullet points and descriptions</span> tailored to each job description — your structure stays the same.
+    <div className="max-w-4xl space-y-16">
+      <div className="bg-foreground text-background rounded-[2.5rem] p-10 relative overflow-hidden shadow-2xl">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <Sparkles className="w-5 h-5 text-indigo-400" />
+              <h2 className="text-2xl font-bold font-outfit tracking-tight">Experience Blueprint Configuration</h2>
+            </div>
+            <p className="text-sm font-medium text-background/60 leading-relaxed max-w-xl">
+              Define your professional foundational data. During synthesis, <span className="text-background font-bold underline underline-offset-4 decoration-indigo-500/50">AI will perform semantic expansion</span> of your experiences and projects to align with target job specifications.
+            </p>
+          </div>
+          <div className="shrink-0 flex items-center gap-2 px-6 py-3 bg-background/10 rounded-2xl border border-white/10 text-[10px] font-black uppercase tracking-widest text-background/80 backdrop-blur-md">
+            <Layers className="w-4 h-4" />
+            <span>Multi-modal Context</span>
+          </div>
+        </div>
+        {/* Subtle Decorative Elements */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 blur-[100px] rounded-full -mr-20 -mt-20" />
       </div>
+      
       <ExperienceSection />
       <EducationSection />
       <ProjectsSection />
