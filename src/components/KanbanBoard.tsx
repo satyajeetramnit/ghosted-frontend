@@ -153,14 +153,14 @@ export default function KanbanBoard() {
         </div>
       </header>
 
-      {/* Board Container */}
-      <div className="flex-1 p-10 pt-2">
+      {/* Board Container - This is the blue part that moves */}
+      <div className="flex-1 overflow-auto custom-scrollbar p-10 pt-2">
         <AnimatePresence mode="wait">
           {applications.length === 0 && !searchTerm ? (
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="h-[60vh] flex flex-col items-center justify-center text-center max-w-lg mx-auto"
+              className="h-full min-h-[60vh] flex flex-col items-center justify-center text-center max-w-lg mx-auto"
             >
               <div className="w-24 h-24 bg-surface rounded-[2.5rem] flex items-center justify-center mb-10 text-foreground border border-border-muted shadow-sm">
                 <Ghost className="w-10 h-10" />

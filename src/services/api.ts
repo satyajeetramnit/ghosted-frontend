@@ -229,6 +229,7 @@ export interface BackendProfile {
   experiencesJson?: string;
   educationJson?: string;
   projectsJson?: string;
+  preferencesJson?: string;
 }
 
 export interface BackendSavedResume {

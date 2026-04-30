@@ -48,7 +48,7 @@ export default function InterviewsHub() {
   });
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-transparent relative">
+    <div className="flex-1 flex flex-col h-full overflow-y-auto custom-scrollbar bg-transparent relative">
       {/* Header Section */}
       <header className="pt-10 pb-8 px-10 flex flex-col gap-8 relative z-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
